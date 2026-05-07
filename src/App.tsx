@@ -64,7 +64,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div>
             <Heading as="h1" variant="display" className="text-rose-500">
-              Makeup Tracker
+              Beauty Tracker
             </Heading>
             <Text variant="muted" as="p" className="mt-0.5">
               {activeCount} product{activeCount !== 1 ? "s" : ""} in use
