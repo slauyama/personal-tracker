@@ -7,6 +7,7 @@ import Link from "./ui/Link";
 import Modal from "./ui/Modal";
 import Select from "./ui/Select";
 import Text from "./ui/Text";
+import AmazonIcon from "../assets/amazon_icon.png";
 
 interface ProductModalProps {
   product: Product | null;
@@ -423,7 +424,7 @@ export default function ProductModal({
                 title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
               >
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/d/de/Amazon_icon.png"
+                  src={AmazonIcon}
                   alt="Search on Amazon"
                   className="h-5 w-auto"
                 />
