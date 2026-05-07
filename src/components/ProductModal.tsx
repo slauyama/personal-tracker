@@ -386,7 +386,7 @@ export default function ProductModal({
               }
             />
             <Row label="Date Bought" value={product.dateBought} />
-            <Row label="Purchased At" value={product.purchasedAt} />
+            <Row label="Purchased From" value={product.purchasedAt} />
             <Row label="Status" value={isFinished ? "Finished" : "Active"} />
           </div>
 
