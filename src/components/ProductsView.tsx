@@ -40,7 +40,11 @@ const SORT_OPTIONS = [
   { value: "price", label: "Cost" },
 ];
 
-function sortProducts(products: Product[], field: SortField, dir: SortDir): Product[] {
+function sortProducts(
+  products: Product[],
+  field: SortField,
+  dir: SortDir,
+): Product[] {
   return [...products].sort((a, b) => {
     let cmp = 0;
     if (field === "price") {
@@ -71,7 +75,9 @@ export default function ProductsView({
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   const addProductModal = useModal();
   const importExportModal = useModal();
-  const [statusFilter, setStatusFilter] = useState<ProductStatus | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<ProductStatus | "all">(
+    "all",
+  );
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -124,7 +130,25 @@ export default function ProductsView({
           onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
           title={sortDir === "asc" ? "Ascending" : "Descending"}
         >
-          {sortDir === "asc" ? "↑" : "↓"}
+          <span
+            className={`transition-all ${
+              sortDir !== "asc" ? "rotate-180 " : "rotate-0"
+            }`}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="12" y1="6" x2="12" y2="19" />
+              <polyline points="18 12 12 5 6 12" />
+            </svg>
+          </span>
         </IconButton>
 
         <div className="flex-1" />
@@ -148,7 +172,11 @@ export default function ProductsView({
           <Text variant="muted" as="p" className="text-5xl mb-3">
             💄
           </Text>
-          <Text variant="body" as="p" className="text-lg font-medium text-zinc-500">
+          <Text
+            variant="body"
+            as="p"
+            className="text-lg font-medium text-zinc-500"
+          >
             {products.length === 0
               ? "No products yet"
               : "No products match these filters"}
