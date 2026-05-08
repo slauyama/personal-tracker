@@ -40,10 +40,10 @@ function buildStats(products: Product[], today: Date): ProductStat[] {
     .sort((a, b) => b.costPerDay - a.costPerDay);
 }
 
-function formatCurrency(n: number): string {
+function formatCurrency(n: number, fractionDigits = 2): string {
   return n.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   });
 }
 
@@ -143,7 +143,7 @@ export default function StatsView({ products }: StatsViewProps) {
                         {s.product.name}
                       </span>
                       <span className="text-sm font-semibold text-rose-500 shrink-0">
-                        ${formatCurrency(s.costPerDay)}/day
+                        ${formatCurrency(s.costPerDay, 3)}/day
                       </span>
                     </div>
                     <div className="flex justify-between">
