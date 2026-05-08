@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ProductStatus } from "../constants";
 import { Product } from "../hooks/useProducts";
 import Card from "./ui/Card";
+import Text from "./ui/Text";
 
 interface ProductCardProps {
   product: Product;
@@ -42,14 +43,14 @@ export default function ProductCard({ product, onOpen }: ProductCardProps) {
             {product.name}
           </h3>
           {product.brand && (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">
+            <Text variant="caption" className="font-thin mt-0.5 truncate">
               {product.brand}
-            </p>
+            </Text>
           )}
           {product.shade && (
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5 truncate">
+            <Text variant="caption" className="font-thin mt-0.5 truncate">
               Shade: {product.shade}
-            </p>
+            </Text>
           )}
         </div>
       </div>
