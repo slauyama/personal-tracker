@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ModalControls } from "../../hooks/useModal";
 
 interface ModalProps {
@@ -16,17 +16,26 @@ export default function Modal({
   closeOnBackdrop = false,
   modalControls,
 }: ModalProps) {
+  useEffect(() => {
+    if (!modalControls.isOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") modalControls.close();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modalControls.isOpen, modalControls.close]);
+
   if (!modalControls.isOpen) {
     return null;
   }
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-40 p-4"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4"
       onClick={closeOnBackdrop ? modalControls.close : undefined}
     >
       <div
-        className={`bg-white rounded-2xl shadow-xl w-full max-w-md ${className}`}
+        className={`bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
