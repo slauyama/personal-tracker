@@ -10,8 +10,8 @@ interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
 
 const VARIANTS: Record<HeadingVariant, string> = {
   display: "text-2xl font-bold",
-  title: "text-xl font-bold text-gray-800",
-  subtitle: "text-lg font-semibold text-gray-700",
+  title: "text-xl font-bold text-gray-800 dark:text-gray-100",
+  subtitle: "text-lg font-semibold text-gray-700 dark:text-gray-200",
 };
 
 export default function Heading({
