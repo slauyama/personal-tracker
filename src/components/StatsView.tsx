@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Product } from "../hooks/useProducts";
+import Card from "./ui/Card";
 import Heading from "./ui/Heading";
 import Text from "./ui/Text";
 
@@ -48,12 +49,14 @@ function formatCurrency(n: number): string {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white rounded-xl border shadow-sm p-4 flex flex-col gap-1">
-      <Text variant="caption" className="text-gray-400 uppercase tracking-wide">
+    <Card className="p-4 flex flex-col gap-1">
+      <Text variant="caption" className="text-zinc-400 uppercase tracking-wide">
         {label}
       </Text>
-      <span className="text-2xl font-bold text-gray-800">{value}</span>
-    </div>
+      <span className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
+        {value}
+      </span>
+    </Card>
   );
 }
 
@@ -78,7 +81,7 @@ export default function StatsView({ products }: StatsViewProps) {
         <Text
           variant="body"
           as="p"
-          className="text-lg font-medium text-gray-500"
+          className="text-lg font-medium text-zinc-500"
         >
           No products yet
         </Text>
@@ -88,7 +91,7 @@ export default function StatsView({ products }: StatsViewProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Heading as="h2" variant="subtitle" className="text-gray-600">
+      <Heading as="h2" variant="subtitle" className="text-zinc-600">
         Spending Summary
       </Heading>
 
@@ -108,7 +111,7 @@ export default function StatsView({ products }: StatsViewProps) {
       </div>
 
       {unpricedCount > 0 && (
-        <Text variant="caption" className="text-gray-400">
+        <Text variant="caption" className="text-zinc-400">
           {unpricedCount} product{unpricedCount !== 1 ? "s" : ""} without a
           price are excluded from calculations.
         </Text>
@@ -116,25 +119,27 @@ export default function StatsView({ products }: StatsViewProps) {
 
       {pricedCount > 0 && (
         <div className="flex flex-col gap-2">
-          <Heading as="h3" variant="subtitle" className="text-gray-600">
+          <Heading as="h3" variant="subtitle" className="text-zinc-600">
             Cost / Day by Product
           </Heading>
-          <Text variant="caption" className="text-gray-400 -mt-1">
+          <Text variant="caption" className="text-zinc-400 -mt-1">
             Amortized over days owned — decreases over time as you get more use
             from each product.
           </Text>
-          <div className="bg-white rounded-xl border shadow-sm overflow-hidden mt-1">
+          <Card className="overflow-hidden mt-1">
             {stats.map((s, i) => {
               return (
                 <div
                   key={s.product.id}
                   className={`flex items-center gap-3 px-4 py-3 ${
-                    i < stats.length - 1 ? "border-b border-gray-50" : ""
+                    i < stats.length - 1
+                      ? "border-b border-zinc-50 dark:border-zinc-700"
+                      : ""
                   }`}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-baseline gap-2 mb-1">
-                      <span className="text-sm font-medium text-gray-800 truncate">
+                      <span className="text-sm font-medium text-zinc-800 dark:text-zinc-100 truncate">
                         {s.product.name}
                       </span>
                       <span className="text-sm font-semibold text-rose-500 shrink-0">
@@ -142,11 +147,11 @@ export default function StatsView({ products }: StatsViewProps) {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <Text variant="caption" className="text-gray-400">
+                      <Text variant="caption" className="text-zinc-400">
                         {s.product.brand || s.product.category} · $
                         {formatCurrency(s.price)} · {s.daysOwned}d owned
                       </Text>
-                      <Text variant="caption" className="text-gray-400">
+                      <Text variant="caption" className="text-zinc-400">
                         ${formatCurrency(s.costPerDay * 365)}/yr
                       </Text>
                     </div>
@@ -154,7 +159,7 @@ export default function StatsView({ products }: StatsViewProps) {
                 </div>
               );
             })}
-          </div>
+          </Card>
         </div>
       )}
     </div>

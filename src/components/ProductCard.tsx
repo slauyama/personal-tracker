@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ProductStatus } from "../constants";
 import { Product } from "../hooks/useProducts";
+import Card from "./ui/Card";
 
 interface ProductCardProps {
   product: Product;
@@ -13,9 +14,9 @@ export default function ProductCard({ product, onOpen }: ProductCardProps) {
   const showImage = product.imageUrl && !imgBroken;
 
   return (
-    <div
+    <Card
       onClick={onOpen}
-      className={`bg-white rounded-xl border shadow-sm flex flex-col transition cursor-pointer hover:shadow-md hover:border-rose-200 overflow-hidden ${
+      className={`flex flex-col transition cursor-pointer hover:shadow-md hover:border-rose-200 dark:hover:border-rose-200 overflow-hidden ${
         isFinished ? "opacity-55" : ""
       }`}
     >
@@ -30,28 +31,28 @@ export default function ProductCard({ product, onOpen }: ProductCardProps) {
       <div className="p-4 flex flex-col gap-2 flex-1">
         {isFinished && (
           <div>
-            <span className="text-xs bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-zinc-100 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 px-2 py-0.5 rounded-full">
               Finished
             </span>
           </div>
         )}
 
         <div className="flex-1">
-          <h3 className="font-semibold text-gray-800 leading-tight truncate">
+          <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 leading-tight truncate">
             {product.name}
           </h3>
           {product.brand && (
-            <p className="text-sm text-gray-500 mt-0.5 truncate">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">
               {product.brand}
             </p>
           )}
           {product.shade && (
-            <p className="text-xs text-gray-400 mt-0.5 truncate">
+            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5 truncate">
               Shade: {product.shade}
             </p>
           )}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
