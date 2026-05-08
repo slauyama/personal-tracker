@@ -144,7 +144,7 @@ export default function StatsView({ products }: StatsViewProps) {
                       <span className="text-sm font-medium text-zinc-800 dark:text-zinc-100 truncate">
                         {s.product.name}
                       </span>
-                      <span className="text-sm font-semibold text-rose-500 shrink-0">
+                      <span className="text-sm font-semibold text-slate-500 shrink-0">
                         ${formatCurrency(s.costPerDay, 3)}/day
                       </span>
                     </div>

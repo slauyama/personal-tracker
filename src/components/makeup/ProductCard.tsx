@@ -46,7 +46,7 @@ export default function ProductCard({
     >
       <Card
         onClick={onClick}
-        className={`flex flex-col transition cursor-pointer hover:shadow-md hover:border-rose-200 dark:hover:border-rose-200 overflow-hidden ${
+        className={`flex flex-col transition cursor-pointer hover:shadow-md hover:border-slate-200 dark:hover:border-slate-200 overflow-hidden ${
           isFinished ? "opacity-55" : "opacity-100"
         }`}
       >

@@ -15,13 +15,13 @@ const BASE =
   "inline-flex items-center justify-center font-medium transition disabled:opacity-50 disabled:cursor-not-allowed";
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-rose-500 text-white hover:bg-rose-600 rounded-lg shadow-sm",
+  primary: "bg-slate-500 text-white hover:bg-slate-600 rounded-lg shadow-sm",
   secondary:
     "bg-white border border-zinc-200 text-zinc-600 hover:bg-zinc-50 rounded-lg dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700",
   ghost:
     "text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 rounded-lg dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:bg-zinc-700",
   pill: "rounded-full border",
-  inline: "text-rose-400 underline hover:text-rose-500",
+  inline: "text-slate-400 underline hover:text-slate-500",
 };
 
 const DESTRUCTIVE: Partial<Record<Variant, string>> = {
@@ -41,7 +41,7 @@ const SIZES: Record<Size, string> = {
 };
 
 const PILL_COLOR = {
-  active: "bg-rose-500 text-white border-rose-500 shadow-sm",
+  active: "bg-slate-500 text-white border-slate-500 shadow-sm",
   inactive:
     "bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-700",
 };

@@ -56,9 +56,9 @@ function ProductImage({ url }: { url: string }) {
 
   if (broken) {
     return (
-      <div className="w-full h-40 rounded-xl bg-rose-50 border border-rose-100 flex flex-col items-center justify-center gap-1 text-rose-400">
+      <div className="w-full h-40 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center justify-center gap-1 text-slate-400">
         <span className="text-2xl">🖼️</span>
-        <Text variant="caption" className="text-rose-400">
+        <Text variant="caption" className="text-slate-400">
           Image could not be loaded — check the URL
         </Text>
       </div>
@@ -248,7 +248,7 @@ export default function ProductModal({
                     onChange={set("notes")}
                     placeholder="Any notes about this product…"
                     rows={2}
-                    className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-rose-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
+                    className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
                   />
                 </div>
 

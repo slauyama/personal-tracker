@@ -33,7 +33,7 @@ export default function Link({
       target="_blank"
       rel="noopener noreferrer"
       title={title}
-      className="text-sm text-rose-500 underline hover:text-rose-700 transition-colors"
+      className="text-sm text-slate-500 underline hover:text-slate-700 transition-colors"
     >
       {children}
     </a>
