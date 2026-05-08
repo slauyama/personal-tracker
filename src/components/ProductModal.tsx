@@ -456,8 +456,8 @@ export default function ProductModal({
               }}
               className={
                 isFinished
-                  ? "flex-1 text-xs bg-rose-50 text-rose-500 border border-rose-200 px-2 py-1.5 rounded-lg hover:bg-rose-100 transition"
-                  : "flex-1 text-xs bg-gray-50 text-gray-500 border border-gray-200 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition"
+                  ? "flex-1 text-xs bg-gray-50 text-gray-500 border border-gray-200 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition"
+                  : "flex-1 text-xs bg-rose-50 text-rose-500 border border-rose-200 px-2 py-1.5 rounded-lg hover:bg-rose-100 transition"
               }
             >
               Mark {isFinished ? "Active" : "Finished"}

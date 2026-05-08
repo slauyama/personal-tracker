@@ -46,32 +46,15 @@ export default function ProductCard({
             {product.name}
           </h3>
           {product.brand && (
-            <p className="text-sm text-gray-500 mt-0.5 truncate">{product.brand}</p>
+            <p className="text-sm text-gray-500 mt-0.5 truncate">
+              {product.brand}
+            </p>
           )}
           {product.shade && (
             <p className="text-xs text-gray-400 mt-0.5 truncate">
               Shade: {product.shade}
             </p>
           )}
-        </div>
-
-        <div className="flex gap-2 items-center pt-1">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              updateProductStatus(
-                product.id,
-                isFinished ? ProductStatus.Active : ProductStatus.Finished,
-              );
-            }}
-            className={
-              isFinished
-                ? "flex-1 text-xs bg-rose-50 text-rose-500 border border-rose-200 px-2 py-1.5 rounded-lg hover:bg-rose-100 transition"
-                : "flex-1 text-xs bg-gray-50 text-gray-500 border border-gray-200 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition"
-            }
-          >
-            Mark {isFinished ? "Active" : "Finished"}
-          </button>
         </div>
       </div>
     </div>
