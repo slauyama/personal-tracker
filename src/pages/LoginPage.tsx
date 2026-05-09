@@ -1,14 +1,26 @@
+import { useState } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../lib/firebase";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const [signingIn, setSigningIn] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  if (loading) return null;
+  if (user) return <Navigate to="/" replace />;
 
   async function handleGoogleSignIn() {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    navigate("/");
+    setError(null);
+    setSigningIn(true);
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider());
+    } catch {
+      setError("Sign in failed. Please try again.");
+      setSigningIn(false);
+    }
   }
 
   return (
@@ -18,12 +30,18 @@ export default function LoginPage() {
           Welcome
         </h1>
         <p className="text-sm text-zinc-400 mb-8">Sign in to continue</p>
+
         <button
           onClick={handleGoogleSignIn}
-          className="w-full flex items-center justify-center gap-3 border border-zinc-200 dark:border-zinc-600 rounded-lg px-4 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
+          disabled={signingIn}
+          className="w-full flex items-center justify-center gap-3 border border-zinc-200 dark:border-zinc-600 rounded-lg px-4 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Sign in with Google
+          {signingIn ? "Signing in…" : "Sign in with Google"}
         </button>
+
+        {error && (
+          <p className="mt-4 text-sm text-red-500">{error}</p>
+        )}
       </div>
     </div>
   );
