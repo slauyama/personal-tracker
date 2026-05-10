@@ -14,7 +14,6 @@ export default function BeautyPage() {
     updateProduct,
     deleteProduct,
     updateProductStatus,
-    importProducts,
   } = useProducts();
 
   const navigate = useNavigate();
@@ -55,7 +54,6 @@ export default function BeautyPage() {
               onUpdate={updateProduct}
               onDelete={deleteProduct}
               onUpdateStatus={updateProductStatus}
-              onImport={importProducts}
             />
           }
         />

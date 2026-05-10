@@ -3,7 +3,7 @@ import { ProductStatus, ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import { useModal } from "../../hooks/useModal";
 import AddProductModal from "./AddProductModal";
-import ImportExportModal from "./ImportExportModal";
+import ExportModal from "./ExportModal";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 import { Button, IconButton, Select, Text } from "../ui/UI";
@@ -15,7 +15,6 @@ interface ProductsViewProps {
   onUpdate: (id: string, data: ProductInput) => void;
   onDelete: (id: string) => void;
   onUpdateStatus: (id: string, status: ProductStatus) => void;
-  onImport: (products: Product[], merge: boolean) => void;
 }
 
 const CATEGORY_OPTIONS = [
@@ -69,12 +68,11 @@ export default function ProductsView({
   onUpdate,
   onDelete,
   onUpdateStatus,
-  onImport,
 }: ProductsViewProps) {
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   const addProductModal = useModal();
   const productModal = useModal();
-  const importExportModal = useModal();
+  const exportModal = useModal();
   const [statusFilter, setStatusFilter] = useState<ProductStatus | "all">(
     "all",
   );
@@ -155,7 +153,7 @@ export default function ProductsView({
           onClick={importExportModal.open}
           className="hidden sm:inline-flex"
         >
-          Import / Export
+          Export
         </Button>
         <Button onClick={addProductModal.open}>
           <span className="sm:hidden">+ Add</span>
@@ -236,11 +234,7 @@ export default function ProductsView({
         modalControls={addProductModal}
       />
 
-      <ImportExportModal
-        modalControls={importExportModal}
-        products={products}
-        onImport={onImport}
-      />
+      <ExportModal modalControls={exportModal} products={products} />
     </>
   );
 }
