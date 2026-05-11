@@ -1,6 +1,5 @@
 import {
   createContext,
-  useContext,
   useEffect,
   useState,
   ReactNode,
@@ -43,7 +42,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export { AuthContext };

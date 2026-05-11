@@ -4,9 +4,12 @@
 
 ### High
 
+- Create 2 firebase projects one for dev and one for prod
+- Create 2 github actions
+  - 1. to sync prod with dev should run on cron job daily
+  - 2. sync dev with prod (ran with confirmation in case prod data disappears)
 - Fix dark mode colors.
   - Fix button variants and color
-  - Add white background on product card images to fix transparency issues
 - Transitions / Animations
   - Use framer motion
   - Save should have a intermission screen

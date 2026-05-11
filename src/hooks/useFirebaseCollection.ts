@@ -10,7 +10,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "./useAuth";
 
 export interface FirebaseDoc {
   id: string;
@@ -23,7 +23,6 @@ export interface CollectionHandle<T extends FirebaseDoc> {
   add: (data: Omit<T, "id" | "createdAt">) => Promise<void>;
   update: (id: string, data: Partial<T>) => Promise<void>;
   remove: (id: string) => Promise<void>;
-  importItems: (incoming: T[], merge: boolean) => Promise<void>;
 }
 
 export function useFirebaseCollection<T extends FirebaseDoc>(
@@ -33,17 +32,11 @@ export function useFirebaseCollection<T extends FirebaseDoc>(
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const colRef = () => collection(db, collectionName);
-
   useEffect(() => {
-    if (!user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setItems([]);
-      setLoading(false);
-      return;
-    }
+    if (!user) return;
 
-    const q = query(colRef(), orderBy("createdAt", "desc"));
+    const ref = collection(db, collectionName);
+    const q = query(ref, orderBy("createdAt", "desc"));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const docs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as T[];
@@ -52,22 +45,21 @@ export function useFirebaseCollection<T extends FirebaseDoc>(
     });
 
     return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, collectionName]);
 
   async function add(data: Omit<T, "id" | "createdAt">): Promise<void> {
     if (!user) return;
-    await addDoc(colRef(), { ...data, createdAt: new Date().toISOString() });
+    await addDoc(collection(db, collectionName), { ...data, createdAt: new Date().toISOString() });
   }
 
   async function update(id: string, data: Partial<T>): Promise<void> {
     if (!user) return;
-    await updateDoc(doc(colRef(), id), data);
+    await updateDoc(doc(collection(db, collectionName), id), data as Record<string, unknown>);
   }
 
   async function remove(id: string): Promise<void> {
     if (!user) return;
-    await deleteDoc(doc(colRef(), id));
+    await deleteDoc(doc(collection(db, collectionName), id));
   }
 
   return { items, loading, add, update, remove };
