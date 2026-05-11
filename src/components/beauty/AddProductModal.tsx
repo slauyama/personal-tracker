@@ -47,7 +47,7 @@ export default function AddProductModal({
   const isEdit = !!initialValues;
 
   const [form, setForm] = useState<ProductInput>(
-    initialValues ? toInput(initialValues) : { ...BLANK },
+    initialValues ? toInput(initialValues) : { ...BLANK, dateBought: new Date().toISOString().slice(0, 10) },
   );
   const [priceStr, setPriceStr] = useState<string>(
     initialValues?.price != null ? initialValues.price.toFixed(2) : "",
