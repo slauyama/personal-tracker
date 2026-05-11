@@ -1,6 +1,7 @@
 // ─── Add or remove brands here ───────────────────────────────────────────────
 export enum Brand {
   BenefitCosmetics = "Benefit Cosmetics",
+  Biore = "Biore",
   CharlotteTilbury = "Charlotte Tilbury",
   EltaMD = "Elta MD",
   Farmacy = "Farmacy",
