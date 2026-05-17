@@ -1,0 +1,19 @@
+name: Sync Prod to Dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run sync
+        env:
+          FIREBASE_PROD_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_PROD_SERVICE_ACCOUNT }}
+          FIREBASE_DEV_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_DEV_SERVICE_ACCOUNT }}

@@ -8,6 +8,7 @@
 - Create 2 github actions
   - 1. to sync prod with dev should run on cron job daily
   - 2. sync dev with prod (ran with confirmation in case prod data disappears)
+- Create playwright tests to ensure website isnt down after deploying
 - Fix dark mode colors.
   - Fix button variants and color
 - Transitions / Animations
