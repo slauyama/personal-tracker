@@ -1,7 +1,4 @@
-import { ModalControls } from "../../hooks/useModal";
-import Button from "./Button";
-import Modal from "./Modal";
-import Text from "./Text";
+import { Button, Modal, Text, type ModalControls } from "@slauyama/ui";
 
 interface ConfirmModalProps {
   modalControls: ModalControls;

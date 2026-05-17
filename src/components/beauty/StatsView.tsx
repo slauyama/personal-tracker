@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Product } from "../../hooks/useProducts";
-import { Card, Heading, Text } from "../ui/UI";
+import { Card, Heading, Text } from "@slauyama/ui";
 
 interface StatsViewProps {
   products: Product[];

@@ -12,6 +12,7 @@
     "sync": "tsx scripts/sync_prod_to_dev.ts"
   },
   "dependencies": {
+    "@slauyama/ui": "^1.0.0",
     "firebase": "^12.13.0",
     "framer-motion": "^12.38.0",
     "html5-qrcode": "^2.3.8",

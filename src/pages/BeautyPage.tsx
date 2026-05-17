@@ -2,9 +2,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useProducts } from "../hooks/useProducts";
 import ProductsView from "../components/beauty/ProductsView";
 import StatsView from "../components/beauty/StatsView";
-import Button from "../components/ui/Button";
-import Heading from "../components/ui/Heading";
-import Text from "../components/ui/Text";
+import { Button, Heading, Text } from "@slauyama/ui";
 import { ProductStatus } from "../constants";
 
 export default function BeautyPage() {

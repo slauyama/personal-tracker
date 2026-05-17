@@ -1,16 +1,8 @@
 import { useState } from "react";
 import { ProductStatus, ALL_BRANDS, Brand, Category } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
-import { ModalControls, useModal } from "../../hooks/useModal";
-import {
-  Button,
-  ConfirmModal,
-  Input,
-  Link,
-  Modal,
-  Select,
-  Text,
-} from "../ui/UI";
+import { Button, Input, Link, Modal, Select, Text, useModal, type ModalControls } from "@slauyama/ui";
+import ConfirmModal from "../ui/ConfirmModal";
 
 import AmazonIcon from "../../assets/amazon_icon.png";
 

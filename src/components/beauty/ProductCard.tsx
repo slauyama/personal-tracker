@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ProductStatus } from "../../constants";
 import { Product } from "../../hooks/useProducts";
-import { Card, Text } from "../ui/UI";
+import { Card, Text } from "@slauyama/ui";
 import { motion } from "framer-motion";
 
 interface ProductCardProps {
