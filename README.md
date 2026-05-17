@@ -4,6 +4,7 @@
 
 ### High
 
+- Fix integration with ui repo
 - Create playwright tests to ensure website isnt down after deploying
 - Fix dark mode colors.
   - Fix button variants and color

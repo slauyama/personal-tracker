@@ -1,10 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@slauyama/ui/theme";
+
+@source "../node_modules/@slauyama/ui/dist/**/*.js";
+
+@theme {
+  --font-sans: "Futura", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
 
 @layer base {
   body {
-    @apply font-sans;
+    font-family: var(--font-sans);
   }
 }
 
