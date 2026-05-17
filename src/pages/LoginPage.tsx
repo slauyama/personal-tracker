@@ -18,7 +18,8 @@ export default function LoginPage() {
     setSigningIn(true);
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
-    } catch {
+    } catch (error) {
+      console.log(error);
       setError("Sign in failed. Please try again.");
       setSigningIn(false);
     }
