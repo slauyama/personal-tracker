@@ -8,7 +8,7 @@ import {
   Modal,
   Select,
   Text,
-  useModal,
+  useIsOpen,
   type ModalControls,
 } from "@slauyama/ui";
 import ConfirmModal from "../ui/ConfirmModal";
@@ -81,9 +81,7 @@ function Row({ label, value }: { label: string; value: string }) {
   if (!value) return null;
   return (
     <div>
-      <Text size="xs" className="text-zinc-400 uppercase tracking-wide mb-0.5">
-        {label}
-      </Text>
+      <Caption className="tracking-wide mb-0.5">{label}</Caption>
       <Text size="sm">{value}</Text>
     </div>
   );
@@ -104,7 +102,7 @@ export default function ProductModal({
   updateProductStatus,
 }: ProductModalProps) {
   const [editing, setEditing] = useState(false);
-  const confirmDeleteModal = useModal();
+  const confirmDeleteModal = useIsOpen();
   const [form, setForm] = useState<ProductInput>({ ...BLANK });
   const [priceStr, setPriceStr] = useState("");
 

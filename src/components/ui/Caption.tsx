@@ -8,7 +8,7 @@ export default function Caption({
   return (
     <Text
       as="label"
-      className={`shrink-0  -mt-1 uppercase ${className}`}
+      className={`shrink-0 text-zinc-400 -mt-1 uppercase ${className}`}
       size="xs"
     >
       {children}

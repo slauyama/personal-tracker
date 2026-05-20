@@ -7,7 +7,7 @@ import {
   IconButton,
   Select,
   Text,
-  useModal,
+  useIsOpen,
 } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ProductCard from "./ProductCard";
@@ -75,8 +75,8 @@ export default function ProductsView({
   onUpdateStatus,
 }: ProductsViewProps) {
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-  const addProductModal = useModal();
-  const productModal = useModal();
+  const addProductModal = useIsOpen();
+  const productModal = useIsOpen();
   const [statusFilter, setStatusFilter] = useState<ProductStatus | "all">(
     "all",
   );
