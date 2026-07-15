@@ -123,6 +123,7 @@ export default function ProductsView({
         <div className="w-px h-5 bg-zinc-200 dark:bg-zinc-700 mx-1" />
 
         <Select
+          label="Categories"
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
           options={CATEGORY_OPTIONS}
@@ -130,8 +131,8 @@ export default function ProductsView({
 
         <div className="w-px h-5 bg-zinc-200 dark:bg-zinc-700 mx-1" />
 
-        <Text>Sort</Text>
         <Select
+          label="Sort"
           value={sortField}
           onChange={(e) => setSortField(e.target.value as SortField)}
           options={SORT_OPTIONS}
@@ -163,12 +164,7 @@ export default function ProductsView({
 
         <div className="flex-1" />
 
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={downloadJSON}
-          className="hidden sm:inline-flex"
-        >
+        <Button onClick={downloadJSON} className="hidden sm:inline-flex">
           Export
         </Button>
         <Button onClick={addProductModal.open}>
