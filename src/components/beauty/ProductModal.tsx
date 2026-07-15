@@ -333,27 +333,19 @@ export default function ProductModal({
 
             <div className="flex flex-row gap-4 border-t border-zinc-100 dark:border-zinc-700 pt-3">
               {product.retailerUrl && (
-                <div className="flex items-center gap-1">
-                  <Caption className="text-zinc-400 shrink-0">
-                    Retailer:
-                  </Caption>
-                  <Link href={product.retailerUrl}>Link</Link>
-                </div>
+                <Link href={product.retailerUrl}>Retailer Link</Link>
               )}
-              <div className="flex items-center gap-1">
-                <Caption className="text-zinc-400">Amazon:</Caption>
-                <Link
-                  href={buildAmazonSearchUrl(product)}
-                  variant="icon"
-                  title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
-                >
-                  <img
-                    src={AmazonIcon}
-                    alt="Search on Amazon"
-                    className="h-5 w-auto"
-                  />
-                </Link>
-              </div>
+              <Link
+                href={buildAmazonSearchUrl(product)}
+                variant="icon"
+                title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
+              >
+                <img
+                  src={AmazonIcon}
+                  alt="Search on Amazon"
+                  className="h-5 w-auto"
+                />
+              </Link>
               {product.barcode && (
                 <div className="flex items-center gap-1">
                   <Caption className="text-zinc-400">Barcode:</Caption>
@@ -384,8 +376,6 @@ export default function ProductModal({
 
             <div className="flex gap-3 pt-1">
               <Button
-                variant="ghost"
-                size="xs"
                 className="flex-1"
                 onClick={() =>
                   updateProductStatus(
