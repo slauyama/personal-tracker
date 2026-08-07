@@ -248,7 +248,7 @@ export default function DogPurchasesView({
       {dogPurchases.length > 0 && (
         <div className="mt-8">
           <Heading as="h2" variant="subtitle" className="mb-3">
-            Spending Summary
+            Cost Summary
           </Heading>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard

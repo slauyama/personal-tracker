@@ -193,6 +193,9 @@ export default function AddDogPurchaseModal({
           </div>
 
           <div className="flex gap-3 pt-2">
+            <Button type="submit">
+              {isEdit ? "Save Changes" : "Add Purchase"}
+            </Button>
             <Button
               variant="ghost"
               type="button"
@@ -200,9 +203,6 @@ export default function AddDogPurchaseModal({
               className="flex-1"
             >
               Cancel
-            </Button>
-            <Button type="submit" className="flex-1">
-              {isEdit ? "Save Changes" : "Add Purchase"}
             </Button>
           </div>
 
