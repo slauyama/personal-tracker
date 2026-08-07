@@ -4,6 +4,8 @@ import { copyCollection, deleteCollection, getEnv } from "./firebase_helpers";
 
 const COLLECTIONS = [
   "products",
+  "dogEvents",
+  "dogPurchases",
   // add new collections here as the app grows
 ];
 

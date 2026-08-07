@@ -21,7 +21,6 @@ export enum Brand {
 
 export const ALL_BRANDS = Object.values(Brand);
 
-// ─── Add or remove categories here ───────────────────────────────────────────
 export enum Category {
   MakeUp = "Make-Up",
   Skin = "Skin",
@@ -35,3 +34,25 @@ export enum ProductStatus {
   Active = "active",
   Finished = "finished",
 }
+
+// ─── Dog event/purchase types ────────────────────────────────────────────────
+export enum DogEventType {
+  Weight = "Weight",
+  Medicine = "Medicine",
+  Hygiene = "Hygiene",
+  Other = "Other",
+}
+
+export const ALL_DOG_EVENT_TYPES = Object.values(DogEventType);
+
+export enum DogPurchaseCategory {
+  Veterinarian = "Veterinarian",
+  Food = "Food",
+  Lodging = "Lodging",
+  Flea = "Flea",
+  Fun = "Fun",
+  Hygiene = "Hygiene",
+  Health = "Health",
+}
+
+export const ALL_DOG_PURCHASE_CATEGORIES = Object.values(DogPurchaseCategory);
