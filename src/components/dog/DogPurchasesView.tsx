@@ -139,7 +139,7 @@ export default function DogPurchasesView({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search name, vendor, category…"
+          placeholder="Search"
           className="max-w-xs"
         />
         <div className="flex-1" />

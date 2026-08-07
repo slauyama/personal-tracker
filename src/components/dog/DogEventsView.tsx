@@ -92,7 +92,7 @@ export default function DogEventsView({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search notes, type…"
+          placeholder="Search"
           className="max-w-xs"
         />
         <div className="flex-1" />
@@ -164,7 +164,11 @@ export default function DogEventsView({
 
       {rows.length > PAGE_SIZE && (
         <div className="flex justify-center mt-3">
-          <Button variant="ghost" size="sm" onClick={() => setExpanded((e) => !e)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setExpanded((e) => !e)}
+          >
             {expanded ? "Show less" : `Show all ${rows.length}`}
           </Button>
         </div>
