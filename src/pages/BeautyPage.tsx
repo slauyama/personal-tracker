@@ -34,7 +34,7 @@ export default function BeautyPage() {
           </Text>
         </div>
         <Button
-          variant="ghost"
+          variant="tonal"
           size="sm"
           onClick={() => navigate(showStats ? "/beauty" : "/beauty/stats")}
         >

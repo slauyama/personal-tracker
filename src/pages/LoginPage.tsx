@@ -37,7 +37,7 @@ export default function LoginPage() {
         </Text>
 
         <Button
-          variant="ghost"
+          variant="outlined"
           onClick={handleGoogleSignIn}
           disabled={signingIn}
           className="w-full"

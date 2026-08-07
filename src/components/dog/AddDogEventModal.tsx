@@ -121,33 +121,32 @@ export default function AddDogEventModal({
             </div>
           )}
 
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" className="flex-1">
-              {isEdit ? "Save Changes" : "Add Event"}
-            </Button>
-            <Button
-              variant="ghost"
-              type="button"
-              onClick={modalControls.close}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-          </div>
-
-          {onDelete && (
-            <div className="pt-1 border-t border-zinc-100 dark:border-zinc-700">
+          <div className="flex pt-2 justify-between">
+            <div className="flex gap-3 pt-2">
+              <Button variant="filled" type="submit">
+                {isEdit ? "Save" : "Add Event"}
+              </Button>
               <Button
-                variant="ghost"
-                color="error"
+                variant="text"
+                type="button"
+                onClick={modalControls.close}
+              >
+                Cancel
+              </Button>
+            </div>
+
+            {onDelete && (
+              <Button
+                variant="tonal"
+                surface="error"
                 type="button"
                 onClick={onDelete}
                 className="w-full"
               >
-                Delete Event
+                Delete
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </form>
       </div>
     </Modal>

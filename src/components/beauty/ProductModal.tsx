@@ -265,30 +265,27 @@ export default function ProductModal({
                   placeholder="https://"
                 />
 
-                <div className="flex gap-3 pt-2">
+                <div className="flex justify-between">
                   <Button
-                    variant="ghost"
-                    type="button"
-                    onClick={() => setEditing(false)}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" className="flex-1">
-                    Save Changes
-                  </Button>
-                </div>
-
-                <div className="pt-1 border-t border-zinc-100 dark:border-zinc-700">
-                  <Button
-                    variant="ghost"
-                    color="error"
+                    variant="tonal"
+                    surface="error"
                     type="button"
                     onClick={confirmDeleteModal.open}
-                    className="w-full"
                   >
-                    Delete Product
+                    Delete
                   </Button>
+                  <div>
+                    <Button variant="filled" type="submit" className="mr-2">
+                      Save
+                    </Button>
+                    <Button
+                      variant="text"
+                      type="button"
+                      onClick={() => setEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
               </form>
             </div>
@@ -375,8 +372,9 @@ export default function ProductModal({
             </div>
 
             <div className="flex gap-3 pt-1">
+              <Button onClick={startEditing}>Edit</Button>
               <Button
-                className="flex-1"
+                variant="tonal"
                 onClick={() =>
                   updateProductStatus(
                     product.id,
@@ -385,9 +383,6 @@ export default function ProductModal({
                 }
               >
                 Mark {isFinished ? "Active" : "Finished"}
-              </Button>
-              <Button onClick={startEditing} className="flex-1">
-                Edit
               </Button>
             </div>
           </div>

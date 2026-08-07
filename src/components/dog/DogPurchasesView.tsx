@@ -236,7 +236,7 @@ export default function DogPurchasesView({
       {rows.length > PAGE_SIZE && (
         <div className="flex justify-center mt-3">
           <Button
-            variant="ghost"
+            variant="outlined"
             size="sm"
             onClick={() => setExpanded((e) => !e)}
           >

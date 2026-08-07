@@ -198,33 +198,33 @@ export default function AddProductModal({
             placeholder="https://"
           />
 
-          <div className="flex gap-3 pt-2">
-            <Button
-              variant="ghost"
-              type="button"
-              onClick={modalControls.close}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1">
-              {isEdit ? "Save Changes" : "Add Product"}
-            </Button>
-          </div>
-
-          {onDelete && (
-            <div className="pt-1 border-t border-zinc-100 dark:border-zinc-700">
+          <div className="flex pt-2 justify-between">
+            {onDelete && (
               <Button
-                variant="ghost"
+                surface="error"
+                variant="filled"
                 color="error"
                 type="button"
                 onClick={onDelete}
                 className="w-full"
               >
-                Delete Product
+                Delete
+              </Button>
+            )}
+            <div>
+              <Button variant="filled" type="submit" className="mr-3">
+                {isEdit ? "Save" : "Add Product"}
+              </Button>
+              <Button
+                variant="text"
+                size="sm"
+                type="button"
+                onClick={modalControls.close}
+              >
+                Cancel
               </Button>
             </div>
-          )}
+          </div>
         </form>
       </div>
     </Modal>

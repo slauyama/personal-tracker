@@ -192,33 +192,31 @@ export default function AddDogPurchaseModal({
             />
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <Button type="submit">
-              {isEdit ? "Save Changes" : "Add Purchase"}
-            </Button>
-            <Button
-              variant="ghost"
-              type="button"
-              onClick={modalControls.close}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-          </div>
-
-          {onDelete && (
-            <div className="pt-1 border-t border-zinc-100 dark:border-zinc-700">
+          <div className="flex pt-2 justify-between">
+            {onDelete && (
               <Button
-                variant="ghost"
-                color="error"
+                surface="error"
+                variant="tonal"
                 type="button"
                 onClick={onDelete}
-                className="w-full"
               >
                 Delete Purchase
               </Button>
+            )}
+            <div>
+              <Button variant="filled" type="submit" className="mr-2">
+                {isEdit ? "Save" : "Add Purchase"}
+              </Button>
+              <Button
+                variant="text"
+                size="sm"
+                type="button"
+                onClick={modalControls.close}
+              >
+                Cancel
+              </Button>
             </div>
-          )}
+          </div>
         </form>
       </div>
     </Modal>

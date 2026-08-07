@@ -21,7 +21,7 @@ export default function DogPage() {
           Momo Tracker
         </Heading>
         <Button
-          variant="ghost"
+          variant="outlined"
           size="sm"
           onClick={() => navigate(showEvents ? "/dog" : "/dog/events")}
         >

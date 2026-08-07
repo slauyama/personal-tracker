@@ -164,10 +164,14 @@ export default function ProductsView({
 
         <div className="flex-1" />
 
-        <Button onClick={downloadJSON} className="hidden sm:inline-flex">
+        <Button
+          variant="tonal"
+          onClick={downloadJSON}
+          className="hidden sm:inline-flex"
+        >
           Export
         </Button>
-        <Button onClick={addProductModal.open}>
+        <Button variant="filled" onClick={addProductModal.open}>
           <span className="sm:hidden">+ Add</span>
           <span className="hidden sm:inline">+ Add Product</span>
         </Button>
@@ -186,7 +190,7 @@ export default function ProductsView({
           {products.length === 0 && (
             <Text as="p" className="mt-1">
               Hit{" "}
-              <Button variant="inline" onClick={addProductModal.open}>
+              <Button variant="text" onClick={addProductModal.open}>
                 + Add Product
               </Button>{" "}
               to get started!

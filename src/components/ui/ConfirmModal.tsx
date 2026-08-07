@@ -21,22 +21,17 @@ export default function ConfirmModal({
         <Text>{message}</Text>
         <div className="flex gap-3 pt-1">
           <Button
-            variant="ghost"
-            onClick={modalControls.close}
-            className="flex-1"
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
+            variant="filled"
             color="error"
             onClick={() => {
               onConfirm();
               modalControls.close();
             }}
-            className="flex-1"
           >
             {confirmLabel}
+          </Button>
+          <Button variant="text" onClick={modalControls.close}>
+            Cancel
           </Button>
         </div>
       </div>
