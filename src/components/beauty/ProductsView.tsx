@@ -129,7 +129,7 @@ export default function ProductsView({
           options={CATEGORY_OPTIONS}
         />
 
-        <div className="w-px h-5 bg-zinc-200 dark:bg-zinc-700 mx-1" />
+        <div className="w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
 
         <Select
           label="Sort"
