@@ -7,8 +7,14 @@ import {
   Text,
   type ModalControls,
 } from "@slauyama/ui";
-import { ALL_DOG_PURCHASE_CATEGORIES, DogPurchaseCategory } from "../../constants";
-import type { DogPurchase, DogPurchaseInput } from "../../hooks/useDogPurchases";
+import {
+  ALL_DOG_PURCHASE_CATEGORIES,
+  DogPurchaseCategory,
+} from "../../constants";
+import type {
+  DogPurchase,
+  DogPurchaseInput,
+} from "../../hooks/useDogPurchases";
 
 interface AddDogPurchaseModalProps {
   initialValues?: DogPurchase;
@@ -62,7 +68,9 @@ export default function AddDogPurchaseModal({
 
   function set(field: FormField) {
     return (e: FormEvent) =>
-      setForm((prev) => ({ ...prev, [field]: e.target.value }) as DogPurchaseInput);
+      setForm(
+        (prev) => ({ ...prev, [field]: e.target.value }) as DogPurchaseInput,
+      );
   }
 
   function handlePriceBlur() {
@@ -89,7 +97,7 @@ export default function AddDogPurchaseModal({
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="Item Name"
+            label="Name"
             type="text"
             required
             value={form.name}
@@ -179,7 +187,7 @@ export default function AddDogPurchaseModal({
               value={form.notes}
               onChange={set("notes")}
               placeholder="Any notes about this purchase…"
-              rows={2}
+              rows={1}
               className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
             />
           </div>

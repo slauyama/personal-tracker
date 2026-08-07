@@ -53,7 +53,9 @@ export default function AddDogEventModal({
 
   function set(field: FormField) {
     return (e: FormEvent) =>
-      setForm((prev) => ({ ...prev, [field]: e.target.value }) as DogEventInput);
+      setForm(
+        (prev) => ({ ...prev, [field]: e.target.value }) as DogEventInput,
+      );
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -100,24 +102,29 @@ export default function AddDogEventModal({
               inputMode="decimal"
               value={weightStr}
               onChange={(e) => setWeightStr(e.target.value)}
-              placeholder="e.g. 26.8"
+              placeholder="e.g. 27"
             />
           )}
 
-          <div>
-            <Text as="label" size="sm" className="block mb-1">
-              Notes
-            </Text>
-            <textarea
-              value={form.notes}
-              onChange={set("notes")}
-              placeholder="Any notes about this event…"
-              rows={2}
-              className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
-            />
-          </div>
+          {form.type !== DogEventType.Weight && (
+            <div>
+              <Text as="label" size="sm" className="block mb-1">
+                Event
+              </Text>
+              <textarea
+                value={form.notes}
+                onChange={set("notes")}
+                placeholder="Any notes about this event…"
+                rows={1}
+                className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
+              />
+            </div>
+          )}
 
           <div className="flex gap-3 pt-2">
+            <Button type="submit" className="flex-1">
+              {isEdit ? "Save Changes" : "Add Event"}
+            </Button>
             <Button
               variant="ghost"
               type="button"
@@ -125,9 +132,6 @@ export default function AddDogEventModal({
               className="flex-1"
             >
               Cancel
-            </Button>
-            <Button type="submit" className="flex-1">
-              {isEdit ? "Save Changes" : "Add Event"}
             </Button>
           </div>
 
