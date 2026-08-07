@@ -1,12 +1,25 @@
 import { useState } from "react";
-import { Button, Card, Heading, Input, Text, useIsOpen } from "@slauyama/ui";
+import {
+  Button,
+  Card,
+  Heading,
+  Input,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Text,
+  useIsOpen,
+  useTableSort,
+} from "@slauyama/ui";
 import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
 import AddDogPurchaseModal from "./AddDogPurchaseModal";
 import ConfirmModal from "../ui/ConfirmModal";
-import SortableHeader from "./SortableHeader";
 import CategoryBadge from "./CategoryBadge";
 import { PURCHASE_CATEGORY_COLORS } from "./categoryColors";
 
@@ -16,9 +29,6 @@ interface DogPurchasesViewProps {
   onUpdatePurchase: (id: string, data: DogPurchaseInput) => void;
   onDeletePurchase: (id: string) => void;
 }
-
-type SortField = "date" | "category" | "price";
-type SortDir = "asc" | "desc";
 
 const PAGE_SIZE = 15;
 
@@ -76,29 +86,6 @@ function matchesQuery(purchase: DogPurchase, query: string): boolean {
     .includes(query.toLowerCase());
 }
 
-function sortPurchases(
-  purchases: DogPurchase[],
-  field: SortField,
-  dir: SortDir,
-): DogPurchase[] {
-  return [...purchases].sort((a, b) => {
-    let cmp: number;
-    if (field === "price") {
-      const ap = a.price;
-      const bp = b.price;
-      if (ap == null && bp == null) cmp = 0;
-      else if (ap == null) return 1;
-      else if (bp == null) return -1;
-      else cmp = ap - bp;
-    } else if (field === "category") {
-      cmp = a.category.localeCompare(b.category);
-    } else {
-      cmp = a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
-    }
-    return dir === "asc" ? cmp : -cmp;
-  });
-}
-
 export default function DogPurchasesView({
   dogPurchases,
   onAddPurchase,
@@ -113,21 +100,17 @@ export default function DogPurchasesView({
     null,
   );
   const [query, setQuery] = useState("");
-  const [sortField, setSortField] = useState<SortField>("date");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [expanded, setExpanded] = useState(false);
 
-  function handleSort(field: SortField) {
-    if (field === sortField) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
-      setSortField(field);
-      setSortDir("desc");
-    }
-  }
-
   const filtered = dogPurchases.filter((p) => matchesQuery(p, query));
-  const rows = sortPurchases(filtered, sortField, sortDir);
+  const {
+    sortedTableRows: rows,
+    sortField,
+    sortDirection,
+    toggleSort,
+  } = useTableSort(filtered, "date", {
+    initialDirection: "desc",
+  });
   const visibleRows = expanded ? rows : rows.slice(0, PAGE_SIZE);
   const stats = buildSpendStats(dogPurchases);
 
@@ -163,73 +146,71 @@ export default function DogPurchasesView({
         </div>
       ) : (
         <Card className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-zinc-100 dark:border-zinc-700">
-                <SortableHeader
-                  label="Date"
-                  field="date"
-                  sortField={sortField}
-                  sortDir={sortDir}
-                  onClick={handleSort}
-                />
-                <SortableHeader
-                  label="Category"
-                  field="category"
-                  sortField={sortField}
-                  sortDir={sortDir}
-                  onClick={handleSort}
-                />
-                <th className="px-2 py-3 font-medium text-zinc-400 text-left">
-                  Item
-                </th>
-                <th className="px-2 py-3 font-medium text-zinc-400 text-left">
-                  Vendor / Location
-                </th>
-                <SortableHeader
-                  label="Price"
-                  field="price"
-                  sortField={sortField}
-                  sortDir={sortDir}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead
+                  onSort={() => toggleSort("date")}
+                  sortDirection={
+                    sortField === "date" ? sortDirection : undefined
+                  }
+                >
+                  Date
+                </TableHead>
+                <TableHead
+                  onSort={() => toggleSort("category")}
+                  sortDirection={
+                    sortField === "category" ? sortDirection : undefined
+                  }
+                >
+                  Category
+                </TableHead>
+                <TableHead>Item</TableHead>
+                <TableHead>Vendor / Location</TableHead>
+                <TableHead
                   align="right"
-                  onClick={handleSort}
-                />
-              </tr>
-            </thead>
-            <tbody>
+                  onSort={() => toggleSort("price")}
+                  sortDirection={
+                    sortField === "price" ? sortDirection : undefined
+                  }
+                >
+                  Price
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {visibleRows.map((purchase) => (
-                <tr
+                <TableRow
                   key={purchase.id}
                   onClick={() => {
                     setActivePurchase(purchase);
                     editModal.open();
                   }}
-                  className="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-700/50 border-b border-zinc-50 dark:border-zinc-700 last:border-b-0"
                 >
-                  <td className="px-2 py-3 text-zinc-100 whitespace-nowrap">
+                  <TableCell className="whitespace-nowrap">
                     {purchase.date}
-                  </td>
-                  <td className="px-2 py-3">
+                  </TableCell>
+                  <TableCell>
                     <CategoryBadge
                       label={purchase.category}
                       color={PURCHASE_CATEGORY_COLORS[purchase.category]}
                     />
-                  </td>
-                  <td className="px-2 py-3 max-w-xs truncate">
+                  </TableCell>
+                  <TableCell className="max-w-xs truncate">
                     {purchase.name}
-                  </td>
-                  <td className="px-2 py-3 text-zinc-400">
+                  </TableCell>
+                  <TableCell>
                     {[purchase.vendor, purchase.location]
                       .filter(Boolean)
                       .join(" · ") || "—"}
-                  </td>
-                  <td className="px-2 py-3 text-right text-slate-500 whitespace-nowrap">
+                  </TableCell>
+                  <TableCell align="right" className="whitespace-nowrap">
                     {purchase.price != null ? formatPrice(purchase.price) : "—"}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </Card>
       )}
 

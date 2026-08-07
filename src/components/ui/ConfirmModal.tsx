@@ -17,12 +17,12 @@ export default function ConfirmModal({
 }: ConfirmModalProps) {
   return (
     <Modal modalControls={modalControls} title={title} closeOnBackdrop>
-      <div className="p-6 flex flex-col gap-4">
+      <div className="px-6 pt-4 pb-6 flex flex-col gap-4">
         <Text>{message}</Text>
-        <div className="flex gap-3 pt-1">
+        <div className="flex justify-end gap-3 pt-1">
           <Button
             variant="filled"
-            color="error"
+            size="sm"
             onClick={() => {
               onConfirm();
               modalControls.close();
@@ -30,7 +30,7 @@ export default function ConfirmModal({
           >
             {confirmLabel}
           </Button>
-          <Button variant="text" onClick={modalControls.close}>
+          <Button variant="text" size="sm" onClick={modalControls.close}>
             Cancel
           </Button>
         </div>

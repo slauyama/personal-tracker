@@ -1,11 +1,24 @@
 import { useState } from "react";
-import { Button, Card, Heading, Input, Text, useIsOpen } from "@slauyama/ui";
+import {
+  Button,
+  Card,
+  Heading,
+  Input,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Text,
+  useIsOpen,
+  useTableSort,
+} from "@slauyama/ui";
 import { DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
 import AddDogEventModal from "./AddDogEventModal";
 import ConfirmModal from "../ui/ConfirmModal";
 import DogWeightChart from "./DogWeightChart";
-import SortableHeader from "./SortableHeader";
 import CategoryBadge from "./CategoryBadge";
 import { EVENT_TYPE_COLORS } from "./categoryColors";
 
@@ -16,9 +29,6 @@ interface DogEventsViewProps {
   onDeleteEvent: (id: string) => void;
 }
 
-type SortField = "date" | "type";
-type SortDir = "asc" | "desc";
-
 const PAGE_SIZE = 15;
 
 function matchesQuery(event: DogEvent, query: string): boolean {
@@ -27,24 +37,6 @@ function matchesQuery(event: DogEvent, query: string): boolean {
     .join(" ")
     .toLowerCase()
     .includes(query.toLowerCase());
-}
-
-function sortEvents(
-  events: DogEvent[],
-  field: SortField,
-  dir: SortDir,
-): DogEvent[] {
-  return [...events].sort((a, b) => {
-    const cmp =
-      field === "type"
-        ? a.type.localeCompare(b.type)
-        : a.date < b.date
-          ? -1
-          : a.date > b.date
-            ? 1
-            : 0;
-    return dir === "asc" ? cmp : -cmp;
-  });
 }
 
 export default function DogEventsView({
@@ -59,18 +51,7 @@ export default function DogEventsView({
 
   const [activeEvent, setActiveEvent] = useState<DogEvent | null>(null);
   const [query, setQuery] = useState("");
-  const [sortField, setSortField] = useState<SortField>("date");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [expanded, setExpanded] = useState(false);
-
-  function handleSort(field: SortField) {
-    if (field === sortField) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
-      setSortField(field);
-      setSortDir("desc");
-    }
-  }
 
   function openEdit(event: DogEvent) {
     setActiveEvent(event);
@@ -81,7 +62,14 @@ export default function DogEventsView({
     (e) => e.type !== DogEventType.Weight,
   );
   const filtered = nonWeightEvents.filter((e) => matchesQuery(e, query));
-  const rows = sortEvents(filtered, sortField, sortDir);
+  const {
+    sortedTableRows: rows,
+    sortField,
+    sortDirection,
+    toggleSort,
+  } = useTableSort(filtered, "date", {
+    initialDirection: "desc",
+  });
   const visibleRows = expanded ? rows : rows.slice(0, PAGE_SIZE);
 
   return (
@@ -116,49 +104,45 @@ export default function DogEventsView({
         </div>
       ) : (
         <Card className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-zinc-100 dark:border-zinc-700">
-                <SortableHeader
-                  label="Date"
-                  field="date"
-                  sortField={sortField}
-                  sortDir={sortDir}
-                  onClick={handleSort}
-                />
-                <SortableHeader
-                  label="Type"
-                  field="type"
-                  sortField={sortField}
-                  sortDir={sortDir}
-                  onClick={handleSort}
-                />
-                <th className="px-4 py-2 font-medium text-zinc-400 text-left">
-                  Notes
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleRows.map((event) => (
-                <tr
-                  key={event.id}
-                  onClick={() => openEdit(event)}
-                  className="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-700/50 border-b border-zinc-50 dark:border-zinc-700 last:border-b-0"
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead
+                  onSort={() => toggleSort("date")}
+                  sortDirection={
+                    sortField === "date" ? sortDirection : undefined
+                  }
                 >
-                  <td className="px-4 py-3 text-zinc-500 whitespace-nowrap">
+                  Date
+                </TableHead>
+                <TableHead
+                  onSort={() => toggleSort("type")}
+                  sortDirection={
+                    sortField === "type" ? sortDirection : undefined
+                  }
+                >
+                  Type
+                </TableHead>
+                <TableHead>Notes</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visibleRows.map((event) => (
+                <TableRow key={event.id} onClick={() => openEdit(event)}>
+                  <TableCell className="whitespace-nowrap">
                     {event.date}
-                  </td>
-                  <td className="px-4 py-3">
+                  </TableCell>
+                  <TableCell>
                     <CategoryBadge
                       label={event.type}
                       color={EVENT_TYPE_COLORS[event.type]}
                     />
-                  </td>
-                  <td className="px-4 py-3">{event.notes}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{event.notes}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </Card>
       )}
 
