@@ -223,7 +223,7 @@ export default function DogPurchasesView({
                       .filter(Boolean)
                       .join(" · ") || "—"}
                   </td>
-                  <td className="px-2 py-3 text-right font-semibold text-slate-500 whitespace-nowrap">
+                  <td className="px-2 py-3 text-right text-slate-500 whitespace-nowrap">
                     {purchase.price != null ? formatPrice(purchase.price) : "—"}
                   </td>
                 </tr>
