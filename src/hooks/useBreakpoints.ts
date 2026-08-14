@@ -1,10 +1,15 @@
 import { useMediaQuery } from "./useMediaQuery";
 
+const SMALL = 640;
+const MEDIUM = 768;
+const LARGE = 1024;
+const XLARGE = 1280;
+
 export function useBreakpoints() {
-  const isSmall = useMediaQuery(`(max-width: 640px)`);
-  const isMedium = useMediaQuery(`(max-width: 768px)`);
-  const isLarge = useMediaQuery(`(max-width: 1024px)`);
-  const isXLarge = useMediaQuery(`(max-width: 1280px)`);
+  const isSmall = useMediaQuery(`(max-width: ${SMALL}px)`);
+  const isMedium = useMediaQuery(`(max-width: ${MEDIUM}px)`);
+  const isLarge = useMediaQuery(`(max-width: ${LARGE}px)`);
+  const isXLarge = useMediaQuery(`(max-width: ${XLARGE}px)`);
 
   return { isSmall, isMedium, isLarge, isXLarge };
 }
