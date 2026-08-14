@@ -1,26 +1,23 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useProducts } from "../hooks/useProducts";
+import { useTransactions } from "../hooks/useTransactions";
 import ProductsView from "../components/beauty/ProductsView";
 import StatsView from "../components/beauty/StatsView";
 import { Button, Heading, Text } from "@slauyama/ui";
-import { ProductStatus } from "../constants";
 
 export default function BeautyPage() {
+  const { products, addProduct, updateProduct, deleteProduct } =
+    useProducts();
   const {
-    products,
-    addProduct,
-    updateProduct,
-    deleteProduct,
-    updateProductStatus,
-  } = useProducts();
+    transactions,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+  } = useTransactions();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const showStats = pathname.includes("/stats");
-
-  const activeCount = products.filter(
-    (p) => p.status === ProductStatus.Active,
-  ).length;
 
   return (
     <div>
@@ -30,7 +27,7 @@ export default function BeautyPage() {
             Beauty Tracker
           </Heading>
           <Text as="p" className="mt-0.5">
-            {activeCount} product{activeCount !== 1 ? "s" : ""} in use
+            {products.length} product{products.length !== 1 ? "s" : ""} tracked
           </Text>
         </div>
         <Button
@@ -48,14 +45,20 @@ export default function BeautyPage() {
           element={
             <ProductsView
               products={products}
+              transactions={transactions}
               onAdd={addProduct}
               onUpdate={updateProduct}
               onDelete={deleteProduct}
-              onUpdateStatus={updateProductStatus}
+              onAddTransaction={addTransaction}
+              onUpdateTransaction={updateTransaction}
+              onDeleteTransaction={deleteTransaction}
             />
           }
         />
-        <Route path="stats" element={<StatsView products={products} />} />
+        <Route
+          path="stats"
+          element={<StatsView products={products} transactions={transactions} />}
+        />
       </Routes>
     </div>
   );

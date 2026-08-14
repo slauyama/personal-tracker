@@ -30,17 +30,14 @@ const BLANK: ProductInput = {
   brand: Brand.BenefitCosmetics,
   shade: "",
   size: "",
-  price: null,
-  dateBought: "",
   barcode: "",
-  purchasedAt: "",
   notes: "",
   imageUrl: "",
   retailerUrl: "",
 };
 
 function toInput(product: Product): ProductInput {
-  const { id: _id, status: _status, createdAt: _createdAt, ...rest } = product;
+  const { id: _id, createdAt: _createdAt, ...rest } = product;
   return { ...BLANK, ...rest };
 }
 
@@ -55,24 +52,12 @@ export default function AddProductModal({
   const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<ProductInput>(
-    initialValues
-      ? toInput(initialValues)
-      : { ...BLANK, dateBought: new Date().toISOString().slice(0, 10) },
-  );
-  const [priceStr, setPriceStr] = useState<string>(
-    initialValues?.price != null ? initialValues.price.toFixed(2) : "",
+    initialValues ? toInput(initialValues) : { ...BLANK },
   );
 
   function set(field: FormField) {
     return (e: FormEvent) =>
       setForm((prev) => ({ ...prev, [field]: e.target.value }) as ProductInput);
-  }
-
-  function handlePriceBlur() {
-    const num = parseFloat(priceStr);
-    const parsed = isNaN(num) || priceStr.trim() === "" ? null : num;
-    setPriceStr(parsed != null ? parsed.toFixed(2) : "");
-    setForm((prev) => ({ ...prev, price: parsed }));
   }
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -86,6 +71,7 @@ export default function AddProductModal({
       variant={isSmall ? "fullscreen" : "basic"}
       modalControls={modalControls}
       title={isEdit ? "Edit Product" : "Add Product"}
+      className="max-h-screen overflow-y-auto"
     >
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -127,29 +113,6 @@ export default function AddProductModal({
               value={form.size}
               onChange={set("size")}
               placeholder="e.g. 1 oz, 30ml"
-            />
-            <Input
-              label="Date Bought"
-              type="date"
-              value={form.dateBought}
-              onChange={set("dateBought")}
-            />
-            <Input
-              label="Price"
-              prefix="$"
-              type="text"
-              inputMode="decimal"
-              value={priceStr}
-              onChange={(e) => setPriceStr(e.target.value)}
-              onBlur={handlePriceBlur}
-              placeholder="0.00"
-            />
-            <Input
-              label="Store / Retailer"
-              type="text"
-              value={form.purchasedAt}
-              onChange={set("purchasedAt")}
-              placeholder="e.g. Sephora, Ulta"
             />
             <Input
               label="Barcode"

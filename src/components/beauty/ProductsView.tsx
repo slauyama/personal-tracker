@@ -1,14 +1,11 @@
 import { useState } from "react";
-import { ProductStatus, ALL_CATEGORIES } from "../../constants";
+import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
-import {
-  Button,
-  ChipGroup,
-  IconButton,
-  Select,
-  Text,
-  useIsOpen,
-} from "@slauyama/ui";
+import type {
+  Transaction,
+  TransactionInput,
+} from "../../hooks/useTransactions";
+import { Button, IconButton, Select, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
@@ -16,10 +13,13 @@ import { AnimatePresence } from "framer-motion";
 
 interface ProductsViewProps {
   products: Product[];
+  transactions: Transaction[];
   onAdd: (data: ProductInput) => void;
   onUpdate: (id: string, data: ProductInput) => void;
   onDelete: (id: string) => void;
-  onUpdateStatus: (id: string, status: ProductStatus) => void;
+  onAddTransaction: (data: TransactionInput) => void;
+  onUpdateTransaction: (id: string, data: TransactionInput) => void;
+  onDeleteTransaction: (id: string) => void;
 }
 
 const CATEGORY_OPTIONS = [
@@ -27,19 +27,13 @@ const CATEGORY_OPTIONS = [
   ...ALL_CATEGORIES.map((c) => ({ value: c, label: c })),
 ];
 
-const STATUS_FILTERS: Array<ProductStatus | "all"> = [
-  "all",
-  ProductStatus.Active,
-  ProductStatus.Finished,
-];
-
-type SortField = "dateBought" | "price" | "createdAt";
+type SortField = "name" | "brand" | "createdAt";
 type SortDir = "asc" | "desc";
 
 const SORT_OPTIONS = [
-  { value: "dateBought", label: "Date Bought" },
+  { value: "createdAt", label: "Date Added" },
+  { value: "name", label: "Name" },
   { value: "brand", label: "Brand" },
-  { value: "price", label: "Cost" },
 ];
 
 function sortProducts(
@@ -49,55 +43,49 @@ function sortProducts(
 ): Product[] {
   return [...products].sort((a, b) => {
     let cmp = 0;
-    if (field === "price") {
-      if (a.price == null && b.price == null) return 0;
-      else if (a.price == null) return 1;
-      else if (b.price == null) return -1;
-      else cmp = a.price - b.price;
-    } else {
-      const aValue = a[field];
-      const bValue = b[field];
-      if (!aValue && !bValue) return 0;
-      else if (!aValue) return 1;
-      else if (!bValue) return -1;
-      else if (aValue < bValue) cmp = -1;
-      else if (aValue > bValue) cmp = 1;
-    }
+    const aValue = a[field];
+    const bValue = b[field];
+    if (!aValue && !bValue) cmp = 0;
+    else if (!aValue) cmp = 1;
+    else if (!bValue) cmp = -1;
+    else if (aValue < bValue) cmp = -1;
+    else if (aValue > bValue) cmp = 1;
     return dir === "asc" ? cmp : -cmp;
   });
 }
 
 export default function ProductsView({
   products,
+  transactions,
   onAdd,
   onUpdate,
   onDelete,
-  onUpdateStatus,
+  onAddTransaction,
+  onUpdateTransaction,
+  onDeleteTransaction,
 }: ProductsViewProps) {
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   const addProductModal = useIsOpen();
   const productModal = useIsOpen();
-  const [statusFilter, setStatusFilter] = useState<ProductStatus | "all">(
-    "all",
-  );
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   const filtered = sortProducts(
     products.filter((p) => {
-      const statusOk = statusFilter === "all" || p.status === statusFilter;
-      const catOk = categoryFilter === "all" || p.category === categoryFilter;
-      return statusOk && catOk;
+      return categoryFilter === "all" || p.category === categoryFilter;
     }),
     sortField,
     sortDir,
   );
 
   function downloadJSON() {
-    const blob = new Blob([JSON.stringify(products, null, 2)], {
-      type: "application/json",
-    });
+    const blob = new Blob(
+      [JSON.stringify({ products, transactions }, null, 2)],
+      {
+        type: "application/json",
+      },
+    );
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -111,17 +99,6 @@ export default function ProductsView({
   return (
     <>
       <div className="flex flex-wrap gap-2 mb-6 items-center">
-        <ChipGroup
-          options={STATUS_FILTERS.map((f) => ({
-            value: f,
-            label: f.charAt(0).toUpperCase() + f.slice(1),
-          }))}
-          value={statusFilter}
-          onChange={(v) => setStatusFilter(v as ProductStatus | "all")}
-        />
-
-        <div className="w-px h-5 bg-zinc-200 dark:bg-zinc-700 mx-1" />
-
         <Select
           label="Categories"
           value={categoryFilter}
@@ -164,16 +141,14 @@ export default function ProductsView({
 
         <div className="flex-1" />
 
-        <Button
-          variant="tonal"
-          onClick={downloadJSON}
-          className="hidden sm:inline-flex"
-        >
-          Export
-        </Button>
+        <div className="hidden sm:inline-flex">
+          <Button variant="tonal" onClick={downloadJSON}>
+            Export
+          </Button>
+        </div>
         <Button variant="filled" onClick={addProductModal.open}>
-          <span className="sm:hidden">+ Add</span>
-          <span className="hidden sm:inline">+ Add Product</span>
+          <span className="sm:hidden">Add</span>
+          <span className="hidden sm:inline">Add Product</span>
         </Button>
       </div>
 
@@ -216,26 +191,33 @@ export default function ProductsView({
         </div>
       )}
 
-      <ProductModal
-        product={activeProduct}
-        modalControls={productModal}
-        onClose={() => {
-          setTimeout(() => {
-            setActiveProduct(null);
-          }, 0);
-        }}
-        onSave={(data) => {
-          if (activeProduct) onUpdate(activeProduct.id, data);
-        }}
-        onDelete={() => {
-          if (activeProduct) {
-            onDelete(activeProduct.id);
-            setActiveProduct(null);
-          }
-        }}
-        updateProductStatus={onUpdateStatus}
-        categories={ALL_CATEGORIES}
-      />
+      {activeProduct && (
+        <ProductModal
+          product={activeProduct}
+          transactions={transactions}
+          modalControls={productModal}
+          onClose={() => {
+            setTimeout(() => {
+              setActiveProduct(null);
+            }, 0);
+          }}
+          onSave={(data) => {
+            if (activeProduct) onUpdate(activeProduct.id, data);
+          }}
+          onDelete={() => {
+            if (activeProduct) {
+              onDelete(activeProduct.id);
+              setActiveProduct(null);
+            }
+          }}
+          onAddTransaction={(data) => {
+            if (activeProduct) onAddTransaction(data);
+          }}
+          onUpdateTransaction={onUpdateTransaction}
+          onDeleteTransaction={onDeleteTransaction}
+          categories={ALL_CATEGORIES}
+        />
+      )}
 
       <AddProductModal
         categories={ALL_CATEGORIES}

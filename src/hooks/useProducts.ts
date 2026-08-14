@@ -1,4 +1,4 @@
-import { Brand, Category, ProductStatus } from "../constants";
+import { Brand, Category } from "../constants";
 import { useFirebaseCollection } from "./useFirebaseCollection";
 
 export interface Product {
@@ -8,25 +8,21 @@ export interface Product {
   category: Category;
   shade: string;
   size: string;
-  price: number | null;
-  dateBought: string;
   barcode: string;
-  purchasedAt: string;
   notes: string;
   imageUrl: string;
   retailerUrl: string;
-  status: ProductStatus;
   createdAt: string;
 }
 
-export type ProductInput = Omit<Product, "id" | "status" | "createdAt">;
+export type ProductInput = Omit<Product, "id" | "createdAt">;
 
 export function useProducts() {
   const { items: products, loading, add, update, remove } =
     useFirebaseCollection<Product>("products");
 
   async function addProduct(input: ProductInput): Promise<void> {
-    await add({ ...input, status: ProductStatus.Active });
+    await add(input);
   }
 
   async function updateProduct(id: string, updates: Partial<Product>): Promise<void> {
@@ -37,16 +33,11 @@ export function useProducts() {
     await remove(id);
   }
 
-  async function updateProductStatus(id: string, status: ProductStatus): Promise<void> {
-    await update(id, { status });
-  }
-
   return {
     products,
     loading,
     addProduct,
     updateProduct,
     deleteProduct,
-    updateProductStatus,
   };
 }
