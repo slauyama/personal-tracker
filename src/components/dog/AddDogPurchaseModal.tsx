@@ -4,7 +4,7 @@ import {
   Input,
   Modal,
   Select,
-  Text,
+  TextArea,
   type ModalControls,
 } from "@slauyama/ui";
 import {
@@ -15,6 +15,7 @@ import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 interface AddDogPurchaseModalProps {
   initialValues?: DogPurchase;
@@ -53,6 +54,7 @@ export default function AddDogPurchaseModal({
   modalControls,
 }: AddDogPurchaseModalProps) {
   const isEdit = !!initialValues;
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   const [form, setForm] = useState<DogPurchaseInput>(
     initialValues
@@ -91,8 +93,9 @@ export default function AddDogPurchaseModal({
   return (
     <Modal
       modalControls={modalControls}
+      variant={isMobile ? "fullscreen" : "basic"}
       title={isEdit ? "Edit Purchase" : "Add Purchase"}
-      className="max-h-[90vh] overflow-y-auto"
+      className="overflow-y-auto"
     >
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -105,7 +108,7 @@ export default function AddDogPurchaseModal({
             placeholder="e.g. Blue Buffalo Chicken & Brown Rice 30lb"
           />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-3">
             <Input
               label="Date"
               type="date"
@@ -120,9 +123,6 @@ export default function AddDogPurchaseModal({
               options={ALL_DOG_PURCHASE_CATEGORIES}
               className="w-full"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
             <Input
               label="Vendor"
               type="text"
@@ -137,9 +137,6 @@ export default function AddDogPurchaseModal({
               onChange={set("location")}
               placeholder="e.g. Campbell"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
             <Input
               label="Price"
               prefix="$"
@@ -158,9 +155,6 @@ export default function AddDogPurchaseModal({
               onChange={(e) => setQuantityStr(e.target.value)}
               placeholder="e.g. 1"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
             <Input
               label="Barcode"
               type="text"
@@ -168,7 +162,6 @@ export default function AddDogPurchaseModal({
               onChange={set("barcode")}
               placeholder="e.g. 3614272263955"
               inputMode="numeric"
-              className="font-mono"
             />
             <Input
               label="Retailer Link"
@@ -179,18 +172,13 @@ export default function AddDogPurchaseModal({
             />
           </div>
 
-          <div>
-            <Text as="label" size="sm" className="block mb-1">
-              Notes
-            </Text>
-            <textarea
-              value={form.notes}
-              onChange={set("notes")}
-              placeholder="Any notes about this purchase…"
-              rows={1}
-              className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
-            />
-          </div>
+          <TextArea
+            label="Notes"
+            value={form.notes}
+            onChange={set("notes")}
+            placeholder="Any notes about this purchase…"
+            rows={1}
+          />
 
           <div className="flex pt-2 justify-between">
             {onDelete && (

@@ -22,6 +22,7 @@ import AddDogPurchaseModal from "./AddDogPurchaseModal";
 import ConfirmModal from "../ui/ConfirmModal";
 import CategoryBadge from "./CategoryBadge";
 import { PURCHASE_CATEGORY_COLORS } from "./categoryColors";
+import { useBreakpoints } from "../../hooks/useBreakpoints";
 
 interface DogPurchasesViewProps {
   dogPurchases: DogPurchase[];
@@ -95,6 +96,7 @@ export default function DogPurchasesView({
   const addModal = useIsOpen();
   const editModal = useIsOpen();
   const confirmDeleteModal = useIsOpen();
+  const { isSmall } = useBreakpoints();
 
   const [activePurchase, setActivePurchase] = useState<DogPurchase | null>(
     null,
@@ -166,7 +168,9 @@ export default function DogPurchasesView({
                   Category
                 </TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Vendor / Location</TableHead>
+                <TableHead>
+                  {isSmall ? "Vendor" : "Vendor / Location"}
+                </TableHead>
                 <TableHead
                   align="right"
                   onSort={() => toggleSort("price")}
@@ -190,7 +194,7 @@ export default function DogPurchasesView({
                   <TableCell className="whitespace-nowrap">
                     {purchase.date}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     <CategoryBadge
                       label={purchase.category}
                       color={PURCHASE_CATEGORY_COLORS[purchase.category]}
@@ -199,10 +203,12 @@ export default function DogPurchasesView({
                   <TableCell className="max-w-xs truncate">
                     {purchase.name}
                   </TableCell>
-                  <TableCell>
-                    {[purchase.vendor, purchase.location]
-                      .filter(Boolean)
-                      .join(" · ") || "—"}
+                  <TableCell className="truncate">
+                    {isSmall
+                      ? purchase.vendor
+                      : [purchase.vendor, purchase.location]
+                          .filter(Boolean)
+                          .join(" · ") || "—"}
                   </TableCell>
                   <TableCell align="right" className="whitespace-nowrap">
                     {purchase.price != null ? formatPrice(purchase.price) : "—"}

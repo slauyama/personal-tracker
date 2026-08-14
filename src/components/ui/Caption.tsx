@@ -7,7 +7,7 @@ export default function Caption({
 }: HTMLAttributes<HTMLElement>) {
   return (
     <Text
-      as="label"
+      as="p"
       className={`shrink-0 text-zinc-400 -mt-1 uppercase ${className}`}
       size="xs"
     >

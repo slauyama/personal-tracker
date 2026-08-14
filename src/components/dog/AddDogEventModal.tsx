@@ -4,11 +4,12 @@ import {
   Input,
   Modal,
   Select,
-  Text,
+  TextArea,
   type ModalControls,
 } from "@slauyama/ui";
 import { ALL_DOG_EVENT_TYPES, DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 interface AddDogEventModalProps {
   initialValues?: DogEvent;
@@ -40,6 +41,8 @@ export default function AddDogEventModal({
   onDelete,
   modalControls,
 }: AddDogEventModalProps) {
+  const isMobile = useMediaQuery("(max-width: 640px)");
+
   const isEdit = !!initialValues;
 
   const [form, setForm] = useState<DogEventInput>(
@@ -72,13 +75,14 @@ export default function AddDogEventModal({
 
   return (
     <Modal
+      variant={isMobile ? "fullscreen" : "basic"}
       modalControls={modalControls}
       title={isEdit ? "Edit Event" : "Add Event"}
-      className="max-h-[90vh] overflow-y-auto"
+      className="overflow-y-auto"
     >
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid md:grid-cols-2 gap-3">
             <Input
               label="Date"
               type="date"
@@ -107,18 +111,13 @@ export default function AddDogEventModal({
           )}
 
           {form.type !== DogEventType.Weight && (
-            <div>
-              <Text as="label" size="sm" className="block mb-1">
-                Event
-              </Text>
-              <textarea
-                value={form.notes}
-                onChange={set("notes")}
-                placeholder="Any notes about this event…"
-                rows={1}
-                className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
-              />
-            </div>
+            <TextArea
+              label="Event"
+              value={form.notes}
+              onChange={set("notes")}
+              placeholder="Any notes about this event…"
+              rows={1}
+            />
           )}
 
           <div className="flex pt-2 justify-between">

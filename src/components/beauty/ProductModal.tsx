@@ -8,6 +8,7 @@ import {
   Modal,
   Select,
   Text,
+  TextArea,
   useIsOpen,
   type ModalControls,
 } from "@slauyama/ui";
@@ -232,22 +233,16 @@ export default function ProductModal({
                     onChange={set("barcode")}
                     placeholder="e.g. 3614272263955"
                     inputMode="numeric"
-                    className="font-mono"
                   />
                 </div>
 
-                <div>
-                  <Text as="label" size="sm" className="block mb-1">
-                    Notes
-                  </Text>
-                  <textarea
-                    value={form.notes}
-                    onChange={set("notes")}
-                    placeholder="Any notes about this product…"
-                    rows={2}
-                    className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
-                  />
-                </div>
+                <TextArea
+                  label="Notes"
+                  value={form.notes}
+                  onChange={set("notes")}
+                  placeholder="Any notes about this product…"
+                  rows={2}
+                />
 
                 <Input
                   label="Image URL"

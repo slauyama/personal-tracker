@@ -4,11 +4,12 @@ import {
   Input,
   Modal,
   Select,
-  Text,
+  TextArea,
   type ModalControls,
 } from "@slauyama/ui";
 import { ALL_BRANDS, Brand, Category } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
+import { useBreakpoints } from "../../hooks/useBreakpoints";
 
 interface AddProductProps {
   categories: string[];
@@ -51,6 +52,7 @@ export default function AddProductModal({
   modalControls,
 }: AddProductProps) {
   const isEdit = !!initialValues;
+  const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<ProductInput>(
     initialValues
@@ -81,9 +83,9 @@ export default function AddProductModal({
 
   return (
     <Modal
+      variant={isSmall ? "fullscreen" : "basic"}
       modalControls={modalControls}
       title={isEdit ? "Edit Product" : "Add Product"}
-      className="max-h-[90vh] overflow-y-auto"
     >
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -96,7 +98,7 @@ export default function AddProductModal({
             placeholder="e.g. Soft Matte Foundation"
           />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-3">
             <Select
               label="Brand"
               value={form.brand}
@@ -112,9 +114,6 @@ export default function AddProductModal({
               options={categories}
               className="w-full"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
             <Input
               label="Shade / Color"
               type="text"
@@ -129,9 +128,6 @@ export default function AddProductModal({
               onChange={set("size")}
               placeholder="e.g. 1 oz, 30ml"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
             <Input
               label="Date Bought"
               type="date"
@@ -148,9 +144,6 @@ export default function AddProductModal({
               onBlur={handlePriceBlur}
               placeholder="0.00"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
             <Input
               label="Store / Retailer"
               type="text"
@@ -165,20 +158,16 @@ export default function AddProductModal({
               onChange={set("barcode")}
               placeholder="e.g. 3614272263955"
               inputMode="numeric"
-              className="font-mono"
             />
           </div>
 
           <div>
-            <Text as="label" size="sm" className="block mb-1">
-              Notes
-            </Text>
-            <textarea
+            <TextArea
+              label="Notes"
               value={form.notes}
               onChange={set("notes")}
               placeholder="Any notes about this product…"
               rows={2}
-              className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-100 dark:placeholder-zinc-500"
             />
           </div>
 

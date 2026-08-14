@@ -5,13 +5,8 @@
 ### High
 
 - Create playwright tests to ensure website isnt down after deploying
-- Transitions / Animations
-  - Use framer motion
-  - Save should have a intermission screen
-  - Should abide by useLessMotion
-  - Hover on buttons
-  - Shadow of product card fade in and out
-- Deleting should not have weird edit modal
+- Update schema to add transactions
+- Add search to beauty tracker
 
 ### Low
 
