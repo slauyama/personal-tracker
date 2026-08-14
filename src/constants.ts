@@ -30,11 +30,6 @@ export enum Category {
 
 export const ALL_CATEGORIES = Object.values(Category);
 
-export enum ProductStatus {
-  Active = "active",
-  Finished = "finished",
-}
-
 // ─── Dog event/purchase types ────────────────────────────────────────────────
 export enum DogEventType {
   Weight = "Weight",

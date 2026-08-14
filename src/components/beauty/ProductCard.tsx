@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ProductStatus } from "../../constants";
 import { Product } from "../../hooks/useProducts";
 import { Card, Text } from "@slauyama/ui";
 import { motion } from "framer-motion";
@@ -19,7 +18,6 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [imgBroken, setImgBroken] = useState(false);
-  const isFinished = product.status === ProductStatus.Finished;
   const showImage = product.imageUrl && !imgBroken;
 
   return (
@@ -46,9 +44,7 @@ export default function ProductCard({
     >
       <Card
         onClick={onClick}
-        className={`flex flex-col transition cursor-pointer hover:shadow-md hover overflow-hidden ${
-          isFinished ? "opacity-55" : "opacity-100"
-        }`}
+        className="flex flex-col transition cursor-pointer hover:shadow-md hover overflow-hidden"
       >
         {showImage && (
           <img
@@ -59,14 +55,6 @@ export default function ProductCard({
           />
         )}
         <div className="p-4 flex flex-col gap-2 flex-1">
-          {isFinished && (
-            <div>
-              <span className="text-xs bg-zinc-100 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 px-2 py-0.5 rounded-full">
-                Finished
-              </span>
-            </div>
-          )}
-
           <div className="flex-1">
             <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 leading-tight truncate">
               {product.name}
