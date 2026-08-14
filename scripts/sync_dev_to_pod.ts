@@ -2,12 +2,7 @@ import { initializeApp, cert, type ServiceAccount } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { copyCollection, deleteCollection, getEnv } from "./firebase_helpers";
 
-const COLLECTIONS = [
-  "products",
-  "dogEvents",
-  "dogPurchases",
-  // add new collections here as the app grows
-];
+const COLLECTIONS = ["products", "transactions", "dogEvents", "dogPurchases"];
 
 async function main() {
   const prodApp = initializeApp(
