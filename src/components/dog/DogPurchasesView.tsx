@@ -165,7 +165,7 @@ export default function DogPurchasesView({
                 >
                   Category
                 </TableHead>
-                <TableHead>Item</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Vendor / Location</TableHead>
                 <TableHead
                   align="right"
