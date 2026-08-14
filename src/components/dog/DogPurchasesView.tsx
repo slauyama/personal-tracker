@@ -237,7 +237,7 @@ export default function DogPurchasesView({
           <Heading as="h2" variant="subtitle" className="mb-3">
             Cost Summary
           </Heading>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-2 md:gap-4">
             <StatCard
               label="Total Spent"
               value={formatPrice(stats.totalSpent)}
