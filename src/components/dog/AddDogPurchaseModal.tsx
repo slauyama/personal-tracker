@@ -95,7 +95,7 @@ export default function AddDogPurchaseModal({
       modalControls={modalControls}
       variant={isMobile ? "fullscreen" : "basic"}
       title={isEdit ? "Edit Purchase" : "Add Purchase"}
-      className="overflow-y-auto"
+      className="max-h-screen overflow-y-auto"
     >
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">

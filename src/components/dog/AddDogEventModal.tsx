@@ -78,7 +78,7 @@ export default function AddDogEventModal({
       variant={isMobile ? "fullscreen" : "basic"}
       modalControls={modalControls}
       title={isEdit ? "Edit Event" : "Add Event"}
-      className="overflow-y-auto"
+      className="max-h-screen overflow-y-auto"
     >
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
