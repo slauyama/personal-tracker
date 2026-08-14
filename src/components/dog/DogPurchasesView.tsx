@@ -194,7 +194,7 @@ export default function DogPurchasesView({
                   <TableCell className="whitespace-nowrap">
                     {purchase.date}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell>
                     <CategoryBadge
                       label={purchase.category}
                       color={PURCHASE_CATEGORY_COLORS[purchase.category]}

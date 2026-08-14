@@ -16,6 +16,7 @@ import ConfirmModal from "../ui/ConfirmModal";
 
 import AmazonIcon from "../../assets/amazon_icon.png";
 import Caption from "../ui/Caption";
+import { useBreakpoints } from "../../hooks/useBreakpoints";
 
 interface ProductModalProps {
   categories: string[];
@@ -106,6 +107,7 @@ export default function ProductModal({
   const confirmDeleteModal = useIsOpen();
   const [form, setForm] = useState<ProductInput>({ ...BLANK });
   const [priceStr, setPriceStr] = useState("");
+  const { isSmall } = useBreakpoints();
 
   const isFinished = product?.status === ProductStatus.Finished;
 
@@ -137,6 +139,7 @@ export default function ProductModal({
   return (
     <>
       <Modal
+        variant={isSmall ? "fullscreen" : "basic"}
         modalControls={modalControls}
         title={editing ? "Edit Product" : (product?.name ?? "")}
         subtitle={!editing && product?.brand ? product?.brand : undefined}
@@ -147,7 +150,6 @@ export default function ProductModal({
           }, 0);
         }}
         closeOnBackdrop={!editing}
-        className="max-h-[90vh] overflow-y-auto scrollbar-thin"
       >
         {product === null ? (
           ""
@@ -164,7 +166,7 @@ export default function ProductModal({
                   placeholder="e.g. Soft Matte Foundation"
                 />
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-2 gap-4 md:gap-3">
                   <Select
                     label="Brand"
                     value={form.brand}
@@ -180,9 +182,6 @@ export default function ProductModal({
                     options={categories}
                     className="w-full"
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
                   <Input
                     label="Shade / Color"
                     type="text"
@@ -197,9 +196,6 @@ export default function ProductModal({
                     onChange={set("size")}
                     placeholder="e.g. 1 oz, 30ml"
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
                   <Input
                     label="Date Bought"
                     type="date"
@@ -216,9 +212,6 @@ export default function ProductModal({
                     onBlur={handlePriceBlur}
                     placeholder="0.00"
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
                   <Input
                     label="Store / Retailer"
                     type="text"
