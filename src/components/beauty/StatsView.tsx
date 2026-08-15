@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Product } from "../../hooks/useProducts";
 import { Transaction } from "../../hooks/useTransactions";
+import { daysOwned, formatCurrency } from "../../lib/transactionStats";
 import { Card, Heading, Text } from "@slauyama/ui";
 import Caption from "../ui/Caption";
 
@@ -17,14 +18,6 @@ interface TransactionStat {
   costPerDay: number;
 }
 
-function parseDate(dateStr: string | undefined, fallback: string): Date {
-  if (dateStr) {
-    const d = new Date(dateStr);
-    if (!isNaN(d.getTime())) return d;
-  }
-  return new Date(fallback);
-}
-
 function buildStats(
   transactions: Transaction[],
   productsById: Map<string, Product>,
@@ -34,33 +27,20 @@ function buildStats(
     .map((t) => {
       const price = t.price;
       if (price == null || price <= 0) return null;
-      const bought = parseDate(t.purchaseDate, t.createdAt);
-      const end = t.finishDate ? parseDate(t.finishDate, t.createdAt) : today;
-      const msPerDay = 1000 * 60 * 60 * 24;
-      const daysOwned = Math.max(
-        1,
-        Math.floor((end.getTime() - bought.getTime()) / msPerDay),
-      );
+      const days = daysOwned(t, today);
       return {
         transaction: t,
         product: productsById.get(t.productId),
         price,
-        daysOwned,
-        costPerDay: price / daysOwned,
+        daysOwned: days,
+        costPerDay: price / days,
       };
     })
     .filter((s): s is TransactionStat => s !== null)
     .sort((a, b) => b.costPerDay - a.costPerDay);
 }
 
-function formatCurrency(n: number, fractionDigits = 2): string {
-  return n.toLocaleString("en-US", {
-    minimumFractionDigits: fractionDigits,
-    maximumFractionDigits: fractionDigits,
-  });
-}
-
-function StatCard({ label, value }: { label: string; value: string }) {
+export function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <Card className="p-4 flex flex-col gap-1">
       <Text className="text-zinc-400 uppercase tracking-wide">{label}</Text>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Input,
@@ -143,7 +143,7 @@ export default function AddProductModal({
           />
 
           <Input
-            label="Retailer Link"
+            label="Manufacturer Link"
             type="url"
             value={form.retailerUrl}
             onChange={set("retailerUrl")}
@@ -158,24 +158,14 @@ export default function AddProductModal({
                 color="error"
                 type="button"
                 onClick={onDelete}
-                className="w-full"
+                className="w-40"
               >
                 Delete
               </Button>
             )}
-            <div>
-              <Button variant="filled" type="submit" className="mr-3">
-                {isEdit ? "Save" : "Add Product"}
-              </Button>
-              <Button
-                variant="text"
-                size="sm"
-                type="button"
-                onClick={modalControls.close}
-              >
-                Cancel
-              </Button>
-            </div>
+            <Button variant="filled" type="submit" className="hidden md:block">
+              {isEdit ? "Save" : "Add Product"}
+            </Button>
           </div>
         </form>
       </div>

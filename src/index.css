@@ -1,10 +1,12 @@
+@layer ui-theme;
+@import "@slauyama/ui/theme" layer(ui-theme);
 @import "tailwindcss";
-@import "@slauyama/ui/theme";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 @source "../node_modules/@slauyama/ui/dist/**/*.js";
 
 @theme {
-  --font-sans: "Futura", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  --font-sans: "Inter", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 @layer base {

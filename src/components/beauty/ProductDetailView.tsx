@@ -1,0 +1,411 @@
+import { useMemo, useState } from "react";
+import { useNavigate, useParams, Link as RouterLink } from "react-router-dom";
+import type { Product, ProductInput } from "../../hooks/useProducts";
+import type {
+  Transaction,
+  TransactionInput,
+} from "../../hooks/useTransactions";
+import { daysOwned, formatCurrency } from "../../lib/transactionStats";
+import {
+  Button,
+  Card,
+  Heading,
+  IconButton,
+  Link,
+  Text,
+  useIsOpen,
+} from "@slauyama/ui";
+import ConfirmModal from "../ui/ConfirmModal";
+import AddProductModal from "./AddProductModal";
+import TransactionModal from "./TransactionModal";
+
+import AmazonIcon from "../../assets/amazon_icon.png";
+import Caption from "../ui/Caption";
+
+interface ProductDetailViewProps {
+  categories: string[];
+  products: Product[];
+  transactions: Transaction[];
+  onUpdate: (id: string, data: ProductInput) => void;
+  onDelete: (id: string) => void;
+  onAddTransaction: (data: TransactionInput) => void;
+  onUpdateTransaction: (id: string, data: TransactionInput) => void;
+  onDeleteTransaction: (id: string) => void;
+}
+
+function buildAmazonSearchUrl(product: Product): string {
+  const q = [product.brand, product.name, product.shade, product.size]
+    .filter(Boolean)
+    .join(" ");
+  return `https://www.amazon.com/s?k=${encodeURIComponent(q)}`;
+}
+
+function ProductImage({ url }: { url: string }) {
+  const [broken, setBroken] = useState(false);
+
+  if (broken) {
+    return (
+      <div className="w-40 h-40 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center justify-center gap-1 text-slate-400">
+        <span className="text-2xl">🖼️</span>
+        <Text size="sm" className="text-slate-400">
+          Image could not be loaded — check the URL
+        </Text>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={url}
+      alt="Product"
+      className="max-w-100 bg-white aspect-square object-cover rounded-xl"
+      onError={() => setBroken(true)}
+    />
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  if (!value) return null;
+  return (
+    <div className="flex gap-1">
+      <dt className="font-normal">{label}: </dt>
+      <dd className="font-extralight">{value}</dd>
+    </div>
+  );
+}
+
+function durationLabel(transaction: Transaction): string {
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const purchased = new Date(transaction.purchaseDate);
+  if (isNaN(purchased.getTime())) return "";
+
+  if (transaction.finishDate) {
+    const finished = new Date(transaction.finishDate);
+    if (isNaN(finished.getTime())) return "";
+    const days = Math.max(
+      1,
+      Math.round((finished.getTime() - purchased.getTime()) / msPerDay),
+    );
+    return `Lasted ${days} day${days !== 1 ? "s" : ""}`;
+  }
+
+  const days = Math.max(
+    0,
+    Math.round((Date.now() - purchased.getTime()) / msPerDay),
+  );
+  return `In use — ${days} day${days !== 1 ? "s" : ""} so far`;
+}
+
+interface TransactionsListProps {
+  transactions: Transaction[];
+  onAdd: () => void;
+  onEdit: (transaction: Transaction) => void;
+}
+
+function TransactionsList({
+  transactions,
+  onAdd,
+  onEdit,
+}: TransactionsListProps) {
+  const sorted = [...transactions].sort((a, b) =>
+    b.purchaseDate.localeCompare(a.purchaseDate),
+  );
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <Caption className="tracking-wide">Purchases</Caption>
+        <Button variant="text" size="sm" onClick={onAdd}>
+          + Add Purchase
+        </Button>
+      </div>
+      {sorted.length === 0 ? (
+        <Text size="sm" className="text-zinc-400">
+          No purchases recorded yet.
+        </Text>
+      ) : (
+        <Card className="overflow-hidden">
+          {sorted.map((t, i) => (
+            <div
+              key={t.id}
+              onClick={() => onEdit(t)}
+              className={`flex items-center justify-between gap-3 px-4 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 ${
+                i < sorted.length - 1
+                  ? "border-b border-zinc-50 dark:border-zinc-700"
+                  : ""
+              }`}
+            >
+              <div className="min-w-0">
+                <Text size="sm" className="font-medium">
+                  {t.purchaseDate}
+                  {t.location ? ` · ${t.location}` : ""}
+                </Text>
+                <Text size="xs" className="text-zinc-400">
+                  {durationLabel(t)}
+                </Text>
+              </div>
+              {t.price != null && (
+                <Text size="sm" className="font-semibold shrink-0">
+                  ${formatCurrency(t.price)}
+                </Text>
+              )}
+            </div>
+          ))}
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function BackIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  );
+}
+
+export default function ProductDetailView({
+  categories,
+  products,
+  transactions,
+  onUpdate,
+  onDelete,
+  onAddTransaction,
+  onUpdateTransaction,
+  onDeleteTransaction,
+}: ProductDetailViewProps) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const product = products.find((p) => p.id === id);
+
+  const editModal = useIsOpen();
+  const confirmDeleteModal = useIsOpen();
+  const transactionModal = useIsOpen();
+  const confirmDeleteTransactionModal = useIsOpen();
+  const [activeTransaction, setActiveTransaction] =
+    useState<Transaction | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const productTransactions = useMemo(
+    () =>
+      product ? transactions.filter((t) => t.productId === product.id) : [],
+    [transactions, product],
+  );
+
+  const today = useMemo(() => new Date(), []);
+  const priced = productTransactions.filter(
+    (t) => t.price != null && t.price > 0,
+  );
+  const totalSpent = priced.reduce((sum, t) => sum + (t.price ?? 0), 0);
+  const totalDays = priced.reduce((sum, t) => sum + daysOwned(t, today), 0);
+  const avgCostPerDay = totalDays > 0 ? totalSpent / totalDays : null;
+
+  async function handleShare() {
+    if (!product) return;
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: product.name, url });
+      } catch {
+        // user cancelled the native share sheet — nothing to do
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        // clipboard access denied — nothing to do
+      }
+    }
+  }
+
+  if (!product) {
+    return (
+      <div className="text-center py-20">
+        <Text as="p" className="text-lg font-medium text-zinc-500">
+          Product not found
+        </Text>
+        <RouterLink to="/beauty">
+          <Button variant="text" className="mt-1">
+            ← Back to Products
+          </Button>
+        </RouterLink>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <IconButton onClick={() => navigate(-1)} title="Back">
+          <BackIcon />
+        </IconButton>
+        <div className="flex-1 min-w-0">
+          <Heading as="h2" variant="subtitle" className="truncate">
+            {product.name}
+          </Heading>
+          {product.brand && (
+            <Text size="sm" className="text-zinc-400">
+              {product.brand}
+            </Text>
+          )}
+        </div>
+        <Button variant="tonal" size="sm" onClick={handleShare}>
+          {copied ? "Copied!" : "Share"}
+        </Button>
+        <Button variant="filled" size="sm" onClick={editModal.open}>
+          Edit
+        </Button>
+      </div>
+
+      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+        {product.imageUrl && <ProductImage url={product.imageUrl} />}
+        <div className="flex flex-col gap-4">
+          <dl className="flex-col gap-1">
+            <Row label="Category" value={product.category} />
+            <Row label="Shade" value={product.shade} />
+            <Row label="Size" value={product.size} />
+            <Row label="Notes" value={product.notes} />
+          </dl>
+
+          {priced.length > 0 && (
+            <div className="flex gap-4">
+              <Card>
+                <Text className="p-2">
+                  Total Spent: {`$${formatCurrency(totalSpent)}`}
+                </Text>
+              </Card>
+              <Card>
+                <Text className="p-2">
+                  Average Cost Per Day:{" "}
+                  {avgCostPerDay != null
+                    ? `$${formatCurrency(avgCostPerDay)}`
+                    : "—"}
+                </Text>
+              </Card>
+            </div>
+          )}
+
+          <TransactionsList
+            transactions={productTransactions}
+            onAdd={() => {
+              setActiveTransaction(null);
+              transactionModal.open();
+            }}
+            onEdit={(t) => {
+              setActiveTransaction(t);
+              transactionModal.open();
+            }}
+          />
+
+          <div className="flex flex-row gap-4 border-t border-zinc-100 dark:border-zinc-700 pt-3">
+            {product.retailerUrl && (
+              <Link href={product.retailerUrl}>Manufacturer Link</Link>
+            )}
+            <Link
+              href={buildAmazonSearchUrl(product)}
+              variant="icon"
+              title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
+            >
+              <img
+                src={AmazonIcon}
+                alt="Search on Amazon"
+                className="h-5 w-auto"
+              />
+            </Link>
+            {product.barcode && (
+              <div className="flex items-center gap-1">
+                <Caption className="text-zinc-400">Barcode:</Caption>
+                <Link
+                  href={`https://www.barcodelookup.com/${product.barcode}`}
+                  variant="icon"
+                  title={`Look up barcode ${product.barcode}`}
+                >
+                  <svg
+                    viewBox="0 0 24 20"
+                    className="h-4 w-auto fill-current text-black dark:text-white"
+                    aria-hidden="true"
+                  >
+                    <rect x="0" y="0" width="1.5" height="20" />
+                    <rect x="3" y="0" width="1" height="20" />
+                    <rect x="5.5" y="0" width="2" height="20" />
+                    <rect x="9" y="0" width="1" height="20" />
+                    <rect x="11" y="0" width="1.5" height="20" />
+                    <rect x="14" y="0" width="1" height="20" />
+                    <rect x="16.5" y="0" width="2" height="20" />
+                    <rect x="20" y="0" width="1" height="20" />
+                    <rect x="22.5" y="0" width="1.5" height="20" />
+                  </svg>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <AddProductModal
+        categories={categories}
+        initialValues={product}
+        modalControls={editModal}
+        onSave={(data) => {
+          onUpdate(product.id, data);
+          editModal.close();
+        }}
+        onDelete={confirmDeleteModal.open}
+      />
+      <ConfirmModal
+        modalControls={confirmDeleteModal}
+        title="Delete Product"
+        message={`Are you sure you want to delete "${product.name}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => {
+          onDelete(product.id);
+          navigate("/beauty");
+        }}
+      />
+
+      <TransactionModal
+        key={activeTransaction?.id ?? "new"}
+        productId={product.id}
+        initialValues={activeTransaction ?? undefined}
+        modalControls={transactionModal}
+        onSave={(data) => {
+          if (activeTransaction) {
+            onUpdateTransaction(activeTransaction.id, data);
+          } else {
+            onAddTransaction(data);
+          }
+          transactionModal.close();
+        }}
+        onDelete={
+          activeTransaction
+            ? () => confirmDeleteTransactionModal.open()
+            : undefined
+        }
+      />
+      <ConfirmModal
+        modalControls={confirmDeleteTransactionModal}
+        title="Delete Purchase"
+        message="Are you sure you want to delete this purchase? This cannot be undone."
+        confirmLabel="Delete"
+        onConfirm={() => {
+          if (activeTransaction) {
+            onDeleteTransaction(activeTransaction.id);
+            transactionModal.close();
+          }
+        }}
+      />
+    </div>
+  );
+}

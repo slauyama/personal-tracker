@@ -164,7 +164,7 @@ export default function AddDogPurchaseModal({
               inputMode="numeric"
             />
             <Input
-              label="Retailer Link"
+              label="Manufacturer Link"
               type="url"
               value={form.retailerUrl}
               onChange={set("retailerUrl")}

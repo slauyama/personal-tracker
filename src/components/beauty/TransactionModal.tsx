@@ -1,11 +1,9 @@
 import { useState } from "react";
-import {
-  Button,
-  Input,
-  Modal,
-  type ModalControls,
-} from "@slauyama/ui";
-import type { Transaction, TransactionInput } from "../../hooks/useTransactions";
+import { Button, Input, Modal, type ModalControls } from "@slauyama/ui";
+import type {
+  Transaction,
+  TransactionInput,
+} from "../../hooks/useTransactions";
 import { useBreakpoints } from "../../hooks/useBreakpoints";
 
 interface TransactionModalProps {
@@ -62,16 +60,25 @@ export default function TransactionModal({
     setForm((prev) => ({ ...prev, price: parsed }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function saveForm() {
     if (!form.purchaseDate) return;
     onSave(form);
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    saveForm();
   }
 
   return (
     <Modal
       variant={isSmall ? "fullscreen" : "basic"}
       modalControls={modalControls}
+      headerAction={
+        <Button variant="filled" type="button" onClick={() => saveForm()}>
+          {isEdit ? "Save" : "Add Purchase"}
+        </Button>
+      }
       title={isEdit ? "Edit Purchase" : "Add Purchase"}
     >
       <div className="p-6">
@@ -117,24 +124,14 @@ export default function TransactionModal({
                 color="error"
                 type="button"
                 onClick={onDelete}
-                className="w-full"
+                className="w-40"
               >
                 Delete
               </Button>
             )}
-            <div>
-              <Button variant="filled" type="submit" className="mr-3">
-                {isEdit ? "Save" : "Add Purchase"}
-              </Button>
-              <Button
-                variant="text"
-                size="sm"
-                type="button"
-                onClick={modalControls.close}
-              >
-                Cancel
-              </Button>
-            </div>
+            <Button variant="filled" type="submit" className="hidden">
+              {isEdit ? "Save" : "Add Purchase"}
+            </Button>
           </div>
         </form>
       </div>

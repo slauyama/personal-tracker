@@ -1,25 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
-import type {
-  Transaction,
-  TransactionInput,
-} from "../../hooks/useTransactions";
+import type { Transaction } from "../../hooks/useTransactions";
 import { Button, IconButton, Select, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ProductCard from "./ProductCard";
-import ProductModal from "./ProductModal";
 import { AnimatePresence } from "framer-motion";
 
 interface ProductsViewProps {
   products: Product[];
   transactions: Transaction[];
   onAdd: (data: ProductInput) => void;
-  onUpdate: (id: string, data: ProductInput) => void;
-  onDelete: (id: string) => void;
-  onAddTransaction: (data: TransactionInput) => void;
-  onUpdateTransaction: (id: string, data: TransactionInput) => void;
-  onDeleteTransaction: (id: string) => void;
 }
 
 const CATEGORY_OPTIONS = [
@@ -58,15 +50,9 @@ export default function ProductsView({
   products,
   transactions,
   onAdd,
-  onUpdate,
-  onDelete,
-  onAddTransaction,
-  onUpdateTransaction,
-  onDeleteTransaction,
 }: ProductsViewProps) {
-  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
+  const navigate = useNavigate();
   const addProductModal = useIsOpen();
-  const productModal = useIsOpen();
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -181,42 +167,11 @@ export default function ProductsView({
                 index={index}
                 totalProducts={products.length}
                 product={product}
-                onClick={() => {
-                  productModal.open();
-                  setActiveProduct(product);
-                }}
+                onClick={() => navigate(`/beauty/products/${product.id}`)}
               />
             ))}
           </AnimatePresence>
         </div>
-      )}
-
-      {activeProduct && (
-        <ProductModal
-          product={activeProduct}
-          transactions={transactions}
-          modalControls={productModal}
-          onClose={() => {
-            setTimeout(() => {
-              setActiveProduct(null);
-            }, 0);
-          }}
-          onSave={(data) => {
-            if (activeProduct) onUpdate(activeProduct.id, data);
-          }}
-          onDelete={() => {
-            if (activeProduct) {
-              onDelete(activeProduct.id);
-              setActiveProduct(null);
-            }
-          }}
-          onAddTransaction={(data) => {
-            if (activeProduct) onAddTransaction(data);
-          }}
-          onUpdateTransaction={onUpdateTransaction}
-          onDeleteTransaction={onDeleteTransaction}
-          categories={ALL_CATEGORIES}
-        />
       )}
 
       <AddProductModal
