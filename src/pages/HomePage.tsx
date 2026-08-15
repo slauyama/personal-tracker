@@ -27,6 +27,8 @@ export default function HomePage() {
           </button>
         ))}
       </div>
+
+      <span className="text-xs text-zinc-400">v{__APP_VERSION__}</span>
     </div>
   );
 }
