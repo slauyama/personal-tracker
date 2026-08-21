@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
-import { Button, IconButton, Input, Select, Spinner, Text, useIsOpen } from "@slauyama/ui";
+import { Button, Input, Select, Spinner, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ProductCard from "./ProductCard";
 import { AnimatePresence } from "framer-motion";
@@ -20,13 +20,15 @@ const CATEGORY_OPTIONS = [
   ...ALL_CATEGORIES.map((c) => ({ value: c, label: c })),
 ];
 
-type SortField = "name" | "brand" | "createdAt";
+type SortField = "name" | "brand";
 type SortDir = "asc" | "desc";
+type SortValue = `${SortField}-${SortDir}`;
 
-const SORT_OPTIONS = [
-  { value: "createdAt", label: "Date Added" },
-  { value: "name", label: "Name" },
-  { value: "brand", label: "Brand" },
+const SORT_OPTIONS: { value: SortValue; label: string }[] = [
+  { value: "name-asc", label: "Name (A–Z)" },
+  { value: "name-desc", label: "Name (Z–A)" },
+  { value: "brand-asc", label: "Brand (A–Z)" },
+  { value: "brand-desc", label: "Brand (Z–A)" },
 ];
 
 function sortProducts(
@@ -57,8 +59,8 @@ export default function ProductsView({
   const addProductModal = useIsOpen();
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [sortField, setSortField] = useState<SortField>("createdAt");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [sortValue, setSortValue] = useState<SortValue>("name-asc");
+  const [sortField, sortDir] = sortValue.split("-") as [SortField, SortDir];
 
   const query = search.trim().toLowerCase();
 
@@ -111,38 +113,12 @@ export default function ProductsView({
 
         <div className="hidden sm:block w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
 
-        <div className="flex gap-2 items-center">
-          <Select
-            label="Sort"
-            value={sortField}
-            onChange={(e) => setSortField(e.target.value as SortField)}
-            options={SORT_OPTIONS}
-          />
-          <IconButton
-            onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-            title={sortDir === "asc" ? "Ascending" : "Descending"}
-          >
-            <span
-              className={`transition-all duration-400 ${
-                sortDir !== "asc" ? "rotate-180 " : "rotate-0"
-              }`}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="6" x2="12" y2="19" />
-                <polyline points="18 12 12 5 6 12" />
-              </svg>
-            </span>
-          </IconButton>
-        </div>
+        <Select
+          label="Sort"
+          value={sortValue}
+          onChange={(e) => setSortValue(e.target.value as SortValue)}
+          options={SORT_OPTIONS}
+        />
 
         <div className="hidden sm:block flex-1" />
 
