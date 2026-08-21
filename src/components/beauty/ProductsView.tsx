@@ -71,7 +71,7 @@ export default function ProductsView({
   const addProductModal = useIsOpen();
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [sortValue, setSortValue] = useState<SortValue>("name-asc");
+  const [sortValue, setSortValue] = useState<SortValue>("updatedAt-desc");
   const [sortField, sortDir] = sortValue.split("-") as [SortField, SortDir];
 
   const query = search.trim().toLowerCase();
