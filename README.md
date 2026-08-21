@@ -9,4 +9,4 @@
 
 ### Low
 
-- Be able to take pictures of the product and be able tt pull all the information from the picture using claude
+- Be able to take pictures of the product and be able to pull all the information from the picture using claude
