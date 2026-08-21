@@ -16,20 +16,45 @@ export interface Product {
 
 export type ProductInput = Omit<Product, "id" | "createdAt">;
 
+export interface ProductLookup {
+  item: Product;
+  update: (updates: Partial<Product>) => void;
+  delete: () => void;
+}
+
 export function useProducts() {
-  const { items: products, loading, add, update, remove } =
-    useFirebaseCollection<Product>("products");
+  const {
+    items: products,
+    loading,
+    add,
+    update,
+    remove,
+  } = useFirebaseCollection<Product>("products");
 
   async function addProduct(input: ProductInput): Promise<void> {
     await add(input);
   }
 
-  async function updateProduct(id: string, updates: Partial<Product>): Promise<void> {
+  async function updateProduct(
+    id: string,
+    updates: Partial<Product>,
+  ): Promise<void> {
     await update(id, updates);
   }
 
   async function deleteProduct(id: string): Promise<void> {
     await remove(id);
+  }
+
+  function findProductById(id: string | undefined): ProductLookup | undefined {
+    const item = products.find((p) => p.id === id);
+    if (!item) return undefined;
+
+    return {
+      item,
+      update: (updates: Partial<Product>) => updateProduct(item.id, updates),
+      delete: () => deleteProduct(item.id),
+    };
   }
 
   return {
@@ -38,5 +63,6 @@ export function useProducts() {
     addProduct,
     updateProduct,
     deleteProduct,
+    findProductById,
   };
 }

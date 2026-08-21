@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams, Link as RouterLink } from "react-router-dom";
-import type { Product, ProductInput } from "../../hooks/useProducts";
+import type { Product, ProductLookup } from "../../hooks/useProducts";
 import type {
   Transaction,
   TransactionInput,
@@ -25,11 +25,9 @@ import Caption from "../ui/Caption";
 
 interface ProductDetailViewProps {
   categories: string[];
-  products: Product[];
   loadingProducts: boolean;
-  transactions: Transaction[];
-  onUpdate: (id: string, data: ProductInput) => void;
-  onDelete: (id: string) => void;
+  findProductById: (id: string | undefined) => ProductLookup | undefined;
+  findTransactionsByProductId: (productId: string) => Transaction[];
   onAddTransaction: (data: TransactionInput) => void;
   onUpdateTransaction: (id: string, data: TransactionInput) => void;
   onDeleteTransaction: (id: string) => void;
@@ -183,18 +181,16 @@ function BackIcon() {
 
 export default function ProductDetailView({
   categories,
-  products,
-  transactions,
   loadingProducts,
-  onUpdate,
-  onDelete,
+  findProductById,
+  findTransactionsByProductId,
   onAddTransaction,
   onUpdateTransaction,
   onDeleteTransaction,
 }: ProductDetailViewProps) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const product = products.find((p) => p.id === id);
+  const lookup = findProductById(id);
 
   const editModal = useIsOpen();
   const confirmDeleteModal = useIsOpen();
@@ -204,13 +200,32 @@ export default function ProductDetailView({
     useState<Transaction | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const productTransactions = useMemo(
-    () =>
-      product ? transactions.filter((t) => t.productId === product.id) : [],
-    [transactions, product],
-  );
+  if (loadingProducts) {
+    return (
+      <div className="flex justify-center py-20">
+        <Spinner />
+      </div>
+    );
+  }
+  if (!lookup) {
+    return (
+      <div className="text-center py-20">
+        <Text as="p" className="text-lg font-medium text-zinc-500">
+          Product not found
+        </Text>
+        <RouterLink to="/beauty">
+          <Button variant="text" className="mt-1">
+            ← Back to Products
+          </Button>
+        </RouterLink>
+      </div>
+    );
+  }
 
-  const today = useMemo(() => new Date(), []);
+  const { item: product, update, delete: removeProduct } = lookup;
+  const productTransactions = findTransactionsByProductId(product.id);
+
+  const today = new Date();
   const priced = productTransactions.filter(
     (t) => t.price != null && t.price > 0,
   );
@@ -219,7 +234,6 @@ export default function ProductDetailView({
   const avgCostPerDay = totalDays > 0 ? totalSpent / totalDays : null;
 
   async function handleShare() {
-    if (!product) return;
     const url = window.location.href;
     if (navigator.share) {
       try {
@@ -236,28 +250,6 @@ export default function ProductDetailView({
         // clipboard access denied — nothing to do
       }
     }
-  }
-
-  if (loadingProducts) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner />
-      </div>
-    );
-  }
-  if (!product) {
-    return (
-      <div className="text-center py-20">
-        <Text as="p" className="text-lg font-medium text-zinc-500">
-          Product not found
-        </Text>
-        <RouterLink to="/beauty">
-          <Button variant="text" className="mt-1">
-            ← Back to Products
-          </Button>
-        </RouterLink>
-      </div>
-    );
   }
 
   return (
@@ -373,7 +365,7 @@ export default function ProductDetailView({
         initialValues={product}
         modalControls={editModal}
         onSave={(data) => {
-          onUpdate(product.id, data);
+          update(data);
           editModal.close();
         }}
         onDelete={confirmDeleteModal.open}
@@ -384,7 +376,7 @@ export default function ProductDetailView({
         message={`Are you sure you want to delete "${product.name}"? This cannot be undone.`}
         confirmLabel="Delete"
         onConfirm={() => {
-          onDelete(product.id);
+          removeProduct();
           navigate("/beauty");
         }}
       />

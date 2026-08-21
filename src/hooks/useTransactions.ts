@@ -14,8 +14,13 @@ export interface Transaction {
 export type TransactionInput = Omit<Transaction, "id" | "createdAt">;
 
 export function useTransactions() {
-  const { items: transactions, loading, add, update, remove } =
-    useFirebaseCollection<Transaction>("transactions");
+  const {
+    items: transactions,
+    loading,
+    add,
+    update,
+    remove,
+  } = useFirebaseCollection<Transaction>("transactions");
 
   async function addTransaction(input: TransactionInput): Promise<void> {
     await add(input);
@@ -32,11 +37,16 @@ export function useTransactions() {
     await remove(id);
   }
 
+  function findTransactionsByProductId(productId: string): Transaction[] {
+    return transactions.filter((t) => t.productId === productId);
+  }
+
   return {
     transactions,
     loading,
     addTransaction,
     updateTransaction,
     deleteTransaction,
+    findTransactionsByProductId,
   };
 }

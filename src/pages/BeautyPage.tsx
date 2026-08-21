@@ -8,10 +8,14 @@ import StatsView from "../components/beauty/StatsView";
 import { Button, Heading, Text } from "@slauyama/ui";
 
 export default function BeautyPage() {
-  const { products, loading, addProduct, updateProduct, deleteProduct } =
-    useProducts();
-  const { transactions, addTransaction, updateTransaction, deleteTransaction } =
-    useTransactions();
+  const { products, loading, addProduct, findProductById } = useProducts();
+  const {
+    transactions,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    findTransactionsByProductId,
+  } = useTransactions();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -58,11 +62,9 @@ export default function BeautyPage() {
           element={
             <ProductDetailView
               categories={ALL_CATEGORIES}
-              products={products}
               loadingProducts={loading}
-              transactions={transactions}
-              onUpdate={updateProduct}
-              onDelete={deleteProduct}
+              findProductById={findProductById}
+              findTransactionsByProductId={findTransactionsByProductId}
               onAddTransaction={addTransaction}
               onUpdateTransaction={updateTransaction}
               onDeleteTransaction={deleteTransaction}
