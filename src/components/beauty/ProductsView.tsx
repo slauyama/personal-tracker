@@ -4,8 +4,9 @@ import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
 import { effectiveUpdatedAt } from "../../lib/transactionStats";
-import { Button, Input, Select, Spinner, Text, useIsOpen } from "@slauyama/ui";
+import { Button, Input, Select, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
+import ListStateContainer from "../ui/ListStateContainer";
 import ProductCard from "./ProductCard";
 import { AnimatePresence } from "framer-motion";
 
@@ -149,21 +150,18 @@ export default function ProductsView({
         </div>
       </div>
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <Spinner />
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-20">
-          <Text as="p" className="text-5xl mb-3">
-            💄
-          </Text>
-          <Text as="p" className="text-lg font-medium text-zinc-500">
-            {products.length === 0
-              ? "No products yet"
-              : "No products match your search"}
-          </Text>
-          {products.length === 0 && (
+      <ListStateContainer
+        isLoading={loading}
+        isEmpty={products.length === 0}
+        hasNoMatches={filtered.length === 0}
+        emptyContent={
+          <>
+            <Text as="p" className="text-5xl mb-3">
+              💄
+            </Text>
+            <Text as="p" className="text-lg font-medium text-zinc-500">
+              No products yet
+            </Text>
             <Text as="p" className="mt-1">
               Hit{" "}
               <Button variant="text" onClick={addProductModal.open}>
@@ -171,9 +169,14 @@ export default function ProductsView({
               </Button>{" "}
               to get started!
             </Text>
-          )}
-        </div>
-      ) : (
+          </>
+        }
+        noMatchContent={
+          <Text as="p" className="text-lg font-medium text-zinc-500">
+            No products match your search
+          </Text>
+        }
+      >
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 items-start">
           <AnimatePresence>
             {filtered.map((product, index, products) => (
@@ -187,7 +190,7 @@ export default function ProductsView({
             ))}
           </AnimatePresence>
         </div>
-      )}
+      </ListStateContainer>
 
       <AddProductModal
         categories={ALL_CATEGORIES}

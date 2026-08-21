@@ -18,12 +18,14 @@ import { DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
 import AddDogEventModal from "./AddDogEventModal";
 import ConfirmModal from "../ui/ConfirmModal";
+import ListStateContainer from "../ui/ListStateContainer";
 import DogWeightChart from "./DogWeightChart";
 import CategoryBadge from "./CategoryBadge";
 import { EVENT_TYPE_COLORS } from "./categoryColors";
 
 interface DogEventsViewProps {
   dogEvents: DogEvent[];
+  loading: boolean;
   onAddEvent: (data: DogEventInput) => void;
   onUpdateEvent: (id: string, data: DogEventInput) => void;
   onDeleteEvent: (id: string) => void;
@@ -41,6 +43,7 @@ function matchesQuery(event: DogEvent, query: string): boolean {
 
 export default function DogEventsView({
   dogEvents,
+  loading,
   onAddEvent,
   onUpdateEvent,
   onDeleteEvent,
@@ -87,22 +90,26 @@ export default function DogEventsView({
         <Button onClick={addModal.open}>+ Add Event</Button>
       </div>
 
-      {nonWeightEvents.length === 0 ? (
-        <div className="text-center py-20">
-          <Text as="p" className="text-5xl mb-3">
-            🐾
-          </Text>
-          <Text as="p" className="text-lg font-medium text-zinc-500">
-            No events yet
-          </Text>
-        </div>
-      ) : rows.length === 0 ? (
-        <div className="text-center py-20">
+      <ListStateContainer
+        isLoading={loading}
+        isEmpty={nonWeightEvents.length === 0}
+        hasNoMatches={rows.length === 0}
+        emptyContent={
+          <>
+            <Text as="p" className="text-5xl mb-3">
+              🐾
+            </Text>
+            <Text as="p" className="text-lg font-medium text-zinc-500">
+              No events yet
+            </Text>
+          </>
+        }
+        noMatchContent={
           <Text as="p" className="text-lg font-medium text-zinc-500">
             No events match your search
           </Text>
-        </div>
-      ) : (
+        }
+      >
         <Card className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -144,7 +151,7 @@ export default function DogEventsView({
             </TableBody>
           </Table>
         </Card>
-      )}
+      </ListStateContainer>
 
       {rows.length > PAGE_SIZE && (
         <div className="flex justify-center mt-3">
@@ -159,7 +166,7 @@ export default function DogEventsView({
       )}
 
       <Card className="p-4 mt-6">
-        <Heading as="h3" variant="subtitle" className="mb-2">
+        <Heading as="h3" variant="title" className="mb-2">
           Weight
         </Heading>
         <DogWeightChart events={dogEvents} onEditWeight={openEdit} />

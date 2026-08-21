@@ -21,11 +21,13 @@ import type {
 } from "../../hooks/useDogPurchases";
 import AddDogPurchaseModal from "./AddDogPurchaseModal";
 import ConfirmModal from "../ui/ConfirmModal";
+import ListStateContainer from "../ui/ListStateContainer";
 import CategoryBadge from "./CategoryBadge";
 import { PURCHASE_CATEGORY_COLORS } from "./categoryColors";
 
 interface DogPurchasesViewProps {
   dogPurchases: DogPurchase[];
+  loading: boolean;
   onAddPurchase: (data: DogPurchaseInput) => void;
   onUpdatePurchase: (id: string, data: DogPurchaseInput) => void;
   onDeletePurchase: (id: string) => void;
@@ -89,6 +91,7 @@ function matchesQuery(purchase: DogPurchase, query: string): boolean {
 
 export default function DogPurchasesView({
   dogPurchases,
+  loading,
   onAddPurchase,
   onUpdatePurchase,
   onDeletePurchase,
@@ -131,22 +134,26 @@ export default function DogPurchasesView({
         <Button onClick={addModal.open}>+ Add Purchase</Button>
       </div>
 
-      {dogPurchases.length === 0 ? (
-        <div className="text-center py-20">
-          <Text as="p" className="text-5xl mb-3">
-            🐾
-          </Text>
-          <Text as="p" className="text-lg font-medium text-zinc-500">
-            No purchases yet
-          </Text>
-        </div>
-      ) : rows.length === 0 ? (
-        <div className="text-center py-20">
-          <Text as="p" className="text-lg font-medium text-zinc-500">
+      <ListStateContainer
+        isLoading={loading}
+        isEmpty={dogPurchases.length === 0}
+        hasNoMatches={rows.length === 0}
+        emptyContent={
+          <>
+            <Text as="p" className="text-5xl mb-3">
+              🐾
+            </Text>
+            <Text as="p" size="lg" className="font-medium text-zinc-500">
+              No purchases yet
+            </Text>
+          </>
+        }
+        noMatchContent={
+          <Text as="p" size="lg" className="font-medium text-zinc-500">
             No purchases match your search
           </Text>
-        </div>
-      ) : (
+        }
+      >
         <Card className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -218,7 +225,7 @@ export default function DogPurchasesView({
             </TableBody>
           </Table>
         </Card>
-      )}
+      </ListStateContainer>
 
       {rows.length > PAGE_SIZE && (
         <div className="flex justify-center mt-3">

@@ -6,9 +6,20 @@ import DogEventsView from "../components/dog/DogEventsView";
 import DogPurchasesView from "../components/dog/DogPurchasesView";
 
 export default function DogPage() {
-  const { dogEvents, addEvent, updateEvent, deleteEvent } = useDogEvents();
-  const { dogPurchases, addPurchase, updatePurchase, deletePurchase } =
-    useDogPurchases();
+  const {
+    dogEvents,
+    loading: isLoadingDogEvents,
+    addEvent,
+    updateEvent,
+    deleteEvent,
+  } = useDogEvents();
+  const {
+    dogPurchases,
+    loading: isLoadingDogPurchases,
+    addPurchase,
+    updatePurchase,
+    deletePurchase,
+  } = useDogPurchases();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -35,6 +46,7 @@ export default function DogPage() {
           element={
             <DogPurchasesView
               dogPurchases={dogPurchases}
+              loading={isLoadingDogPurchases}
               onAddPurchase={addPurchase}
               onUpdatePurchase={updatePurchase}
               onDeletePurchase={deletePurchase}
@@ -46,6 +58,7 @@ export default function DogPage() {
           element={
             <DogEventsView
               dogEvents={dogEvents}
+              loading={isLoadingDogEvents}
               onAddEvent={addEvent}
               onUpdateEvent={updateEvent}
               onDeleteEvent={deleteEvent}
