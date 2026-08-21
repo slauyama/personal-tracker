@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
-import { Button, IconButton, Select, Text, useIsOpen } from "@slauyama/ui";
+import { Button, IconButton, Input, Select, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ProductCard from "./ProductCard";
 import { AnimatePresence } from "framer-motion";
@@ -54,12 +54,19 @@ export default function ProductsView({
   const navigate = useNavigate();
   const addProductModal = useIsOpen();
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
+  const query = search.trim().toLowerCase();
+
   const filtered = sortProducts(
     products.filter((p) => {
-      return categoryFilter === "all" || p.category === categoryFilter;
+      if (categoryFilter !== "all" && p.category !== categoryFilter) return false;
+      if (!query) return true;
+      return [p.name, p.brand, p.shade]
+        .filter(Boolean)
+        .some((field) => field!.toLowerCase().includes(query));
     }),
     sortField,
     sortDir,
@@ -85,6 +92,14 @@ export default function ProductsView({
   return (
     <>
       <div className="flex flex-wrap gap-2 mb-6 items-center">
+        <Input
+          label="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <div className="w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
+
         <Select
           label="Categories"
           value={categoryFilter}
@@ -146,7 +161,7 @@ export default function ProductsView({
           <Text as="p" className="text-lg font-medium text-zinc-500">
             {products.length === 0
               ? "No products yet"
-              : "No products match these filters"}
+              : "No products match your search"}
           </Text>
           {products.length === 0 && (
             <Text as="p" className="mt-1">
