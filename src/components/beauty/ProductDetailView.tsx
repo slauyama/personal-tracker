@@ -319,6 +319,15 @@ export default function ProductDetailView({
             {product.retailerUrl && (
               <Link href={product.retailerUrl}>Manufacturer Link</Link>
             )}
+
+            {product.barcode && (
+              <Link
+                href={`https://www.barcodelookup.com/${product.barcode}`}
+                title={`Look up barcode ${product.barcode}`}
+              >
+                Barcode Lookup Link
+              </Link>
+            )}
             <Link
               href={buildAmazonSearchUrl(product)}
               variant="icon"
@@ -330,32 +339,6 @@ export default function ProductDetailView({
                 className="h-5 w-auto"
               />
             </Link>
-            {product.barcode && (
-              <div className="flex items-center gap-1">
-                <Caption className="text-zinc-400">Barcode:</Caption>
-                <Link
-                  href={`https://www.barcodelookup.com/${product.barcode}`}
-                  variant="icon"
-                  title={`Look up barcode ${product.barcode}`}
-                >
-                  <svg
-                    viewBox="0 0 24 20"
-                    className="h-4 w-auto fill-current text-black dark:text-white"
-                    aria-hidden="true"
-                  >
-                    <rect x="0" y="0" width="1.5" height="20" />
-                    <rect x="3" y="0" width="1" height="20" />
-                    <rect x="5.5" y="0" width="2" height="20" />
-                    <rect x="9" y="0" width="1" height="20" />
-                    <rect x="11" y="0" width="1.5" height="20" />
-                    <rect x="14" y="0" width="1" height="20" />
-                    <rect x="16.5" y="0" width="2" height="20" />
-                    <rect x="20" y="0" width="1" height="20" />
-                    <rect x="22.5" y="0" width="1.5" height="20" />
-                  </svg>
-                </Link>
-              </div>
-            )}
           </div>
         </div>
       </div>
