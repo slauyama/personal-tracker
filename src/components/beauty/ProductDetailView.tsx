@@ -19,11 +19,7 @@ import {
 import ConfirmModal from "../ui/ConfirmModal";
 import AddProductModal from "./AddProductModal";
 import TransactionModal from "./TransactionModal";
-
-import AmazonIcon from "../../assets/amazon_icon.png";
-import AmazonWhiteIcon from "../../assets/amazon-white-icon.svg";
 import Caption from "../ui/Caption";
-import { useIsDarkMode } from "@slauyama/hooks";
 
 interface ProductDetailViewProps {
   categories: string[];
@@ -95,7 +91,7 @@ function durationLabel(transaction: Transaction): string {
     0,
     Math.round((Date.now() - purchased.getTime()) / msPerDay),
   );
-  return `In use — ${days} day${days !== 1 ? "s" : ""} so far`;
+  return `In use — ${days} day${days !== 1 ? "s" : ""}`;
 }
 
 interface TransactionsListProps {
@@ -142,20 +138,23 @@ function TransactionsList({
                   {t.purchaseDate}
                   {t.location ? ` · ${t.location}` : ""}
                 </Text>
-                <Text size="xs" className="text-zinc-400">
-                  {durationLabel(t)}
-                </Text>
+
                 {t.notes && (
                   <Text size="xs" className="text-zinc-400 truncate">
                     {t.notes}
                   </Text>
                 )}
               </div>
-              {t.price != null && (
-                <Text size="sm" className="font-semibold shrink-0">
-                  ${formatCurrency(t.price)}
+              <div className="text-right">
+                {t.price != null && (
+                  <Text size="sm" className="font-semibold shrink-0">
+                    ${formatCurrency(t.price)}
+                  </Text>
+                )}
+                <Text size="xs" className="text-zinc-400">
+                  {durationLabel(t)}
                 </Text>
-              )}
+              </div>
             </div>
           ))}
         </Card>
@@ -198,7 +197,6 @@ export default function ProductDetailView({
   const confirmDeleteModal = useIsOpen();
   const transactionModal = useIsOpen();
   const confirmDeleteTransactionModal = useIsOpen();
-  const [isDarkMode] = useIsDarkMode();
   const [activeTransaction, setActiveTransaction] =
     useState<Transaction | null>(null);
   const [copied, setCopied] = useState(false);
@@ -279,9 +277,9 @@ export default function ProductDetailView({
         </Button>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6">
         {product.imageUrl && <ProductImage url={product.imageUrl} />}
-        <div className="flex flex-col gap-4">
+        <div className="flex grow flex-col gap-4">
           <dl className="flex-col gap-1">
             <Row label="Category" value={product.category} />
             <Row label="Shade" value={product.shade} />
@@ -318,33 +316,26 @@ export default function ProductDetailView({
             }}
           />
 
-          <div className="flex flex-row gap-4 border-t border-zinc-100 dark:border-zinc-700 pt-3">
-            {product.retailerUrl && (
-              <Link href={product.retailerUrl}>Manufacturer Link</Link>
-            )}
+          <br />
 
-            {product.barcode && (
-              <Link
-                href={`https://www.barcodelookup.com/${product.barcode}`}
-                title={`Look up barcode ${product.barcode}`}
-              >
-                Barcode Lookup Link
-              </Link>
-            )}
+          {product.retailerUrl && (
+            <Link href={product.retailerUrl}>Manufacturer Link</Link>
+          )}
+
+          {product.barcode && (
             <Link
-              href={buildAmazonSearchUrl(product)}
-              variant="icon"
-              title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
+              href={`https://www.barcodelookup.com/${product.barcode}`}
+              title={`Look up barcode ${product.barcode}`}
             >
-              <img
-                src={isDarkMode ? AmazonWhiteIcon : AmazonIcon}
-                alt="Search on Amazon"
-                height={20}
-                width={20}
-                className="h-5 w-auto"
-              />
+              Barcode Lookup Link
             </Link>
-          </div>
+          )}
+          <Link
+            href={buildAmazonSearchUrl(product)}
+            title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
+          >
+            Amazon Link
+          </Link>
         </div>
       </div>
 
