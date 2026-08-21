@@ -16,7 +16,7 @@ interface WeightPoint {
 }
 
 const WIDTH = 640;
-const HEIGHT = 220;
+const HEIGHT = 140;
 const PADDING = { top: 16, right: 16, bottom: 24, left: 36 };
 const LINE_COLOR = "#64748b"; // slate-500, matches the app's existing accent
 
@@ -182,7 +182,7 @@ export default function DogWeightChart({
           x={xScale(last.t)}
           y={yScale(last.weightLbs) - 10}
           textAnchor="end"
-          className="fill-zinc-500 text-[11px] font-medium"
+          className="fill-zinc-500 text-[8px] font-medium"
         >
           {last.weightLbs} lbs
         </text>
@@ -190,7 +190,7 @@ export default function DogWeightChart({
         <text
           x={PADDING.left}
           y={HEIGHT - 6}
-          className="fill-zinc-400 text-[10px]"
+          className="fill-zinc-400 text-[8px]"
         >
           {points[0].date}
         </text>
@@ -198,7 +198,7 @@ export default function DogWeightChart({
           x={WIDTH - PADDING.right}
           y={HEIGHT - 6}
           textAnchor="end"
-          className="fill-zinc-400 text-[10px]"
+          className="fill-zinc-400 text-[8px]"
         >
           {last.date}
         </text>
