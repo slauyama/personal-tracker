@@ -1,3 +1,4 @@
+import type { Product } from "../hooks/useProducts";
 import type { Transaction } from "../hooks/useTransactions";
 
 function parseDate(dateStr: string | undefined, fallback: string): Date {
@@ -15,6 +16,16 @@ export function daysOwned(transaction: Transaction, today: Date): number {
     : today;
   const msPerDay = 1000 * 60 * 60 * 24;
   return Math.max(1, Math.floor((end.getTime() - bought.getTime()) / msPerDay));
+}
+
+export function effectiveUpdatedAt(
+  product: Product,
+  productTransactions: Transaction[],
+): string {
+  return productTransactions.reduce(
+    (latest, t) => (t.updatedAt > latest ? t.updatedAt : latest),
+    product.updatedAt,
+  );
 }
 
 export function formatCurrency(n: number, fractionDigits = 2): string {

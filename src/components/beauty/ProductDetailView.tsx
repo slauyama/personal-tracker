@@ -27,7 +27,7 @@ interface ProductDetailViewProps {
   categories: string[];
   loadingProducts: boolean;
   findProductById: (id: string | undefined) => ProductLookup | undefined;
-  findTransactionsByProductId: (productId: string) => Transaction[];
+  filterTransactionsByProductId: (productId: string) => Transaction[];
   onAddTransaction: (data: TransactionInput) => void;
   onUpdateTransaction: (id: string, data: TransactionInput) => void;
   onDeleteTransaction: (id: string) => void;
@@ -183,7 +183,7 @@ export default function ProductDetailView({
   categories,
   loadingProducts,
   findProductById,
-  findTransactionsByProductId,
+  filterTransactionsByProductId,
   onAddTransaction,
   onUpdateTransaction,
   onDeleteTransaction,
@@ -223,7 +223,7 @@ export default function ProductDetailView({
   }
 
   const { item: product, update, delete: removeProduct } = lookup;
-  const productTransactions = findTransactionsByProductId(product.id);
+  const productTransactions = filterTransactionsByProductId(product.id);
 
   const today = new Date();
   const priced = productTransactions.filter(

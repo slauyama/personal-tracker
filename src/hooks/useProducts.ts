@@ -12,9 +12,10 @@ export interface Product {
   imageUrl: string;
   retailerUrl: string;
   createdAt: string;
+  updatedAt: string;
 }
 
-export type ProductInput = Omit<Product, "id" | "createdAt">;
+export type ProductInput = Omit<Product, "id" | "createdAt" | "updatedAt">;
 
 export interface ProductLookup {
   item: Product;
@@ -32,14 +33,14 @@ export function useProducts() {
   } = useFirebaseCollection<Product>("products");
 
   async function addProduct(input: ProductInput): Promise<void> {
-    await add(input);
+    await add({ ...input, updatedAt: new Date().toISOString() });
   }
 
   async function updateProduct(
     id: string,
     updates: Partial<Product>,
   ): Promise<void> {
-    await update(id, updates);
+    await update(id, { ...updates, updatedAt: new Date().toISOString() });
   }
 
   async function deleteProduct(id: string): Promise<void> {

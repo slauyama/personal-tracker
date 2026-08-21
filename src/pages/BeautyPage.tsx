@@ -14,7 +14,7 @@ export default function BeautyPage() {
     addTransaction,
     updateTransaction,
     deleteTransaction,
-    findTransactionsByProductId,
+    filterTransactionsByProductId,
   } = useTransactions();
 
   const navigate = useNavigate();
@@ -52,6 +52,7 @@ export default function BeautyPage() {
             <ProductsView
               products={products}
               transactions={transactions}
+              filterTransactionsByProductId={filterTransactionsByProductId}
               loading={loading}
               onAdd={addProduct}
             />
@@ -64,7 +65,7 @@ export default function BeautyPage() {
               categories={ALL_CATEGORIES}
               loadingProducts={loading}
               findProductById={findProductById}
-              findTransactionsByProductId={findTransactionsByProductId}
+              filterTransactionsByProductId={filterTransactionsByProductId}
               onAddTransaction={addTransaction}
               onUpdateTransaction={updateTransaction}
               onDeleteTransaction={deleteTransaction}

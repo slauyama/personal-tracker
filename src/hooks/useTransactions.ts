@@ -9,9 +9,13 @@ export interface Transaction {
   finishDate: string;
   notes: string;
   createdAt: string;
+  updatedAt: string;
 }
 
-export type TransactionInput = Omit<Transaction, "id" | "createdAt">;
+export type TransactionInput = Omit<
+  Transaction,
+  "id" | "createdAt" | "updatedAt"
+>;
 
 export function useTransactions() {
   const {
@@ -23,21 +27,21 @@ export function useTransactions() {
   } = useFirebaseCollection<Transaction>("transactions");
 
   async function addTransaction(input: TransactionInput): Promise<void> {
-    await add(input);
+    await add({ ...input, updatedAt: new Date().toISOString() });
   }
 
   async function updateTransaction(
     id: string,
     updates: Partial<Transaction>,
   ): Promise<void> {
-    await update(id, updates);
+    await update(id, { ...updates, updatedAt: new Date().toISOString() });
   }
 
   async function deleteTransaction(id: string): Promise<void> {
     await remove(id);
   }
 
-  function findTransactionsByProductId(productId: string): Transaction[] {
+  function filterTransactionsByProductId(productId: string): Transaction[] {
     return transactions.filter((t) => t.productId === productId);
   }
 
@@ -47,6 +51,6 @@ export function useTransactions() {
     addTransaction,
     updateTransaction,
     deleteTransaction,
-    findTransactionsByProductId,
+    filterTransactionsByProductId,
   };
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
+import { effectiveUpdatedAt } from "../../lib/transactionStats";
 import { Button, Input, Select, Spinner, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ProductCard from "./ProductCard";
@@ -11,6 +12,7 @@ import { AnimatePresence } from "framer-motion";
 interface ProductsViewProps {
   products: Product[];
   transactions: Transaction[];
+  filterTransactionsByProductId: (productId: string) => Transaction[];
   loading: boolean;
   onAdd: (data: ProductInput) => void;
 }
@@ -20,11 +22,13 @@ const CATEGORY_OPTIONS = [
   ...ALL_CATEGORIES.map((c) => ({ value: c, label: c })),
 ];
 
-type SortField = "name" | "brand";
+type SortField = "name" | "brand" | "updatedAt";
 type SortDir = "asc" | "desc";
 type SortValue = `${SortField}-${SortDir}`;
 
 const SORT_OPTIONS: { value: SortValue; label: string }[] = [
+  { value: "updatedAt-desc", label: "Date Updated (Newest)" },
+  { value: "updatedAt-asc", label: "Date Updated (Oldest)" },
   { value: "name-asc", label: "Name (A–Z)" },
   { value: "name-desc", label: "Name (Z–A)" },
   { value: "brand-asc", label: "Brand (A–Z)" },
@@ -35,11 +39,18 @@ function sortProducts(
   products: Product[],
   field: SortField,
   dir: SortDir,
+  filterTransactionsByProductId: (productId: string) => Transaction[],
 ): Product[] {
   return [...products].sort((a, b) => {
     let cmp = 0;
-    const aValue = a[field];
-    const bValue = b[field];
+    const aValue =
+      field === "updatedAt"
+        ? effectiveUpdatedAt(a, filterTransactionsByProductId(a.id))
+        : a[field];
+    const bValue =
+      field === "updatedAt"
+        ? effectiveUpdatedAt(b, filterTransactionsByProductId(b.id))
+        : b[field];
     if (!aValue && !bValue) cmp = 0;
     else if (!aValue) cmp = 1;
     else if (!bValue) cmp = -1;
@@ -52,6 +63,7 @@ function sortProducts(
 export default function ProductsView({
   products,
   transactions,
+  filterTransactionsByProductId,
   loading,
   onAdd,
 }: ProductsViewProps) {
@@ -66,7 +78,8 @@ export default function ProductsView({
 
   const filtered = sortProducts(
     products.filter((p) => {
-      if (categoryFilter !== "all" && p.category !== categoryFilter) return false;
+      if (categoryFilter !== "all" && p.category !== categoryFilter)
+        return false;
       if (!query) return true;
       return [p.name, p.brand, p.shade]
         .filter(Boolean)
@@ -74,6 +87,7 @@ export default function ProductsView({
     }),
     sortField,
     sortDir,
+    filterTransactionsByProductId,
   );
 
   function downloadJSON() {
