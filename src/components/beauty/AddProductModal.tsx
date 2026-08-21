@@ -4,7 +4,6 @@ import {
   Input,
   Modal,
   Select,
-  TextArea,
   type ModalControls,
 } from "@slauyama/ui";
 import { ALL_BRANDS, Brand, Category } from "../../constants";
@@ -31,7 +30,6 @@ const BLANK: ProductInput = {
   shade: "",
   size: "",
   barcode: "",
-  notes: "",
   imageUrl: "",
   retailerUrl: "",
 };
@@ -121,16 +119,6 @@ export default function AddProductModal({
               onChange={set("barcode")}
               placeholder="e.g. 3614272263955"
               inputMode="numeric"
-            />
-          </div>
-
-          <div>
-            <TextArea
-              label="Notes"
-              value={form.notes}
-              onChange={set("notes")}
-              placeholder="Any notes about this product…"
-              rows={2}
             />
           </div>
 

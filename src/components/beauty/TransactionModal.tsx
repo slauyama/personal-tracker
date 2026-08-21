@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Button, Input, Modal, type ModalControls } from "@slauyama/ui";
+import {
+  Button,
+  Input,
+  Modal,
+  TextArea,
+  type ModalControls,
+} from "@slauyama/ui";
 import type {
   Transaction,
   TransactionInput,
@@ -14,7 +20,7 @@ interface TransactionModalProps {
   modalControls: ModalControls;
 }
 
-type FormEvent = React.ChangeEvent<HTMLInputElement>;
+type FormEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 function blank(productId: string): TransactionInput {
   return {
@@ -23,6 +29,7 @@ function blank(productId: string): TransactionInput {
     price: null,
     location: "",
     finishDate: "",
+    notes: "",
   };
 }
 
@@ -115,6 +122,14 @@ export default function TransactionModal({
               onChange={set("finishDate")}
             />
           </div>
+
+          <TextArea
+            label="Notes"
+            value={form.notes}
+            onChange={set("notes")}
+            placeholder="Any notes about this purchase…"
+            rows={2}
+          />
 
           <div className="flex pt-2 justify-between">
             {onDelete && (

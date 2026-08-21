@@ -9,7 +9,6 @@ export interface Product {
   shade: string;
   size: string;
   barcode: string;
-  notes: string;
   imageUrl: string;
   retailerUrl: string;
   createdAt: string;

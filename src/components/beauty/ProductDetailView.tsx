@@ -145,6 +145,11 @@ function TransactionsList({
                 <Text size="xs" className="text-zinc-400">
                   {durationLabel(t)}
                 </Text>
+                {t.notes && (
+                  <Text size="xs" className="text-zinc-400 truncate">
+                    {t.notes}
+                  </Text>
+                )}
               </div>
               {t.price != null && (
                 <Text size="sm" className="font-semibold shrink-0">
@@ -286,7 +291,6 @@ export default function ProductDetailView({
             <Row label="Category" value={product.category} />
             <Row label="Shade" value={product.shade} />
             <Row label="Size" value={product.size} />
-            <Row label="Notes" value={product.notes} />
           </dl>
 
           {priced.length > 0 && (

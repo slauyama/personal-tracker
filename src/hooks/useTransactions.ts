@@ -7,6 +7,7 @@ export interface Transaction {
   price: number | null;
   location: string;
   finishDate: string;
+  notes: string;
   createdAt: string;
 }
 
