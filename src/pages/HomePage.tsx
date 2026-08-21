@@ -18,7 +18,7 @@ export default function HomePage() {
             onClick={() => navigate(to)}
             className="aspect-square flex flex-col items-center justify-center gap-3 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-100 dark:border-zinc-700 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-400 transition-all cursor-pointer group"
           >
-            <span className="text-4xl group-hover:scale-110 transition-transform duration-200">
+            <span className="text-4xl transition-transform duration-200">
               {emoji}
             </span>
             <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
