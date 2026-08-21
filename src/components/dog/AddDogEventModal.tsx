@@ -9,7 +9,7 @@ import {
 } from "@slauyama/ui";
 import { ALL_DOG_EVENT_TYPES, DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface AddDogEventModalProps {
   initialValues?: DogEvent;
@@ -41,7 +41,7 @@ export default function AddDogEventModal({
   onDelete,
   modalControls,
 }: AddDogEventModalProps) {
-  const isMobile = useMediaQuery("(max-width: 640px)");
+  const { isSmall } = useBreakpoints();
 
   const isEdit = !!initialValues;
 
@@ -75,7 +75,7 @@ export default function AddDogEventModal({
 
   return (
     <Modal
-      variant={isMobile ? "fullscreen" : "basic"}
+      variant={isSmall ? "fullscreen" : "basic"}
       modalControls={modalControls}
       title={isEdit ? "Edit Event" : "Add Event"}
       className="max-h-screen overflow-y-auto"

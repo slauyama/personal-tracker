@@ -10,7 +10,7 @@ import type {
   Transaction,
   TransactionInput,
 } from "../../hooks/useTransactions";
-import { useBreakpoints } from "../../hooks/useBreakpoints";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface TransactionModalProps {
   productId: string;

@@ -1,14 +1,8 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Input,
-  Modal,
-  Select,
-  type ModalControls,
-} from "@slauyama/ui";
+import { Button, Input, Modal, Select, type ModalControls } from "@slauyama/ui";
 import { ALL_BRANDS, Brand, Category } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
-import { useBreakpoints } from "../../hooks/useBreakpoints";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface AddProductProps {
   categories: string[];

@@ -15,7 +15,7 @@ import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface AddDogPurchaseModalProps {
   initialValues?: DogPurchase;
@@ -54,7 +54,7 @@ export default function AddDogPurchaseModal({
   modalControls,
 }: AddDogPurchaseModalProps) {
   const isEdit = !!initialValues;
-  const isMobile = useMediaQuery("(max-width: 640px)");
+  const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<DogPurchaseInput>(
     initialValues
@@ -93,7 +93,7 @@ export default function AddDogPurchaseModal({
   return (
     <Modal
       modalControls={modalControls}
-      variant={isMobile ? "fullscreen" : "basic"}
+      variant={isSmall ? "fullscreen" : "basic"}
       title={isEdit ? "Edit Purchase" : "Add Purchase"}
       className="max-h-screen overflow-y-auto"
     >

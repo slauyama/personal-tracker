@@ -14,6 +14,7 @@ import {
   useIsOpen,
   useTableSort,
 } from "@slauyama/ui";
+import { useBreakpoints } from "@slauyama/hooks";
 import type {
   DogPurchase,
   DogPurchaseInput,
@@ -22,7 +23,6 @@ import AddDogPurchaseModal from "./AddDogPurchaseModal";
 import ConfirmModal from "../ui/ConfirmModal";
 import CategoryBadge from "./CategoryBadge";
 import { PURCHASE_CATEGORY_COLORS } from "./categoryColors";
-import { useBreakpoints } from "../../hooks/useBreakpoints";
 
 interface DogPurchasesViewProps {
   dogPurchases: DogPurchase[];
