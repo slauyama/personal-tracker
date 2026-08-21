@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
-import { Button, IconButton, Input, Select, Text, useIsOpen } from "@slauyama/ui";
+import { Button, IconButton, Input, Select, Spinner, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ProductCard from "./ProductCard";
 import { AnimatePresence } from "framer-motion";
@@ -11,6 +11,7 @@ import { AnimatePresence } from "framer-motion";
 interface ProductsViewProps {
   products: Product[];
   transactions: Transaction[];
+  loading: boolean;
   onAdd: (data: ProductInput) => void;
 }
 
@@ -49,6 +50,7 @@ function sortProducts(
 export default function ProductsView({
   products,
   transactions,
+  loading,
   onAdd,
 }: ProductsViewProps) {
   const navigate = useNavigate();
@@ -91,14 +93,14 @@ export default function ProductsView({
 
   return (
     <>
-      <div className="flex flex-wrap gap-2 mb-6 items-center">
+      <div className="flex flex-col sm:flex-row gap-2 mb-6 sm:items-center">
         <Input
           label="Search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <div className="w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
+        <div className="hidden sm:block w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
 
         <Select
           label="Categories"
@@ -107,53 +109,61 @@ export default function ProductsView({
           options={CATEGORY_OPTIONS}
         />
 
-        <div className="w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
+        <div className="hidden sm:block w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
 
-        <Select
-          label="Sort"
-          value={sortField}
-          onChange={(e) => setSortField(e.target.value as SortField)}
-          options={SORT_OPTIONS}
-        />
-        <IconButton
-          onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-          title={sortDir === "asc" ? "Ascending" : "Descending"}
-        >
-          <span
-            className={`transition-all duration-400 ${
-              sortDir !== "asc" ? "rotate-180 " : "rotate-0"
-            }`}
+        <div className="flex gap-2 items-center">
+          <Select
+            label="Sort"
+            value={sortField}
+            onChange={(e) => setSortField(e.target.value as SortField)}
+            options={SORT_OPTIONS}
+          />
+          <IconButton
+            onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
+            title={sortDir === "asc" ? "Ascending" : "Descending"}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <span
+              className={`transition-all duration-400 ${
+                sortDir !== "asc" ? "rotate-180 " : "rotate-0"
+              }`}
             >
-              <line x1="12" y1="6" x2="12" y2="19" />
-              <polyline points="18 12 12 5 6 12" />
-            </svg>
-          </span>
-        </IconButton>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="12" y1="6" x2="12" y2="19" />
+                <polyline points="18 12 12 5 6 12" />
+              </svg>
+            </span>
+          </IconButton>
+        </div>
 
-        <div className="flex-1" />
+        <div className="hidden sm:block flex-1" />
 
-        <div className="hidden sm:inline-flex">
-          <Button variant="tonal" onClick={downloadJSON}>
-            Export
+        <div className="flex gap-2">
+          <div className="hidden sm:inline-flex">
+            <Button variant="tonal" onClick={downloadJSON}>
+              Export
+            </Button>
+          </div>
+          <Button variant="filled" onClick={addProductModal.open}>
+            <span className="sm:hidden">Add</span>
+            <span className="hidden sm:inline">Add Product</span>
           </Button>
         </div>
-        <Button variant="filled" onClick={addProductModal.open}>
-          <span className="sm:hidden">Add</span>
-          <span className="hidden sm:inline">Add Product</span>
-        </Button>
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <Spinner />
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-20">
           <Text as="p" className="text-5xl mb-3">
             💄

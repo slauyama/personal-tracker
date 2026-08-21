@@ -8,14 +8,10 @@ import StatsView from "../components/beauty/StatsView";
 import { Button, Heading, Text } from "@slauyama/ui";
 
 export default function BeautyPage() {
-  const { products, addProduct, updateProduct, deleteProduct } =
+  const { products, loading, addProduct, updateProduct, deleteProduct } =
     useProducts();
-  const {
-    transactions,
-    addTransaction,
-    updateTransaction,
-    deleteTransaction,
-  } = useTransactions();
+  const { transactions, addTransaction, updateTransaction, deleteTransaction } =
+    useTransactions();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -52,6 +48,7 @@ export default function BeautyPage() {
             <ProductsView
               products={products}
               transactions={transactions}
+              loading={loading}
               onAdd={addProduct}
             />
           }
@@ -62,6 +59,7 @@ export default function BeautyPage() {
             <ProductDetailView
               categories={ALL_CATEGORIES}
               products={products}
+              loadingProducts={loading}
               transactions={transactions}
               onUpdate={updateProduct}
               onDelete={deleteProduct}
@@ -73,7 +71,9 @@ export default function BeautyPage() {
         />
         <Route
           path="stats"
-          element={<StatsView products={products} transactions={transactions} />}
+          element={
+            <StatsView products={products} transactions={transactions} />
+          }
         />
       </Routes>
     </div>

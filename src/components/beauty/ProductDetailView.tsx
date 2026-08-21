@@ -12,6 +12,7 @@ import {
   Heading,
   IconButton,
   Link,
+  Spinner,
   Text,
   useIsOpen,
 } from "@slauyama/ui";
@@ -25,6 +26,7 @@ import Caption from "../ui/Caption";
 interface ProductDetailViewProps {
   categories: string[];
   products: Product[];
+  loadingProducts: boolean;
   transactions: Transaction[];
   onUpdate: (id: string, data: ProductInput) => void;
   onDelete: (id: string) => void;
@@ -178,6 +180,7 @@ export default function ProductDetailView({
   categories,
   products,
   transactions,
+  loadingProducts,
   onUpdate,
   onDelete,
   onAddTransaction,
@@ -230,6 +233,13 @@ export default function ProductDetailView({
     }
   }
 
+  if (loadingProducts) {
+    return (
+      <div className="flex justify-center py-20">
+        <Spinner />
+      </div>
+    );
+  }
   if (!product) {
     return (
       <div className="text-center py-20">
