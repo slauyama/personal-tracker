@@ -12,11 +12,11 @@
     "sync": "tsx scripts/sync_prod_to_dev.ts"
   },
   "dependencies": {
+    "@slauyama/hooks": "^1.4.0",
     "@slauyama/ui": "^2.4.4",
     "@tailwindcss/postcss": "^4.3.0",
     "firebase": "^12.13.0",
     "framer-motion": "^12.38.0",
-    "html5-qrcode": "^2.3.8",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.15.0"
