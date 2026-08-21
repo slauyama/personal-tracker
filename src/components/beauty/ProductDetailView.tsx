@@ -21,7 +21,9 @@ import AddProductModal from "./AddProductModal";
 import TransactionModal from "./TransactionModal";
 
 import AmazonIcon from "../../assets/amazon_icon.png";
+import AmazonWhiteIcon from "../../assets/amazon-white-icon.svg";
 import Caption from "../ui/Caption";
+import { useIsDarkMode } from "@slauyama/hooks";
 
 interface ProductDetailViewProps {
   categories: string[];
@@ -196,6 +198,7 @@ export default function ProductDetailView({
   const confirmDeleteModal = useIsOpen();
   const transactionModal = useIsOpen();
   const confirmDeleteTransactionModal = useIsOpen();
+  const [isDarkMode] = useIsDarkMode();
   const [activeTransaction, setActiveTransaction] =
     useState<Transaction | null>(null);
   const [copied, setCopied] = useState(false);
@@ -334,8 +337,10 @@ export default function ProductDetailView({
               title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
             >
               <img
-                src={AmazonIcon}
+                src={isDarkMode ? AmazonWhiteIcon : AmazonIcon}
                 alt="Search on Amazon"
+                height={20}
+                width={20}
                 className="h-5 w-auto"
               />
             </Link>

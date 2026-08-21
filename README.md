@@ -5,7 +5,6 @@
 ### High
 
 - Create playwright tests to ensure website isnt down after deploying
-- Amazon White Logo for Dark Mode
 
 ### Low
 
