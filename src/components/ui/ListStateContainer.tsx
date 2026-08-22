@@ -8,10 +8,10 @@ interface ListStateContainerProps {
   isLoading: boolean;
   hasError?: unknown;
   isEmpty: boolean;
-  hasNoMatches: boolean;
+  hasNoMatches?: boolean;
   errorContent?: ReactNode;
   emptyContent: ReactNode;
-  noMatchContent: ReactNode;
+  noMatchContent?: ReactNode;
   children: ReactNode;
 }
 

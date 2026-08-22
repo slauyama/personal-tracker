@@ -208,13 +208,11 @@ function PriceChecksList({
       <ListStateContainer
         isLoading={loading}
         isEmpty={sorted.length === 0}
-        hasNoMatches={false}
         emptyContent={
           <Text size="sm" className="text-zinc-400">
             No price checks yet.
           </Text>
         }
-        noMatchContent={null}
       >
         <Card className="overflow-hidden">
           {sorted.map((pc, i) => (
