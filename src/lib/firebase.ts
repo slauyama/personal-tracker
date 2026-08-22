@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { initializeFirestore } from "firebase/firestore";
+import { getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -17,3 +18,4 @@ export const auth = getAuth(app);
 // Optional fields (e.g. DogPurchase.quantity) are sent as `undefined` when left
 // blank — Firestore rejects that by default, so ignore rather than error.
 export const db = initializeFirestore(app, { ignoreUndefinedProperties: true });
+export const functions = getFunctions(app);

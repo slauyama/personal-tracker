@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useParams, Link as RouterLink } from "react-router-dom";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../lib/firebase";
 import type { Product, ProductLookup } from "../../hooks/useProducts";
 import type {
   Transaction,
   TransactionInput,
 } from "../../hooks/useTransactions";
+import { usePriceChecks, type PriceCheck } from "../../hooks/usePriceChecks";
 import { daysOwned, formatCurrency } from "../../lib/transactionStats";
 import {
   Button,
@@ -20,6 +23,7 @@ import ConfirmModal from "../ui/ConfirmModal";
 import AddProductModal from "./AddProductModal";
 import TransactionModal from "./TransactionModal";
 import Caption from "../ui/Caption";
+import ListStateContainer from "../ui/ListStateContainer";
 
 interface ProductDetailViewProps {
   categories: string[];
@@ -163,6 +167,87 @@ function TransactionsList({
   );
 }
 
+interface PriceChecksListProps {
+  priceChecks: PriceCheck[];
+  loading: boolean;
+  checking: boolean;
+  checkError: string | null;
+  onCheck: () => void;
+}
+
+function formatCheckedDate(date: string): string {
+  const parsed = new Date(date);
+  if (isNaN(parsed.getTime())) return "";
+  return parsed.toLocaleDateString();
+}
+
+function PriceChecksList({
+  priceChecks,
+  loading,
+  checking,
+  checkError,
+  onCheck,
+}: PriceChecksListProps) {
+  const sorted = [...priceChecks].sort((a, b) => a.price - b.price);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <Caption className="tracking-wide">Online Prices</Caption>
+        <Button variant="text" size="sm" onClick={onCheck} disabled={checking}>
+          {checking ? "Checking…" : "Check Prices"}
+        </Button>
+      </div>
+
+      {checkError && (
+        <Text size="sm" className="text-red-500 mb-2">
+          {checkError}
+        </Text>
+      )}
+
+      <ListStateContainer
+        isLoading={loading}
+        isEmpty={sorted.length === 0}
+        hasNoMatches={false}
+        emptyContent={
+          <Text size="sm" className="text-zinc-400">
+            No price checks yet.
+          </Text>
+        }
+        noMatchContent={null}
+      >
+        <Card className="overflow-hidden">
+          {sorted.map((pc, i) => (
+            <div
+              key={pc.id}
+              className={`flex items-center justify-between gap-3 px-4 py-3 ${
+                i < sorted.length - 1
+                  ? "border-b border-zinc-50 dark:border-zinc-700"
+                  : ""
+              }`}
+            >
+              <div className="min-w-0">
+                <Text size="sm" className="font-medium">
+                  {pc.retailer}
+                </Text>
+                <Text size="xs" className="text-zinc-400">
+                  Checked {formatCheckedDate(pc.date)}
+                </Text>
+              </div>
+              <div className="text-right">
+                <Text size="sm" className="font-semibold shrink-0">
+                  ${formatCurrency(pc.price)}
+                </Text>
+                {pc.url && <Link href={pc.url}>Visit</Link>}
+              </div>
+            </div>
+          ))}
+        </Card>
+      </ListStateContainer>
+    </div>
+  );
+}
+
 function BackIcon() {
   return (
     <svg
@@ -192,6 +277,7 @@ export default function ProductDetailView({
   const { id } = useParams();
   const navigate = useNavigate();
   const lookup = findProductById(id);
+  const { priceChecks, loading: priceChecksLoading } = usePriceChecks(id);
 
   const editModal = useIsOpen();
   const confirmDeleteModal = useIsOpen();
@@ -200,6 +286,8 @@ export default function ProductDetailView({
   const [activeTransaction, setActiveTransaction] =
     useState<Transaction | null>(null);
   const [copied, setCopied] = useState(false);
+  const [checkingPrices, setCheckingPrices] = useState(false);
+  const [checkPricesError, setCheckPricesError] = useState<string | null>(null);
 
   if (loadingProducts) {
     return (
@@ -233,6 +321,29 @@ export default function ProductDetailView({
   const totalSpent = priced.reduce((sum, t) => sum + (t.price ?? 0), 0);
   const totalDays = priced.reduce((sum, t) => sum + daysOwned(t, today), 0);
   const avgCostPerDay = totalDays > 0 ? totalSpent / totalDays : null;
+  const averageCostPerPurchage = totalSpent / productTransactions.length;
+
+  async function handleCheckPrices() {
+    setCheckingPrices(true);
+    setCheckPricesError(null);
+    try {
+      const searchProductPrices = httpsCallable(
+        functions,
+        "searchProductPrices",
+      );
+      await searchProductPrices({
+        productId: product.id,
+        brand: product.brand,
+        name: product.name,
+        shade: product.shade,
+        size: product.size,
+      });
+    } catch {
+      setCheckPricesError("Couldn't check prices — try again later.");
+    } finally {
+      setCheckingPrices(false);
+    }
+  }
 
   async function handleShare() {
     const url = window.location.href;
@@ -281,28 +392,9 @@ export default function ProductDetailView({
         {product.imageUrl && <ProductImage url={product.imageUrl} />}
         <div className="flex grow flex-col gap-4">
           <dl className="flex-col gap-1">
-            <Row label="Category" value={product.category} />
             <Row label="Shade" value={product.shade} />
             <Row label="Size" value={product.size} />
           </dl>
-
-          {priced.length > 0 && (
-            <div className="flex gap-4">
-              <Card>
-                <Text className="p-2">
-                  Total Spent: {`$${formatCurrency(totalSpent)}`}
-                </Text>
-              </Card>
-              <Card>
-                <Text className="p-2">
-                  Average Cost Per Day:{" "}
-                  {avgCostPerDay != null
-                    ? `$${formatCurrency(avgCostPerDay)}`
-                    : "—"}
-                </Text>
-              </Card>
-            </div>
-          )}
 
           <TransactionsList
             transactions={productTransactions}
@@ -314,6 +406,40 @@ export default function ProductDetailView({
               setActiveTransaction(t);
               transactionModal.open();
             }}
+          />
+
+          {priced.length > 0 && (
+            <div className="flex gap-4">
+              <Card>
+                <Text className="p-2">
+                  Total Spent: {`$${formatCurrency(totalSpent)}`}
+                </Text>
+              </Card>
+              <Card>
+                <Text className="p-2">
+                  Cost Per Purchase:{" "}
+                  {averageCostPerPurchage != null
+                    ? `$${formatCurrency(averageCostPerPurchage)}`
+                    : "—"}
+                </Text>
+              </Card>
+              <Card>
+                <Text className="p-2">
+                  Cost Per Day:{" "}
+                  {avgCostPerDay != null
+                    ? `$${formatCurrency(avgCostPerDay)}`
+                    : "—"}
+                </Text>
+              </Card>
+            </div>
+          )}
+
+          <PriceChecksList
+            priceChecks={priceChecks}
+            loading={priceChecksLoading}
+            checking={checkingPrices}
+            checkError={checkPricesError}
+            onCheck={handleCheckPrices}
           />
 
           <br />

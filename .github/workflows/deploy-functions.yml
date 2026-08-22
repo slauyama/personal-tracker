@@ -1,0 +1,30 @@
+name: Deploy Firebase Functions
+
+on:
+  push:
+    branches: [main]
+    paths: [functions/**]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: latest
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: "@slauyama"
+      - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm ci
+        working-directory: functions
+      - run: echo "$FIREBASE_PROD_SERVICE_ACCOUNT" > "$RUNNER_TEMP/service-account.json"
+        env:
+          FIREBASE_PROD_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_PROD_SERVICE_ACCOUNT }}
+      - run: npx firebase deploy --only functions --project prod
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json

@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "dev": "personal-tracker-prod-df903",
+    "prod": "personal-tracker-6ba3c",
+    "default": "personal-tracker-prod-df903"
+  }
+}
