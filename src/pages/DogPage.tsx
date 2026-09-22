@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { Button, Heading } from "@slauyama/ui";
+import { Button } from "@slauyama/ui";
 import { useDogEvents } from "../hooks/useDogEvents";
 import { useDogPurchases } from "../hooks/useDogPurchases";
 import DogEventsView from "../components/dog/DogEventsView";
@@ -28,12 +28,8 @@ export default function DogPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <Heading as="h1" variant="display">
-          Momo Tracker
-        </Heading>
         <Button
           variant="outlined"
-          size="sm"
           onClick={() => navigate(showEvents ? "/dog" : "/dog/events")}
         >
           {showEvents ? "← Purchases" : "Events"}

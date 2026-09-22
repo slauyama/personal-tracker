@@ -1,16 +1,9 @@
 import { useState } from "react";
-import {
-  Button,
-  Input,
-  Modal,
-  TextArea,
-  type ModalControls,
-} from "@slauyama/ui";
+import { Button, Dialog, TextField, type ModalControls } from "@slauyama/ui";
 import type {
   Transaction,
   TransactionInput,
 } from "../../hooks/useTransactions";
-import { useBreakpoints } from "@slauyama/hooks";
 
 interface TransactionModalProps {
   productId: string;
@@ -46,7 +39,6 @@ export default function TransactionModal({
   modalControls,
 }: TransactionModalProps) {
   const isEdit = !!initialValues;
-  const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<TransactionInput>(
     initialValues ? toInput(initialValues) : blank(productId),
@@ -78,78 +70,83 @@ export default function TransactionModal({
   }
 
   return (
-    <Modal
-      variant={isSmall ? "fullscreen" : "basic"}
-      modalControls={modalControls}
-      headerAction={
-        <Button variant="filled" type="button" onClick={() => saveForm()}>
-          {isEdit ? "Save" : "Add Purchase"}
-        </Button>
-      }
-      title={isEdit ? "Edit Purchase" : "Add Purchase"}
-    >
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4 md:gap-3">
-            <Input
-              label="Purchase Date"
-              type="date"
-              required
-              value={form.purchaseDate}
-              onChange={set("purchaseDate")}
-            />
-            <Input
-              label="Price"
-              prefix="$"
-              type="text"
-              inputMode="decimal"
-              value={priceStr}
-              onChange={(e) => setPriceStr(e.target.value)}
-              onBlur={handlePriceBlur}
-              placeholder="0.00"
-            />
-            <Input
-              label="Location"
-              type="text"
-              value={form.location}
-              onChange={set("location")}
-              placeholder="e.g. Sephora, Ulta"
-            />
-            <Input
-              label="Finish Date"
-              type="date"
-              value={form.finishDate}
-              onChange={set("finishDate")}
-            />
-          </div>
-
-          <TextArea
-            label="Notes"
-            value={form.notes}
-            onChange={set("notes")}
-            placeholder="Any notes about this purchase…"
-            rows={2}
-          />
-
-          <div className="flex pt-2 justify-between">
-            {onDelete && (
-              <Button
-                surface="error"
-                variant="filled"
-                color="error"
-                type="button"
-                onClick={onDelete}
-                className="w-40"
-              >
-                Delete
-              </Button>
-            )}
-            <Button variant="filled" type="submit" className="hidden">
-              {isEdit ? "Save" : "Add Purchase"}
+    <Dialog
+      open={modalControls.isOpen}
+      onClose={modalControls.close}
+      headline={isEdit ? "Edit Purchase" : "Add Purchase"}
+      actions={
+        <>
+          {onDelete && (
+            <Button
+              variant="filled"
+              type="button"
+              onClick={onDelete}
+              className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
+            >
+              Delete
             </Button>
-          </div>
-        </form>
-      </div>
-    </Modal>
+          )}
+          <Button variant="text" type="button" onClick={modalControls.close}>
+            Cancel
+          </Button>
+          <Button variant="filled" type="button" onClick={saveForm}>
+            {isEdit ? "Save" : "Add Purchase"}
+          </Button>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-3">
+          <TextField
+            variant="outlined"
+            label="Purchase Date"
+            type="date"
+            fullWidth
+            value={form.purchaseDate}
+            onChange={set("purchaseDate")}
+          />
+          <TextField
+            variant="outlined"
+            label="Price"
+            prefix="$"
+            type="text"
+            fullWidth
+            inputMode="decimal"
+            value={priceStr}
+            onChange={(e) => setPriceStr(e.target.value)}
+            onBlur={handlePriceBlur}
+            placeholder="0.00"
+          />
+          <TextField
+            variant="outlined"
+            label="Location"
+            type="text"
+            fullWidth
+            value={form.location}
+            onChange={set("location")}
+            placeholder="e.g. Sephora, Ulta"
+          />
+          <TextField
+            variant="outlined"
+            label="Finish Date"
+            type="date"
+            fullWidth
+            value={form.finishDate}
+            onChange={set("finishDate")}
+          />
+        </div>
+
+        <TextField
+          variant="outlined"
+          label="Notes"
+          textarea
+          fullWidth
+          value={form.notes}
+          onChange={set("notes")}
+          placeholder="Any notes about this purchase…"
+          rows={2}
+        />
+      </form>
+    </Dialog>
   );
 }

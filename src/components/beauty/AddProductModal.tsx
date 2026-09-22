@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Button, Input, Modal, Select, type ModalControls } from "@slauyama/ui";
+import {
+  Button,
+  Dialog,
+  Select,
+  TextField,
+  type ModalControls,
+} from "@slauyama/ui";
 import { ALL_BRANDS, Brand, Category } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
-import { useBreakpoints } from "@slauyama/hooks";
 
 interface AddProductProps {
   categories: string[];
@@ -41,7 +46,6 @@ export default function AddProductModal({
   modalControls,
 }: AddProductProps) {
   const isEdit = !!initialValues;
-  const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<ProductInput>(
     initialValues ? toInput(initialValues) : { ...BLANK },
@@ -52,105 +56,125 @@ export default function AddProductModal({
       setForm((prev) => ({ ...prev, [field]: e.target.value }) as ProductInput);
   }
 
-  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function setSelect(field: FormField) {
+    return (value: string) =>
+      setForm((prev) => ({ ...prev, [field]: value }) as ProductInput);
+  }
+
+  function save() {
     if (!form.name.trim()) return;
     onSave(form);
   }
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    save();
+  }
+
   return (
-    <Modal
-      variant={isSmall ? "fullscreen" : "basic"}
-      modalControls={modalControls}
-      title={isEdit ? "Edit Product" : "Add Product"}
+    <Dialog
+      open={modalControls.isOpen}
+      onClose={modalControls.close}
+      headline={isEdit ? "Edit Product" : "Add Product"}
       className="max-h-screen overflow-y-auto"
-    >
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Product Name"
-            type="text"
-            required
-            value={form.name}
-            onChange={set("name")}
-            placeholder="e.g. Soft Matte Foundation"
-          />
-
-          <div className="grid md:grid-cols-2 gap-4 md:gap-3">
-            <Select
-              label="Brand"
-              value={form.brand}
-              onChange={set("brand")}
-              options={ALL_BRANDS}
-              placeholder="Select brand…"
-              className="w-full"
-            />
-            <Select
-              label="Category"
-              value={form.category}
-              onChange={set("category")}
-              options={categories}
-              className="w-full"
-            />
-            <Input
-              label="Shade / Color"
-              type="text"
-              value={form.shade}
-              onChange={set("shade")}
-              placeholder="e.g. 120W Warm Beige"
-            />
-            <Input
-              label="Size"
-              type="text"
-              value={form.size}
-              onChange={set("size")}
-              placeholder="e.g. 1 oz, 30ml"
-            />
-            <Input
-              label="Barcode"
-              type="text"
-              value={form.barcode}
-              onChange={set("barcode")}
-              placeholder="e.g. 3614272263955"
-              inputMode="numeric"
-            />
-          </div>
-
-          <Input
-            label="Image URL"
-            type="url"
-            value={form.imageUrl}
-            onChange={set("imageUrl")}
-            placeholder="https://"
-          />
-
-          <Input
-            label="Manufacturer Link"
-            type="url"
-            value={form.retailerUrl}
-            onChange={set("retailerUrl")}
-            placeholder="https://"
-          />
-
-          <div className="flex pt-2 justify-between">
-            {onDelete && (
-              <Button
-                surface="error"
-                variant="filled"
-                color="error"
-                type="button"
-                onClick={onDelete}
-                className="w-40"
-              >
-                Delete
-              </Button>
-            )}
-            <Button variant="filled" type="submit" className="hidden md:block">
-              {isEdit ? "Save" : "Add Product"}
+      actions={
+        <>
+          {onDelete && (
+            <Button
+              variant="filled"
+              type="button"
+              onClick={onDelete}
+              className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
+              icon="delete"
+            >
+              Delete
             </Button>
-          </div>
-        </form>
-      </div>
-    </Modal>
+          )}
+          <Button variant="text" type="button" onClick={modalControls.close}>
+            Cancel
+          </Button>
+          <Button variant="filled" type="button" onClick={save}>
+            {isEdit ? "Save" : "Add Product"}
+          </Button>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <TextField
+          variant="outlined"
+          label="Product Name"
+          type="text"
+          fullWidth
+          value={form.name}
+          onChange={set("name")}
+          placeholder="e.g. Soft Matte Foundation"
+        />
+
+        <div className="grid md:grid-cols-2 gap-4 md:gap-3">
+          <Select
+            label="Brand"
+            value={form.brand}
+            onChange={setSelect("brand")}
+            options={ALL_BRANDS.map((b) => ({ value: b, label: b }))}
+            fullWidth
+          />
+          <Select
+            label="Category"
+            value={form.category}
+            onChange={setSelect("category")}
+            options={categories.map((c) => ({ value: c, label: c }))}
+            fullWidth
+          />
+          <TextField
+            variant="outlined"
+            label="Shade / Color"
+            type="text"
+            fullWidth
+            value={form.shade}
+            onChange={set("shade")}
+            placeholder="e.g. 120W Warm Beige"
+          />
+          <TextField
+            variant="outlined"
+            label="Size"
+            type="text"
+            fullWidth
+            value={form.size}
+            onChange={set("size")}
+            placeholder="e.g. 1 oz, 30ml"
+          />
+          <TextField
+            variant="outlined"
+            label="Barcode"
+            type="text"
+            fullWidth
+            value={form.barcode}
+            onChange={set("barcode")}
+            placeholder="e.g. 3614272263955"
+            inputMode="numeric"
+          />
+        </div>
+
+        <TextField
+          variant="outlined"
+          label="Image URL"
+          type="url"
+          fullWidth
+          value={form.imageUrl}
+          onChange={set("imageUrl")}
+          placeholder="https://"
+        />
+
+        <TextField
+          variant="outlined"
+          label="Manufacturer Link"
+          type="url"
+          fullWidth
+          value={form.retailerUrl}
+          onChange={set("retailerUrl")}
+          placeholder="https://"
+        />
+      </form>
+    </Dialog>
   );
 }

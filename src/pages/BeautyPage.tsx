@@ -5,7 +5,7 @@ import { ALL_CATEGORIES } from "../constants";
 import ProductsView from "../components/beauty/ProductsView";
 import ProductDetailView from "../components/beauty/ProductDetailView";
 import StatsView from "../components/beauty/StatsView";
-import { Button, Heading, Text } from "@slauyama/ui";
+import { Button, Text } from "@slauyama/ui";
 
 export default function BeautyPage() {
   const { products, loading, addProduct, findProductById } = useProducts();
@@ -27,17 +27,13 @@ export default function BeautyPage() {
       {showListHeader && (
         <div className="flex justify-between items-center mb-6">
           <div>
-            <Heading as="h1" variant="display">
-              Beauty Tracker
-            </Heading>
             <Text as="p" className="mt-0.5">
               {products.length} product{products.length !== 1 ? "s" : ""}{" "}
               tracked
             </Text>
           </div>
           <Button
-            variant="tonal"
-            size="sm"
+            variant="text"
             onClick={() => navigate(showStats ? "/beauty" : "/beauty/stats")}
           >
             {showStats ? "← Products" : "Stats"}

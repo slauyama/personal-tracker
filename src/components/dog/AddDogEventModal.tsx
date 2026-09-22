@@ -1,15 +1,13 @@
 import { useState } from "react";
 import {
   Button,
-  Input,
-  Modal,
+  Dialog,
   Select,
-  TextArea,
+  TextField,
   type ModalControls,
 } from "@slauyama/ui";
 import { ALL_DOG_EVENT_TYPES, DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
-import { useBreakpoints } from "@slauyama/hooks";
 
 interface AddDogEventModalProps {
   initialValues?: DogEvent;
@@ -41,8 +39,6 @@ export default function AddDogEventModal({
   onDelete,
   modalControls,
 }: AddDogEventModalProps) {
-  const { isSmall } = useBreakpoints();
-
   const isEdit = !!initialValues;
 
   const [form, setForm] = useState<DogEventInput>(
@@ -61,8 +57,7 @@ export default function AddDogEventModal({
       );
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function save() {
     const weightLbs =
       form.type === DogEventType.Weight
         ? (() => {
@@ -73,81 +68,86 @@ export default function AddDogEventModal({
     onSave({ ...form, weightLbs });
   }
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    save();
+  }
+
   return (
-    <Modal
-      variant={isSmall ? "fullscreen" : "basic"}
-      modalControls={modalControls}
-      title={isEdit ? "Edit Event" : "Add Event"}
+    <Dialog
+      open={modalControls.isOpen}
+      onClose={modalControls.close}
+      headline={isEdit ? "Edit Event" : "Add Event"}
       className="max-h-screen overflow-y-auto"
+      actions={
+        <>
+          {onDelete && (
+            <Button
+              variant="filled"
+              type="button"
+              onClick={onDelete}
+              className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
+            >
+              Delete
+            </Button>
+          )}
+          <Button variant="text" type="button" onClick={modalControls.close}>
+            Cancel
+          </Button>
+          <Button variant="filled" type="button" onClick={save}>
+            {isEdit ? "Save" : "Add Event"}
+          </Button>
+        </>
+      }
     >
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-3">
-            <Input
-              label="Date"
-              type="date"
-              required
-              value={form.date}
-              onChange={set("date")}
-            />
-            <Select
-              label="Type"
-              value={form.type}
-              onChange={set("type")}
-              options={ALL_DOG_EVENT_TYPES}
-              className="w-full"
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-3">
+          <TextField
+            variant="outlined"
+            label="Date"
+            type="date"
+            fullWidth
+            value={form.date}
+            onChange={set("date")}
+          />
+          <Select
+            label="Type"
+            variant="outlined"
+            value={form.type}
+            onChange={(value) =>
+              setForm((prev) => ({ ...prev, type: value }) as DogEventInput)
+            }
+            options={ALL_DOG_EVENT_TYPES.map((t) => ({ value: t, label: t }))}
+            fullWidth
+          />
+        </div>
 
-          {form.type === DogEventType.Weight && (
-            <Input
-              label="Weight (lbs)"
-              type="text"
-              inputMode="decimal"
-              value={weightStr}
-              onChange={(e) => setWeightStr(e.target.value)}
-              placeholder="e.g. 27"
-            />
-          )}
+        {form.type === DogEventType.Weight && (
+          <TextField
+            variant="outlined"
+            label="Weight (lbs)"
+            type="text"
+            fullWidth
+            inputMode="decimal"
+            value={weightStr}
+            onChange={(e) => setWeightStr(e.target.value)}
+            placeholder="e.g. 27"
+          />
+        )}
 
-          {form.type !== DogEventType.Weight && (
-            <TextArea
-              label="Event"
-              value={form.notes}
-              onChange={set("notes")}
-              placeholder="Any notes about this event…"
-              rows={1}
-            />
-          )}
-
-          <div className="flex pt-2 justify-between">
-            <div className="flex gap-3 pt-2">
-              <Button variant="filled" type="submit">
-                {isEdit ? "Save" : "Add Event"}
-              </Button>
-              <Button
-                variant="text"
-                type="button"
-                onClick={modalControls.close}
-              >
-                Cancel
-              </Button>
-            </div>
-
-            {onDelete && (
-              <Button
-                variant="tonal"
-                surface="error"
-                type="button"
-                onClick={onDelete}
-                className="w-full"
-              >
-                Delete
-              </Button>
-            )}
-          </div>
-        </form>
-      </div>
-    </Modal>
+        {form.type !== DogEventType.Weight && (
+          <TextField
+            variant="outlined"
+            label="Event"
+            textarea
+            fullWidth
+            value={form.notes}
+            onChange={set("notes")}
+            placeholder="Any notes about this event…"
+            rows={1}
+          />
+        )}
+      </form>
+    </Dialog>
   );
 }

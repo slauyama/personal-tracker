@@ -29,7 +29,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center">
       <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-700 p-10 w-full max-w-sm text-center">
-        <Heading as="h1" variant="display" className="mb-2">
+        <Heading as="h1" variant="display-small" className="mb-2">
           Welcome
         </Heading>
         <Text as="p" className="mb-8">
@@ -46,7 +46,7 @@ export default function LoginPage() {
         </Button>
 
         {error && (
-          <Card surface="error">
+          <Card>
             <Caption className="mt-4">{error}</Caption>
           </Card>
         )}

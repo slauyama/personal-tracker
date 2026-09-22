@@ -4,7 +4,7 @@ import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
 import { effectiveUpdatedAt } from "../../lib/transactionStats";
-import { Button, Input, Select, Text, useIsOpen } from "@slauyama/ui";
+import { Button, SearchBar, Select, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ListStateContainer from "../ui/ListStateContainer";
 import ProductCard from "./ProductCard";
@@ -111,18 +111,14 @@ export default function ProductsView({
   return (
     <>
       <div className="flex flex-col sm:flex-row gap-2 mb-6 sm:items-center">
-        <Input
-          label="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
 
         <div className="hidden sm:block w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
 
         <Select
           label="Categories"
           value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
+          onChange={(value) => setCategoryFilter(value)}
           options={CATEGORY_OPTIONS}
         />
 
@@ -131,7 +127,7 @@ export default function ProductsView({
         <Select
           label="Sort"
           value={sortValue}
-          onChange={(e) => setSortValue(e.target.value as SortValue)}
+          onChange={(value) => setSortValue(value as SortValue)}
           options={SORT_OPTIONS}
         />
 
@@ -164,8 +160,8 @@ export default function ProductsView({
             </Text>
             <Text as="p" className="mt-1">
               Hit{" "}
-              <Button variant="text" onClick={addProductModal.open}>
-                + Add Product
+              <Button variant="text" onClick={addProductModal.open} icon="add">
+                Add Product
               </Button>{" "}
               to get started!
             </Text>

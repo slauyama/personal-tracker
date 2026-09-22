@@ -1,4 +1,4 @@
-import { Button, Modal, Text, type ModalControls } from "@slauyama/ui";
+import { Button, Dialog, Text, type ModalControls } from "@slauyama/ui";
 
 interface ConfirmModalProps {
   modalControls: ModalControls;
@@ -16,13 +16,17 @@ export default function ConfirmModal({
   onConfirm,
 }: ConfirmModalProps) {
   return (
-    <Modal modalControls={modalControls} title={title} closeOnBackdrop>
-      <div className="px-6 pt-4 pb-6 flex flex-col gap-4">
-        <Text>{message}</Text>
-        <div className="flex justify-end gap-3 pt-1">
+    <Dialog
+      open={modalControls.isOpen}
+      onClose={modalControls.close}
+      headline={title}
+      actions={
+        <>
+          <Button variant="text" onClick={modalControls.close}>
+            Cancel
+          </Button>
           <Button
             variant="filled"
-            size="sm"
             onClick={() => {
               onConfirm();
               modalControls.close();
@@ -30,11 +34,10 @@ export default function ConfirmModal({
           >
             {confirmLabel}
           </Button>
-          <Button variant="text" size="sm" onClick={modalControls.close}>
-            Cancel
-          </Button>
-        </div>
-      </div>
-    </Modal>
+        </>
+      }
+    >
+      <Text>{message}</Text>
+    </Dialog>
   );
 }

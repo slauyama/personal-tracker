@@ -3,13 +3,8 @@ import {
   Button,
   Card,
   Heading,
-  Input,
+  SearchBar,
   Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   Text,
   useIsOpen,
   useTableSort,
@@ -122,14 +117,7 @@ export default function DogPurchasesView({
   return (
     <>
       <div className="flex flex-wrap gap-2 mb-6 items-center">
-        <Input
-          label="Search"
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search"
-          className="max-w-xs"
-        />
+        <SearchBar value={query} onChange={(e) => setQuery(e.target.value)} />
         <div className="flex-1" />
         <Button onClick={addModal.open}>+ Add Purchase</Button>
       </div>
@@ -143,42 +131,42 @@ export default function DogPurchasesView({
             <Text as="p" className="text-5xl mb-3">
               🐾
             </Text>
-            <Text as="p" size="lg" className="font-medium text-zinc-500">
+            <Text as="p" variant="body-large">
               No purchases yet
             </Text>
           </>
         }
         noMatchContent={
-          <Text as="p" size="lg" className="font-medium text-zinc-500">
+          <Text as="p" variant="body-large">
             No purchases match your search
           </Text>
         }
       >
         <Card className="overflow-x-auto">
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead
+            <Table.Header>
+              <Table.Row>
+                <Table.Head
                   onSort={() => toggleSort("date")}
                   sortDirection={
                     sortField === "date" ? sortDirection : undefined
                   }
                 >
                   Date
-                </TableHead>
-                <TableHead
+                </Table.Head>
+                <Table.Head
                   onSort={() => toggleSort("category")}
                   sortDirection={
                     sortField === "category" ? sortDirection : undefined
                   }
                 >
                   Category
-                </TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>
+                </Table.Head>
+                <Table.Head>Name</Table.Head>
+                <Table.Head>
                   {isSmall ? "Vendor" : "Vendor / Location"}
-                </TableHead>
-                <TableHead
+                </Table.Head>
+                <Table.Head
                   align="right"
                   onSort={() => toggleSort("price")}
                   sortDirection={
@@ -186,54 +174,50 @@ export default function DogPurchasesView({
                   }
                 >
                   Price
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+                </Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {visibleRows.map((purchase) => (
-                <TableRow
+                <Table.Row
                   key={purchase.id}
                   onClick={() => {
                     setActivePurchase(purchase);
                     editModal.open();
                   }}
                 >
-                  <TableCell className="whitespace-nowrap">
+                  <Table.Cell className="whitespace-nowrap">
                     {purchase.date}
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     <CategoryBadge
                       label={purchase.category}
                       color={PURCHASE_CATEGORY_COLORS[purchase.category]}
                     />
-                  </TableCell>
-                  <TableCell className="max-w-xs truncate">
+                  </Table.Cell>
+                  <Table.Cell className="max-w-xs truncate">
                     {purchase.name}
-                  </TableCell>
-                  <TableCell className="truncate">
+                  </Table.Cell>
+                  <Table.Cell className="truncate">
                     {isSmall
                       ? purchase.vendor
                       : [purchase.vendor, purchase.location]
                           .filter(Boolean)
                           .join(" · ") || "—"}
-                  </TableCell>
-                  <TableCell align="right" className="whitespace-nowrap">
+                  </Table.Cell>
+                  <Table.Cell align="right" className="whitespace-nowrap">
                     {purchase.price != null ? formatPrice(purchase.price) : "—"}
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               ))}
-            </TableBody>
+            </Table.Body>
           </Table>
         </Card>
       </ListStateContainer>
 
       {rows.length > PAGE_SIZE && (
         <div className="flex justify-center mt-3">
-          <Button
-            variant="outlined"
-            size="sm"
-            onClick={() => setExpanded((e) => !e)}
-          >
+          <Button variant="outlined" onClick={() => setExpanded((e) => !e)}>
             {expanded ? "Show less" : `Show all ${rows.length}`}
           </Button>
         </div>
@@ -241,7 +225,7 @@ export default function DogPurchasesView({
 
       {dogPurchases.length > 0 && (
         <div className="mt-8">
-          <Heading as="h2" variant="subtitle" className="mb-3">
+          <Heading as="h2" variant="title-large" className="mb-3">
             Cost Summary
           </Heading>
           <div className="grid grid-cols-3 gap-2 md:gap-4">

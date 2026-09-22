@@ -1,9 +1,10 @@
+import { Button, Icon, Text } from "@slauyama/ui";
 import { useNavigate } from "react-router-dom";
 
 const SECTIONS = [
-  { to: "/beauty", label: "Beauty", emoji: "💄" },
-  { to: "/dog", label: "Dog", emoji: "🐾" },
-  { to: "/car", label: "Car", emoji: "🚗" },
+  { to: "/beauty", label: "Beauty", icon: "health_and_beauty" },
+  { to: "/dog", label: "Dog", icon: "sound_detection_dog_barking" },
+  { to: "/car", label: "Car", icon: "directions_car" },
 ];
 
 export default function HomePage() {
@@ -12,23 +13,20 @@ export default function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8">
       <div className="grid grid-cols-3 gap-4 w-full max-w-lg">
-        {SECTIONS.map(({ to, label, emoji }) => (
-          <button
+        {SECTIONS.map(({ to, label, icon }) => (
+          <Button
+            variant="elevated"
             key={to}
             onClick={() => navigate(to)}
-            className="aspect-square flex flex-col items-center justify-center gap-3 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-100 dark:border-zinc-700 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-400 transition-all cursor-pointer group"
+            className="aspect-square h-40 flex flex-col items-center justify-center rounded-2xl transition-all cursor-pointer group"
           >
-            <span className="text-4xl transition-transform duration-200">
-              {emoji}
-            </span>
-            <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
-              {label}
-            </span>
-          </button>
+            <Icon name={icon} size={40} />
+            <Text variant="body-medium"> {label}</Text>
+          </Button>
         ))}
       </div>
 
-      <span className="text-xs text-zinc-400">v{__APP_VERSION__}</span>
+      <Text variant="body-small">v{__APP_VERSION__}</Text>
     </div>
   );
 }

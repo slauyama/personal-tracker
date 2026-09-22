@@ -3,13 +3,8 @@ import {
   Button,
   Card,
   Heading,
-  Input,
+  SearchBar,
   Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   Text,
   useIsOpen,
   useTableSort,
@@ -78,16 +73,12 @@ export default function DogEventsView({
   return (
     <>
       <div className="flex flex-wrap gap-2 mb-6 items-center">
-        <Input
-          label="Search"
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search"
-          className="max-w-xs"
-        />
+        <SearchBar value={query} onChange={(e) => setQuery(e.target.value)} />
+
         <div className="flex-1" />
-        <Button onClick={addModal.open}>+ Add Event</Button>
+        <Button onClick={addModal.open} icon="add">
+          Add Event
+        </Button>
       </div>
 
       <ListStateContainer
@@ -99,74 +90,70 @@ export default function DogEventsView({
             <Text as="p" className="text-5xl mb-3">
               🐾
             </Text>
-            <Text as="p" className="text-lg font-medium text-zinc-500">
+            <Text as="p" variant="body-large">
               No events yet
             </Text>
           </>
         }
         noMatchContent={
-          <Text as="p" className="text-lg font-medium text-zinc-500">
+          <Text as="p" variant="body-large">
             No events match your search
           </Text>
         }
       >
         <Card className="overflow-x-auto">
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead
+            <Table.Header>
+              <Table.Row>
+                <Table.Head
                   onSort={() => toggleSort("date")}
                   sortDirection={
                     sortField === "date" ? sortDirection : undefined
                   }
                 >
                   Date
-                </TableHead>
-                <TableHead
+                </Table.Head>
+                <Table.Head
                   onSort={() => toggleSort("type")}
                   sortDirection={
                     sortField === "type" ? sortDirection : undefined
                   }
                 >
                   Type
-                </TableHead>
-                <TableHead>Notes</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+                </Table.Head>
+                <Table.Head>Notes</Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {visibleRows.map((event) => (
-                <TableRow key={event.id} onClick={() => openEdit(event)}>
-                  <TableCell className="whitespace-nowrap">
+                <Table.Row key={event.id} onClick={() => openEdit(event)}>
+                  <Table.Cell className="whitespace-nowrap">
                     {event.date}
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     <CategoryBadge
                       label={event.type}
                       color={EVENT_TYPE_COLORS[event.type]}
                     />
-                  </TableCell>
-                  <TableCell>{event.notes}</TableCell>
-                </TableRow>
+                  </Table.Cell>
+                  <Table.Cell>{event.notes}</Table.Cell>
+                </Table.Row>
               ))}
-            </TableBody>
+            </Table.Body>
           </Table>
         </Card>
       </ListStateContainer>
 
       {rows.length > PAGE_SIZE && (
         <div className="flex justify-center mt-3">
-          <Button
-            variant="outlined"
-            size="sm"
-            onClick={() => setExpanded((e) => !e)}
-          >
+          <Button variant="outlined" onClick={() => setExpanded((e) => !e)}>
             {expanded ? "Show less" : `Show all ${rows.length}`}
           </Button>
         </div>
       )}
 
       <Card className="p-4 mt-6">
-        <Heading as="h3" variant="title" className="mb-2">
+        <Heading as="h3" variant="headline-small" className="mb-2">
           Weight
         </Heading>
         <DogWeightChart events={dogEvents} onEditWeight={openEdit} />

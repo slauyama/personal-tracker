@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Product } from "../../hooks/useProducts";
 import { Transaction } from "../../hooks/useTransactions";
 import { daysOwned, formatCurrency } from "../../lib/transactionStats";
-import { Card, Heading, Text } from "@slauyama/ui";
+import { Card, Heading, List, Text } from "@slauyama/ui";
 import Caption from "../ui/Caption";
 
 interface StatsViewProps {
@@ -42,11 +42,13 @@ function buildStats(
 
 export function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <Card className="p-4 flex flex-col gap-1">
-      <Text className="text-zinc-400 uppercase tracking-wide">{label}</Text>
-      <span className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
+    <Card variant="filled" className="p-4 flex flex-col gap-2">
+      <Text variant="title-small" className="uppercase tracking-wide">
+        {label}
+      </Text>
+      <Text variant="title-medium" className="text-2xl font-bold">
         {value}
-      </span>
+      </Text>
     </Card>
   );
 }
@@ -80,7 +82,7 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
         <Text as="p" className="text-5xl mb-3">
           💄
         </Text>
-        <Text as="p" size="lg" className="font-medium text-zinc-500">
+        <Text as="p" variant="body-large">
           No products yet
         </Text>
       </div>
@@ -89,7 +91,7 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Heading as="h2" variant="subtitle">
+      <Heading as="h2" variant="title-large">
         Spending Summary
       </Heading>
 
@@ -117,46 +119,28 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
 
       {pricedCount > 0 && (
         <div className="flex flex-col gap-2">
-          <Heading as="h3" variant="subtitle" className="text-zinc-600">
+          <Heading as="h3" variant="title-large">
             Cost / Day by Purchase
           </Heading>
-          <Text size="xs" className="text-zinc-400">
+          <Text variant="body-small">
             Amortized over days owned — decreases over time as you get more use
             from each purchase.
           </Text>
-          <Card className="overflow-hidden mt-1">
-            {stats.map((s, i) => {
-              return (
-                <div
-                  key={s.transaction.id}
-                  className={`flex items-center gap-3 px-4 py-3 ${
-                    i < stats.length - 1
-                      ? "border-b border-zinc-50 dark:border-zinc-700"
-                      : ""
-                  }`}
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-baseline gap-2 mb-1">
-                      <span className="text-sm font-medium text-zinc-800 dark:text-zinc-100 truncate">
-                        {s.product?.name ?? "Unknown product"}
-                      </span>
-                      <span className="text-sm font-semibold text-slate-500 shrink-0">
-                        ${formatCurrency(s.costPerDay, 3)}/day
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <Text size="xs" className="text-zinc-400">
-                        {s.product?.brand || s.product?.category} · $
-                        {formatCurrency(s.price)} · {s.daysOwned}d owned
-                      </Text>
-                      <Caption className="text-zinc-400">
-                        ${formatCurrency(s.costPerDay * 365)}/yr
-                      </Caption>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <Card variant="filled" className="overflow-hidden mt-1">
+            <List>
+              {stats.map((s) => {
+                const supportingText = `${s.product?.brand || s.product?.category} · $
+                          ${formatCurrency(s.price)} · ${s.daysOwned}d owned`;
+                return (
+                  <List.Item
+                    key={s.transaction.id}
+                    headline={s.product?.name ?? "Unknown product"}
+                    supportingText={supportingText}
+                    trailingText={`$${formatCurrency(s.costPerDay, 3)}/day - $${formatCurrency(s.costPerDay * 365)}/yr`}
+                  />
+                );
+              })}
+            </List>
           </Card>
         </div>
       )}

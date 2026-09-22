@@ -1,10 +1,9 @@
 import { useState } from "react";
 import {
   Button,
-  Input,
-  Modal,
+  Dialog,
   Select,
-  TextArea,
+  TextField,
   type ModalControls,
 } from "@slauyama/ui";
 import {
@@ -15,7 +14,6 @@ import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
-import { useBreakpoints } from "@slauyama/hooks";
 
 interface AddDogPurchaseModalProps {
   initialValues?: DogPurchase;
@@ -54,7 +52,6 @@ export default function AddDogPurchaseModal({
   modalControls,
 }: AddDogPurchaseModalProps) {
   const isEdit = !!initialValues;
-  const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<DogPurchaseInput>(
     initialValues
@@ -82,131 +79,142 @@ export default function AddDogPurchaseModal({
     setForm((prev) => ({ ...prev, price: parsed }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function save() {
     if (!form.name.trim()) return;
     const num = parseFloat(quantityStr);
     const quantity = isNaN(num) || quantityStr.trim() === "" ? undefined : num;
     onSave({ ...form, quantity });
   }
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    save();
+  }
+
   return (
-    <Modal
-      modalControls={modalControls}
-      variant={isSmall ? "fullscreen" : "basic"}
-      title={isEdit ? "Edit Purchase" : "Add Purchase"}
+    <Dialog
+      open={modalControls.isOpen}
+      onClose={modalControls.close}
+      headline={isEdit ? "Edit Purchase" : "Add Purchase"}
       className="max-h-screen overflow-y-auto"
+      actions={
+        <>
+          {onDelete && (
+            <Button
+              variant="filled"
+              type="button"
+              onClick={onDelete}
+              className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
+            >
+              Delete Purchase
+            </Button>
+          )}
+          <Button variant="text" type="button" onClick={modalControls.close}>
+            Cancel
+          </Button>
+          <Button variant="filled" type="button" onClick={save}>
+            {isEdit ? "Save" : "Add Purchase"}
+          </Button>
+        </>
+      }
     >
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Name"
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <TextField
+          label="Name"
+          type="text"
+          fullWidth
+          value={form.name}
+          onChange={set("name")}
+          placeholder="e.g. Blue Buffalo Chicken & Brown Rice 30lb"
+        />
+
+        <div className="grid md:grid-cols-2 gap-4 md:gap-3">
+          <TextField
+            label="Date"
+            type="date"
+            fullWidth
+            value={form.date}
+            onChange={set("date")}
+          />
+          <Select
+            label="Category"
+            value={form.category}
+            onChange={(value) =>
+              setForm(
+                (prev) => ({ ...prev, category: value }) as DogPurchaseInput,
+              )
+            }
+            options={ALL_DOG_PURCHASE_CATEGORIES.map((c) => ({
+              value: c,
+              label: c,
+            }))}
+            fullWidth
+          />
+          <TextField
+            label="Vendor"
             type="text"
-            required
-            value={form.name}
-            onChange={set("name")}
-            placeholder="e.g. Blue Buffalo Chicken & Brown Rice 30lb"
+            fullWidth
+            value={form.vendor}
+            onChange={set("vendor")}
+            placeholder="e.g. Pet Food Express"
           />
-
-          <div className="grid md:grid-cols-2 gap-4 md:gap-3">
-            <Input
-              label="Date"
-              type="date"
-              required
-              value={form.date}
-              onChange={set("date")}
-            />
-            <Select
-              label="Category"
-              value={form.category}
-              onChange={set("category")}
-              options={ALL_DOG_PURCHASE_CATEGORIES}
-              className="w-full"
-            />
-            <Input
-              label="Vendor"
-              type="text"
-              value={form.vendor}
-              onChange={set("vendor")}
-              placeholder="e.g. Pet Food Express"
-            />
-            <Input
-              label="Location"
-              type="text"
-              value={form.location}
-              onChange={set("location")}
-              placeholder="e.g. Campbell"
-            />
-            <Input
-              label="Price"
-              prefix="$"
-              type="text"
-              inputMode="decimal"
-              value={priceStr}
-              onChange={(e) => setPriceStr(e.target.value)}
-              onBlur={handlePriceBlur}
-              placeholder="0.00"
-            />
-            <Input
-              label="Quantity"
-              type="text"
-              inputMode="numeric"
-              value={quantityStr}
-              onChange={(e) => setQuantityStr(e.target.value)}
-              placeholder="e.g. 1"
-            />
-            <Input
-              label="Barcode"
-              type="text"
-              value={form.barcode}
-              onChange={set("barcode")}
-              placeholder="e.g. 3614272263955"
-              inputMode="numeric"
-            />
-            <Input
-              label="Manufacturer Link"
-              type="url"
-              value={form.retailerUrl}
-              onChange={set("retailerUrl")}
-              placeholder="https://"
-            />
-          </div>
-
-          <TextArea
-            label="Notes"
-            value={form.notes}
-            onChange={set("notes")}
-            placeholder="Any notes about this purchase…"
-            rows={1}
+          <TextField
+            label="Location"
+            type="text"
+            fullWidth
+            value={form.location}
+            onChange={set("location")}
+            placeholder="e.g. Campbell"
           />
+          <TextField
+            label="Price"
+            prefix="$"
+            type="text"
+            fullWidth
+            inputMode="decimal"
+            value={priceStr}
+            onChange={(e) => setPriceStr(e.target.value)}
+            onBlur={handlePriceBlur}
+            placeholder="0.00"
+          />
+          <TextField
+            label="Quantity"
+            type="text"
+            fullWidth
+            inputMode="numeric"
+            value={quantityStr}
+            onChange={(e) => setQuantityStr(e.target.value)}
+            placeholder="e.g. 1"
+          />
+          <TextField
+            label="Barcode"
+            type="text"
+            fullWidth
+            value={form.barcode}
+            onChange={set("barcode")}
+            placeholder="e.g. 3614272263955"
+            inputMode="numeric"
+          />
+          <TextField
+            label="Manufacturer Link"
+            type="url"
+            fullWidth
+            value={form.retailerUrl}
+            onChange={set("retailerUrl")}
+            placeholder="https://"
+          />
+        </div>
 
-          <div className="flex pt-2 justify-between">
-            {onDelete && (
-              <Button
-                surface="error"
-                variant="tonal"
-                type="button"
-                onClick={onDelete}
-              >
-                Delete Purchase
-              </Button>
-            )}
-            <div>
-              <Button variant="filled" type="submit" className="mr-2">
-                {isEdit ? "Save" : "Add Purchase"}
-              </Button>
-              <Button
-                variant="text"
-                size="sm"
-                type="button"
-                onClick={modalControls.close}
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </Modal>
+        <TextField
+          label="Notes"
+          textarea
+          fullWidth
+          value={form.notes}
+          onChange={set("notes")}
+          placeholder="Any notes about this purchase…"
+          rows={1}
+        />
+      </form>
+    </Dialog>
   );
 }

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Spinner } from "@slauyama/ui";
+import { CircularProgress } from "@slauyama/ui";
 
 type ListStatus = "loading" | "error" | "empty" | "no-match" | "ready";
 
@@ -54,7 +54,7 @@ export default function ListStateContainer({
       >
         {status === "loading" && (
           <div className="flex justify-center py-20">
-            <Spinner />
+            <CircularProgress label="Loading" />
           </div>
         )}
         {status === "error" && (

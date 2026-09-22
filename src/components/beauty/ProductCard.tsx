@@ -43,8 +43,9 @@ export default function ProductCard({
       className="relative"
     >
       <Card
+        interactive
         onClick={onClick}
-        className="flex flex-col transition cursor-pointer hover:shadow-md hover overflow-hidden"
+        className="flex flex-col transition overflow-hidden"
       >
         {showImage && (
           <img
@@ -60,12 +61,12 @@ export default function ProductCard({
               {product.name}
             </h3>
             {product.brand && (
-              <Text size="sm" className="font-thin mt-0.5 truncate">
+              <Text className="font-thin mt-0.5 truncate">
                 {product.brand}
               </Text>
             )}
             {product.shade && (
-              <Text size="sm" className="font-thin mt-0.5 truncate">
+              <Text className="font-thin mt-0.5 truncate">
                 Shade: {product.shade}
               </Text>
             )}

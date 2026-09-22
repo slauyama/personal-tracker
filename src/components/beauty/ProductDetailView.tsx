@@ -12,10 +12,10 @@ import { daysOwned, formatCurrency } from "../../lib/transactionStats";
 import {
   Button,
   Card,
+  CircularProgress,
   Heading,
   IconButton,
-  Link,
-  Spinner,
+  List,
   Text,
   useIsOpen,
 } from "@slauyama/ui";
@@ -49,7 +49,7 @@ function ProductImage({ url }: { url: string }) {
     return (
       <div className="w-40 h-40 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center justify-center gap-1 text-slate-400">
         <span className="text-2xl">🖼️</span>
-        <Text size="sm" className="text-slate-400">
+        <Text className="text-slate-400">
           Image could not be loaded — check the URL
         </Text>
       </div>
@@ -109,7 +109,7 @@ function TransactionsList({
   onAdd,
   onEdit,
 }: TransactionsListProps) {
-  const sorted = [...transactions].sort((a, b) =>
+  const sortedTransactions = [...transactions].sort((a, b) =>
     b.purchaseDate.localeCompare(a.purchaseDate),
   );
 
@@ -117,45 +117,43 @@ function TransactionsList({
     <div>
       <div className="flex items-center justify-between mb-2">
         <Caption className="tracking-wide">Purchases</Caption>
-        <Button variant="text" size="sm" onClick={onAdd}>
-          + Add Purchase
+        <Button variant="text" onClick={onAdd} icon="add">
+          Add Purchase
         </Button>
       </div>
-      {sorted.length === 0 ? (
-        <Text size="sm" className="text-zinc-400">
-          No purchases recorded yet.
-        </Text>
+      {sortedTransactions.length === 0 ? (
+        <Text className="text-zinc-400">No purchases recorded yet.</Text>
       ) : (
         <Card className="overflow-hidden">
-          {sorted.map((t, i) => (
+          {sortedTransactions.map((t, i) => (
             <div
               key={t.id}
               onClick={() => onEdit(t)}
               className={`flex items-center justify-between gap-3 px-4 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 ${
-                i < sorted.length - 1
+                i < sortedTransactions.length - 1
                   ? "border-b border-zinc-50 dark:border-zinc-700"
                   : ""
               }`}
             >
               <div className="min-w-0">
-                <Text size="sm" className="font-medium">
+                <Text>
                   {t.purchaseDate}
                   {t.location ? ` · ${t.location}` : ""}
                 </Text>
 
                 {t.notes && (
-                  <Text size="xs" className="text-zinc-400 truncate">
+                  <Text variant="body-small" className="truncate">
                     {t.notes}
                   </Text>
                 )}
               </div>
               <div className="text-right">
                 {t.price != null && (
-                  <Text size="sm" className="font-semibold shrink-0">
+                  <Text className="font-semibold shrink-0">
                     ${formatCurrency(t.price)}
                   </Text>
                 )}
-                <Text size="xs" className="text-zinc-400">
+                <Text variant="body-small" className="text-zinc-400">
                   {durationLabel(t)}
                 </Text>
               </div>
@@ -194,72 +192,52 @@ function PriceChecksList({
     <div>
       <div className="flex items-center justify-between mb-2">
         <Caption className="tracking-wide">Online Prices</Caption>
-        <Button variant="text" size="sm" onClick={onCheck} disabled={checking}>
+        <Button variant="text" onClick={onCheck} disabled={checking}>
           {checking ? "Checking…" : "Check Prices"}
         </Button>
       </div>
 
-      {checkError && (
-        <Text size="sm" className="text-red-500 mb-2">
-          {checkError}
-        </Text>
-      )}
+      {checkError && <Text className="text-red-500 mb-2">{checkError}</Text>}
 
       <ListStateContainer
         isLoading={loading}
         isEmpty={sorted.length === 0}
         emptyContent={
-          <Text size="sm" className="text-zinc-400">
-            No price checks yet.
-          </Text>
+          <Text className="text-zinc-400">No price checks yet.</Text>
         }
       >
         <Card className="overflow-hidden">
-          {sorted.map((pc, i) => (
-            <div
-              key={pc.id}
-              className={`flex items-center justify-between gap-3 px-4 py-3 ${
-                i < sorted.length - 1
-                  ? "border-b border-zinc-50 dark:border-zinc-700"
-                  : ""
-              }`}
-            >
-              <div className="min-w-0">
-                <Text size="sm" className="font-medium">
-                  {pc.retailer}
-                </Text>
-                <Text size="xs" className="text-zinc-400">
-                  Checked {formatCheckedDate(pc.date)}
-                </Text>
-              </div>
-              <div className="text-right">
-                <Text size="sm" className="font-semibold shrink-0">
-                  ${formatCurrency(pc.price)}
-                </Text>
-                {pc.url && <Link href={pc.url}>Visit</Link>}
-              </div>
-            </div>
-          ))}
+          <List>
+            {sorted.map((pc) => (
+              <List.Item
+                headline={pc.retailer}
+                supportingText={`Checked ${formatCheckedDate(pc.date)}`}
+                trailingText={`${formatCurrency(pc.price)}`}
+                trailingIcon=""
+                key={pc.id}
+              >
+                <div className="min-w-0">
+                  <Text variant="body-small" className="text-zinc-400"></Text>
+                </div>
+                <div className="text-right">
+                  <Text className="font-semibold shrink-0"></Text>
+                  {pc.url && (
+                    <a
+                      href={pc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm underline text-(--color-primary)"
+                    >
+                      Visit
+                    </a>
+                  )}
+                </div>
+              </List.Item>
+            ))}
+          </List>
         </Card>
       </ListStateContainer>
     </div>
-  );
-}
-
-function BackIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
   );
 }
 
@@ -290,7 +268,7 @@ export default function ProductDetailView({
   if (loadingProducts) {
     return (
       <div className="flex justify-center py-20">
-        <Spinner />
+        <CircularProgress label="Loading" />
       </div>
     );
   }
@@ -365,23 +343,23 @@ export default function ProductDetailView({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
-        <IconButton onClick={() => navigate(-1)} title="Back">
-          <BackIcon />
-        </IconButton>
+        <IconButton
+          icon="arrow_back"
+          label="Back"
+          onClick={() => navigate(-1)}
+        />
         <div className="flex-1 min-w-0">
-          <Heading as="h2" variant="subtitle" className="truncate">
+          <Heading as="h2" variant="title-large" className="truncate">
             {product.name}
           </Heading>
           {product.brand && (
-            <Text size="sm" className="text-zinc-400">
-              {product.brand}
-            </Text>
+            <Text className="text-zinc-400">{product.brand}</Text>
           )}
         </div>
-        <Button variant="tonal" size="sm" onClick={handleShare}>
+        <Button variant="tonal" onClick={handleShare}>
           {copied ? "Copied!" : "Share"}
         </Button>
-        <Button variant="filled" size="sm" onClick={editModal.open}>
+        <Button variant="filled" onClick={editModal.open}>
           Edit
         </Button>
       </div>
@@ -443,23 +421,36 @@ export default function ProductDetailView({
           <br />
 
           {product.retailerUrl && (
-            <Link href={product.retailerUrl}>Manufacturer Link</Link>
+            <a
+              href={product.retailerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-sm underline text-(--color-primary)"
+            >
+              Manufacturer Link
+            </a>
           )}
 
           {product.barcode && (
-            <Link
+            <a
               href={`https://www.barcodelookup.com/${product.barcode}`}
               title={`Look up barcode ${product.barcode}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-sm underline text-(--color-primary)"
             >
               Barcode Lookup Link
-            </Link>
+            </a>
           )}
-          <Link
+          <a
             href={buildAmazonSearchUrl(product)}
             title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-sm underline text-(--color-primary)"
           >
             Amazon Link
-          </Link>
+          </a>
         </div>
       </div>
 
