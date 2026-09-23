@@ -38,7 +38,7 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-(--color-surface)">
-      <header className="flex items-center justify-between px-4 py-3 border-b border-(--color-outline-variant) sticky top-0 bg-(--color-surface) z-20">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-(--color-outline-variant) sticky top-0 bg-(--color-surface) z-40">
         <Heading as="h1" variant="title-large">
           {title}
         </Heading>

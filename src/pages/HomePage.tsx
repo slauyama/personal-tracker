@@ -1,11 +1,12 @@
-import { Button, Icon, Text } from "@slauyama/ui";
+import { Button, Icon, IconProps, Text } from "@slauyama/ui";
 import { useNavigate } from "react-router-dom";
 
-const SECTIONS = [
-  { to: "/beauty", label: "Beauty", icon: "health_and_beauty" },
-  { to: "/dog", label: "Dog", icon: "sound_detection_dog_barking" },
-  { to: "/car", label: "Car", icon: "directions_car" },
-];
+const SECTIONS: Array<{ to: string; label: string; icon: IconProps["name"] }> =
+  [
+    { to: "/beauty", label: "Beauty", icon: "health_and_beauty" },
+    { to: "/dog", label: "Dog", icon: "sound_detection_dog_barking" },
+    { to: "/car", label: "Car", icon: "directions_car" },
+  ];
 
 export default function HomePage() {
   const navigate = useNavigate();

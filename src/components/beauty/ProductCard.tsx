@@ -45,7 +45,7 @@ export default function ProductCard({
       <Card
         interactive
         onClick={onClick}
-        className="flex flex-col transition overflow-hidden"
+        className="flex flex-col transition overflow-hidden hover:-translate-y-1"
       >
         {showImage && (
           <img

@@ -13,6 +13,7 @@ import {
   Button,
   Card,
   CircularProgress,
+  Divider,
   Heading,
   IconButton,
   List,
@@ -213,7 +214,6 @@ function PriceChecksList({
                 headline={pc.retailer}
                 supportingText={`Checked ${formatCheckedDate(pc.date)}`}
                 trailingText={`${formatCurrency(pc.price)}`}
-                trailingIcon=""
                 key={pc.id}
               >
                 <div className="min-w-0">
@@ -279,8 +279,8 @@ export default function ProductDetailView({
           Product not found
         </Text>
         <RouterLink to="/beauty">
-          <Button variant="text" className="mt-1">
-            ← Back to Products
+          <Button variant="text" className="mt-1" icon="arrow_back">
+            Back to Products
           </Button>
         </RouterLink>
       </div>
@@ -356,10 +356,10 @@ export default function ProductDetailView({
             <Text className="text-zinc-400">{product.brand}</Text>
           )}
         </div>
-        <Button variant="tonal" onClick={handleShare}>
+        <Button variant="text" onClick={handleShare} icon="share">
           {copied ? "Copied!" : "Share"}
         </Button>
-        <Button variant="filled" onClick={editModal.open}>
+        <Button variant="filled" onClick={editModal.open} icon="edit">
           Edit
         </Button>
       </div>
@@ -418,7 +418,7 @@ export default function ProductDetailView({
             onCheck={handleCheckPrices}
           />
 
-          <br />
+          <Divider />
 
           {product.retailerUrl && (
             <a

@@ -9,6 +9,7 @@ import AddProductModal from "./AddProductModal";
 import ListStateContainer from "../ui/ListStateContainer";
 import ProductCard from "./ProductCard";
 import { AnimatePresence } from "framer-motion";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface ProductsViewProps {
   products: Product[];
@@ -74,6 +75,7 @@ export default function ProductsView({
   const [search, setSearch] = useState("");
   const [sortValue, setSortValue] = useState<SortValue>("updatedAt-desc");
   const [sortField, sortDir] = sortValue.split("-") as [SortField, SortDir];
+  const { isSmall } = useBreakpoints();
 
   const query = search.trim().toLowerCase();
 
@@ -110,42 +112,42 @@ export default function ProductsView({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row gap-2 mb-6 sm:items-center">
+      <div className="flex justify-between items-center mb-6">
         <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
-
-        <div className="hidden sm:block w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
-
-        <Select
-          label="Categories"
-          value={categoryFilter}
-          onChange={(value) => setCategoryFilter(value)}
-          options={CATEGORY_OPTIONS}
-        />
-
-        <div className="hidden sm:block w-px h-16 bg-zinc-200 dark:bg-zinc-700 mx-1" />
-
-        <Select
-          label="Sort"
-          value={sortValue}
-          onChange={(value) => setSortValue(value as SortValue)}
-          options={SORT_OPTIONS}
-        />
-
-        <div className="hidden sm:block flex-1" />
-
-        <div className="flex gap-2">
-          <div className="hidden sm:inline-flex">
-            <Button variant="tonal" onClick={downloadJSON}>
+        <Button
+          variant="text"
+          onClick={() => navigate("/beauty/stats")}
+          trailingIcon="arrow_forward"
+        >
+          Stats
+        </Button>
+      </div>
+      <div className="flex justify-between mb-6">
+        <div className="flex gap-4">
+          <Select
+            label="Categories"
+            value={categoryFilter}
+            onChange={(value) => setCategoryFilter(value)}
+            options={CATEGORY_OPTIONS}
+          />
+          <Select
+            label="Sort"
+            value={sortValue}
+            onChange={(value) => setSortValue(value as SortValue)}
+            options={SORT_OPTIONS}
+          />
+        </div>
+        <div className="flex gap-4">
+          <div className="hidden  sm:inline-flex">
+            <Button variant="text" onClick={downloadJSON} icon="file_export">
               Export
             </Button>
           </div>
-          <Button variant="filled" onClick={addProductModal.open}>
-            <span className="sm:hidden">Add</span>
-            <span className="hidden sm:inline">Add Product</span>
+          <Button variant="filled" onClick={addProductModal.open} icon="add">
+            {isSmall ? "Add" : "Add Product"}
           </Button>
         </div>
       </div>
-
       <ListStateContainer
         isLoading={loading}
         isEmpty={products.length === 0}
