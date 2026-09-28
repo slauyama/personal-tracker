@@ -152,8 +152,8 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
             Amortized over days owned — decreases over time as you get more use
             from each purchase.
           </Text>
-          <Card variant="filled" className="overflow-hidden mt-1">
-            <List>
+          <Card variant="elevated" className="overflow-hidden mt-1">
+            <List dividers>
               {stats.map((s) => {
                 const supportingText = `${s.product?.brand || s.product?.category} · $
                           ${formatCurrency(s.price)} · ${s.daysOwned}d owned`;

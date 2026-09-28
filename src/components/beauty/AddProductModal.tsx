@@ -82,7 +82,6 @@ export default function AddProductModal({
           {onDelete && (
             <Button
               variant="filled"
-              type="button"
               onClick={onDelete}
               className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
               icon="delete"
@@ -90,10 +89,10 @@ export default function AddProductModal({
               Delete
             </Button>
           )}
-          <Button variant="text" type="button" onClick={modalControls.close}>
+          <Button variant="text" onClick={modalControls.close}>
             Cancel
           </Button>
-          <Button variant="filled" type="button" onClick={save}>
+          <Button variant="filled" onClick={save}>
             {isEdit ? "Save" : "Add Product"}
           </Button>
         </>

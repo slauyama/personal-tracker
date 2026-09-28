@@ -79,17 +79,17 @@ export default function TransactionModal({
           {onDelete && (
             <Button
               variant="filled"
-              type="button"
               onClick={onDelete}
+              icon="delete"
               className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
             >
               Delete
             </Button>
           )}
-          <Button variant="text" type="button" onClick={modalControls.close}>
+          <Button variant="text" onClick={modalControls.close}>
             Cancel
           </Button>
-          <Button variant="filled" type="button" onClick={saveForm}>
+          <Button variant="filled" onClick={saveForm}>
             {isEdit ? "Save" : "Add Purchase"}
           </Button>
         </>

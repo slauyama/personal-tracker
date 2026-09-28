@@ -14,7 +14,7 @@ import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
-import AddDogPurchaseModal from "./AddDogPurchaseModal";
+import DogPurchaseModal from "./DogPurchaseModal";
 import ConfirmModal from "../ui/ConfirmModal";
 import ListStateContainer from "../ui/ListStateContainer";
 import CategoryBadge from "./CategoryBadge";
@@ -245,7 +245,7 @@ export default function DogPurchasesView({
         </div>
       )}
 
-      <AddDogPurchaseModal
+      <DogPurchaseModal
         modalControls={addModal}
         onSave={(data) => {
           onAddPurchase(data);
@@ -254,10 +254,10 @@ export default function DogPurchasesView({
       />
 
       {activePurchase && (
-        <AddDogPurchaseModal
+        <DogPurchaseModal
           key={activePurchase.id}
           modalControls={editModal}
-          initialValues={activePurchase}
+          dogPurchase={activePurchase}
           onSave={(data) => {
             onUpdatePurchase(activePurchase.id, data);
             editModal.close();

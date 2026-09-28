@@ -20,6 +20,7 @@ export default function ConfirmModal({
       open={modalControls.isOpen}
       onClose={modalControls.close}
       headline={title}
+      icon="warning"
       actions={
         <>
           <Button variant="text" onClick={modalControls.close}>
@@ -37,7 +38,7 @@ export default function ConfirmModal({
         </>
       }
     >
-      <Text>{message}</Text>
+      <Text align="center">{message}</Text>
     </Dialog>
   );
 }
