@@ -57,13 +57,14 @@ export default function ProductCard({
         )}
         <div className="p-4 flex flex-col gap-2 flex-1">
           <div className="flex-1">
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 leading-tight truncate">
+            <h3
+              className="font-semibold text-zinc-800 dark:text-zinc-100 leading-tight truncate"
+              title={product.name}
+            >
               {product.name}
             </h3>
             {product.brand && (
-              <Text className="font-thin mt-0.5 truncate">
-                {product.brand}
-              </Text>
+              <Text className="font-thin mt-0.5 truncate">{product.brand}</Text>
             )}
             {product.shade && (
               <Text className="font-thin mt-0.5 truncate">

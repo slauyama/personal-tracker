@@ -11,7 +11,7 @@ import {
 } from "@slauyama/ui";
 import { DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
-import AddDogEventModal from "./AddDogEventModal";
+import DogEventModal from "./DogEventModal";
 import ConfirmModal from "../ui/ConfirmModal";
 import ListStateContainer from "../ui/ListStateContainer";
 import DogWeightChart from "./DogWeightChart";
@@ -159,7 +159,7 @@ export default function DogEventsView({
         <DogWeightChart events={dogEvents} onEditWeight={openEdit} />
       </Card>
 
-      <AddDogEventModal
+      <DogEventModal
         modalControls={addModal}
         onSave={(data) => {
           onAddEvent(data);
@@ -168,10 +168,10 @@ export default function DogEventsView({
       />
 
       {activeEvent && (
-        <AddDogEventModal
+        <DogEventModal
           key={activeEvent.id}
           modalControls={editModal}
-          initialValues={activeEvent}
+          dogEvent={activeEvent}
           onSave={(data) => {
             onUpdateEvent(activeEvent.id, data);
             editModal.close();
