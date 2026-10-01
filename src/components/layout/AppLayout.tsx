@@ -76,7 +76,7 @@ export default function AppLayout() {
         </main>
       </div>
 
-      <div className="md:hidden fixed bottom-0 inset-x-0 z-20">
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-100">
         <NavigationBar
           items={NAV_ITEMS}
           value={active}

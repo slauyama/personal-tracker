@@ -17,6 +17,7 @@ import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
+import DeleteButton from "../ui/DeleteButton";
 import { useBreakpoints } from "@slauyama/hooks";
 
 interface DogPurchaseModalProps {
@@ -114,19 +115,10 @@ export default function DogPurchaseModal({
     if (mode === "view") {
       return (
         <>
-          {onDelete && (
-            <Button
-              variant={isSmall ? "text" : "filled"}
-              icon="delete"
-              onClick={onDelete}
-              className="text-(--color-error)! mr-auto"
-            >
-              Delete
-            </Button>
-          )}
+          {onDelete && <DeleteButton onClick={onDelete} />}
           <Button
             variant="text"
-            className="hidden sm:flex-inline"
+            className="hidden sm:inline-flex"
             onClick={modalControls.close}
           >
             Close
@@ -137,19 +129,10 @@ export default function DogPurchaseModal({
 
     return (
       <>
-        {onDelete && mode === "edit" && (
-          <Button
-            variant={isSmall ? "text" : "filled"}
-            onClick={onDelete}
-            icon="delete"
-            className="text-(--color-error)! mr-auto"
-          >
-            Delete
-          </Button>
-        )}
+        {onDelete && mode === "edit" && <DeleteButton onClick={onDelete} />}
         <Button
           variant="text"
-          className="hidden sm:flex-inline"
+          className="hidden sm:inline-flex"
           onClick={() => {
             if (dogPurchase) {
               resetForm();
@@ -168,12 +151,19 @@ export default function DogPurchaseModal({
     );
   }
 
-  const headline =
-    mode === "view" && dogPurchase
-      ? dogPurchase.name
-      : mode === "edit"
-        ? "Edit Purchase"
-        : "Add Purchase";
+  function getHeadline() {
+    if (mode === "view" && dogPurchase) {
+      return dogPurchase.name;
+    }
+
+    if (mode === "edit") {
+      return isSmall ? "Edit" : "Edit Purchase";
+    }
+
+    return isSmall ? "Add" : "Add Purchase";
+  }
+
+  const headline = getHeadline();
 
   const dogPurchaseListItems: Array<{
     term: string;
