@@ -17,6 +17,9 @@ import ListStateContainer from "../ui/ListStateContainer";
 import DogWeightChart from "./DogWeightChart";
 import CategoryBadge from "./CategoryBadge";
 import { EVENT_TYPE_COLORS } from "./categoryColors";
+import { useBreakpoints } from "@slauyama/hooks";
+import { useLocation, useNavigate } from "react-router-dom";
+import { formatShortDate } from "../../lib/formatDate";
 
 interface DogEventsViewProps {
   dogEvents: DogEvent[];
@@ -50,6 +53,7 @@ export default function DogEventsView({
   const [activeEvent, setActiveEvent] = useState<DogEvent | null>(null);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const { isLarge } = useBreakpoints();
 
   function openEdit(event: DogEvent) {
     setActiveEvent(event);
@@ -69,17 +73,28 @@ export default function DogEventsView({
     initialDirection: "desc",
   });
   const visibleRows = expanded ? rows : rows.slice(0, PAGE_SIZE);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const showEvents = pathname.includes("/events");
 
   return (
     <>
-      <div className="flex flex-wrap gap-2 mb-6 items-center">
-        <SearchBar value={query} onChange={(e) => setQuery(e.target.value)} />
-
-        <div className="flex-1" />
+      <div className="flex justify-between items-center mb-6">
+        <Button
+          variant="outlined"
+          onClick={() => navigate(showEvents ? "/dog" : "/dog/events")}
+        >
+          {showEvents ? "← Purchases" : "Events"}
+        </Button>
         <Button onClick={addModal.open} icon="add">
-          Add Event
+          {isLarge ? "Add" : "Add Event"}
         </Button>
       </div>
+      <SearchBar
+        className="mb-6"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
 
       <ListStateContainer
         isLoading={loading}
@@ -128,7 +143,7 @@ export default function DogEventsView({
               {visibleRows.map((event) => (
                 <Table.Row key={event.id} onClick={() => openEdit(event)}>
                   <Table.Cell className="whitespace-nowrap">
-                    {event.date}
+                    {formatShortDate(event.date)}
                   </Table.Cell>
                   <Table.Cell>
                     <CategoryBadge
@@ -136,7 +151,7 @@ export default function DogEventsView({
                       color={EVENT_TYPE_COLORS[event.type]}
                     />
                   </Table.Cell>
-                  <Table.Cell>{event.notes}</Table.Cell>
+                  <Table.Cell className="truncate">{event.notes}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>

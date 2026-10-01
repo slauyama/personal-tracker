@@ -126,40 +126,19 @@ function TransactionsList({
         <Text className="text-zinc-400">No purchases recorded yet.</Text>
       ) : (
         <Card className="overflow-hidden">
-          {sortedTransactions.map((t, i) => (
-            <div
-              key={t.id}
-              onClick={() => onEdit(t)}
-              className={`flex items-center justify-between gap-3 px-4 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 ${
-                i < sortedTransactions.length - 1
-                  ? "border-b border-zinc-50 dark:border-zinc-700"
-                  : ""
-              }`}
-            >
-              <div className="min-w-0">
-                <Text>
-                  {t.purchaseDate}
-                  {t.location ? ` · ${t.location}` : ""}
-                </Text>
-
-                {t.notes && (
-                  <Text variant="body-small" className="truncate">
-                    {t.notes}
-                  </Text>
-                )}
-              </div>
-              <div className="text-right">
-                {t.price != null && (
-                  <Text className="font-semibold shrink-0">
-                    ${formatCurrency(t.price)}
-                  </Text>
-                )}
-                <Text variant="body-small" className="text-zinc-400">
-                  {durationLabel(t)}
-                </Text>
-              </div>
-            </div>
-          ))}
+          <List dividers>
+            {sortedTransactions.map((t) => (
+              <List.Item
+                key={t.id}
+                onClick={() => onEdit(t)}
+                headline={`${t.purchaseDate}${t.location ? ` · ${t.location}` : ""}`}
+                supportingText={
+                  t.price != null ? `$${formatCurrency(t.price)}` : ""
+                }
+                trailingText={durationLabel(t)}
+              />
+            ))}
+          </List>
         </Card>
       )}
     </div>
@@ -177,7 +156,11 @@ interface PriceChecksListProps {
 function formatCheckedDate(date: string): string {
   const parsed = new Date(date);
   if (isNaN(parsed.getTime())) return "";
-  return parsed.toLocaleDateString();
+  return parsed.toLocaleDateString("en-us", {
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+  });
 }
 
 function PriceChecksList({
@@ -192,7 +175,7 @@ function PriceChecksList({
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <Caption className="tracking-wide">Online Prices</Caption>
+        <Caption>Online Prices</Caption>
         <Button variant="text" onClick={onCheck} disabled={checking}>
           {checking ? "Checking…" : "Check Prices"}
         </Button>
@@ -207,32 +190,25 @@ function PriceChecksList({
           <Text className="text-zinc-400">No price checks yet.</Text>
         }
       >
-        <Card className="overflow-hidden">
-          <List>
+        <Card variant="elevated" className="overflow-hidden">
+          <List dividers>
             {sorted.map((pc) => (
               <List.Item
-                headline={pc.retailer}
-                supportingText={`Checked ${formatCheckedDate(pc.date)}`}
-                trailingText={`${formatCurrency(pc.price)}`}
                 key={pc.id}
-              >
-                <div className="min-w-0">
-                  <Text variant="body-small" className="text-zinc-400"></Text>
-                </div>
-                <div className="text-right">
-                  <Text className="font-semibold shrink-0"></Text>
-                  {pc.url && (
-                    <a
+                headline={pc.retailer}
+                supportingText={`$${formatCurrency(pc.price)}`}
+                trailingText={`Checked ${formatCheckedDate(pc.date)}`}
+                trailing={
+                  pc.url && (
+                    <Button
+                      variant="text"
+                      icon="open_in_new"
                       href={pc.url}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm underline text-(--color-primary)"
-                    >
-                      Visit
-                    </a>
-                  )}
-                </div>
-              </List.Item>
+                    />
+                  )
+                }
+              />
             ))}
           </List>
         </Card>
@@ -387,12 +363,12 @@ export default function ProductDetailView({
           {priced.length > 0 && (
             <div className="flex gap-4">
               <Card>
-                <Text className="p-2">
+                <Text className="p-4">
                   Total Spent: {`$${formatCurrency(totalSpent)}`}
                 </Text>
               </Card>
               <Card>
-                <Text className="p-2">
+                <Text className="p-4">
                   Cost Per Purchase:{" "}
                   {averageCostPerPurchage != null
                     ? `$${formatCurrency(averageCostPerPurchage)}`
@@ -400,7 +376,7 @@ export default function ProductDetailView({
                 </Text>
               </Card>
               <Card>
-                <Text className="p-2">
+                <Text className="p-4">
                   Cost Per Day:{" "}
                   {avgCostPerDay != null
                     ? `$${formatCurrency(avgCostPerDay)}`
@@ -420,37 +396,37 @@ export default function ProductDetailView({
 
           <Divider />
 
-          {product.retailerUrl && (
-            <a
-              href={product.retailerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-sm underline text-(--color-primary)"
-            >
-              Manufacturer Link
-            </a>
-          )}
+          <div>
+            {product.retailerUrl && (
+              <Button
+                variant="text"
+                href={product.retailerUrl}
+                target="_blank"
+                className="underline"
+              >
+                Manufacturer Link
+              </Button>
+            )}
 
-          {product.barcode && (
-            <a
-              href={`https://www.barcodelookup.com/${product.barcode}`}
-              title={`Look up barcode ${product.barcode}`}
+            {product.barcode && (
+              <Button
+                variant="text"
+                href={`https://www.barcodelookup.com/${product.barcode}`}
+                target="_blank"
+                className="underline"
+              >
+                Barcode Lookup Link
+              </Button>
+            )}
+            <Button
+              variant="text"
+              href={buildAmazonSearchUrl(product)}
               target="_blank"
-              rel="noopener noreferrer"
-              className="block text-sm underline text-(--color-primary)"
+              className="underline"
             >
-              Barcode Lookup Link
-            </a>
-          )}
-          <a
-            href={buildAmazonSearchUrl(product)}
-            title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-sm underline text-(--color-primary)"
-          >
-            Amazon Link
-          </a>
+              Amazon Link
+            </Button>
+          </div>
         </div>
       </div>
 

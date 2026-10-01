@@ -1,5 +1,4 @@
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@slauyama/ui";
+import { Routes, Route } from "react-router-dom";
 import { useDogEvents } from "../hooks/useDogEvents";
 import { useDogPurchases } from "../hooks/useDogPurchases";
 import DogEventsView from "../components/dog/DogEventsView";
@@ -21,21 +20,8 @@ export default function DogPage() {
     deletePurchase,
   } = useDogPurchases();
 
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const showEvents = pathname.includes("/events");
-
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <Button
-          variant="outlined"
-          onClick={() => navigate(showEvents ? "/dog" : "/dog/events")}
-        >
-          {showEvents ? "← Purchases" : "Events"}
-        </Button>
-      </div>
-
       <Routes>
         <Route
           index

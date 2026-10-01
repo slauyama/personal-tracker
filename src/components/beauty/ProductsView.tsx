@@ -28,7 +28,10 @@ type SortField = "name" | "brand" | "updatedAt";
 type SortDir = "asc" | "desc";
 type SortValue = `${SortField}-${SortDir}`;
 
-const SORT_OPTIONS: { value: SortValue; label: string }[] = [
+const SORT_OPTIONS: {
+  value: SortValue;
+  label: string;
+}[] = [
   { value: "updatedAt-desc", label: "Date Updated (Newest)" },
   { value: "updatedAt-asc", label: "Date Updated (Oldest)" },
   { value: "name-asc", label: "Name (A–Z)" },
@@ -75,7 +78,7 @@ export default function ProductsView({
   const [search, setSearch] = useState("");
   const [sortValue, setSortValue] = useState<SortValue>("updatedAt-desc");
   const [sortField, sortDir] = sortValue.split("-") as [SortField, SortDir];
-  const { isSmall } = useBreakpoints();
+  const { isSmall, isMedium } = useBreakpoints();
 
   const query = search.trim().toLowerCase();
 
@@ -112,8 +115,7 @@ export default function ProductsView({
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
+      <div className="flex flex-row-reverse justify-between items-center mb-6">
         <Button
           variant="text"
           onClick={() => navigate("/beauty/stats")}
@@ -121,9 +123,10 @@ export default function ProductsView({
         >
           Stats
         </Button>
+        <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
-      <div className="flex justify-between mb-6">
-        <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-4 items-center mb-6">
+        <div className="flex gap-4 flex-wrap">
           <Select
             label="Categories"
             value={categoryFilter}
@@ -137,14 +140,19 @@ export default function ProductsView({
             options={SORT_OPTIONS}
           />
         </div>
-        <div className="flex gap-4">
-          <div className="hidden  sm:inline-flex">
+        <div className="sm:flex sm:gap-4">
+          <div className="hidden  md:inline-flex">
             <Button variant="text" onClick={downloadJSON} icon="file_export">
               Export
             </Button>
           </div>
-          <Button variant="filled" onClick={addProductModal.open} icon="add">
-            {isSmall ? "Add" : "Add Product"}
+          <Button
+            variant="filled"
+            onClick={addProductModal.open}
+            fullWidth={isSmall}
+            icon="add"
+          >
+            {isMedium ? "Add" : "Add Product"}
           </Button>
         </div>
       </div>

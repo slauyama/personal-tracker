@@ -121,10 +121,6 @@ export default function DogPurchaseModal({
   }> = dogPurchase
     ? [
         {
-          headline: "Notes",
-          trailingText: dogPurchase.notes,
-        },
-        {
           headline: "Date",
           trailingText: dogPurchase.date,
         },
