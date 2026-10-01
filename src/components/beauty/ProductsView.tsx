@@ -4,14 +4,7 @@ import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
 import { effectiveUpdatedAt } from "../../lib/transactionStats";
-import {
-  Button,
-  SearchBar,
-  Select,
-  SelectOption,
-  Text,
-  useIsOpen,
-} from "@slauyama/ui";
+import { Button, SearchBar, Select, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ListStateContainer from "../ui/ListStateContainer";
 import ProductCard from "./ProductCard";
