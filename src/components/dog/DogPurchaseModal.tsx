@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
   Button,
+  DescriptionList,
   Dialog,
-  List,
   Select,
   Switch,
   Text,
@@ -116,51 +116,51 @@ export default function DogPurchaseModal({
         : "Add Purchase";
 
   const dogPurchaseListItems: Array<{
-    headline: string;
-    trailingText?: string;
+    term: string;
+    value?: string;
   }> = dogPurchase
     ? [
         {
-          headline: "Date",
-          trailingText: dogPurchase.date,
+          term: "Date",
+          value: dogPurchase.date,
         },
         {
-          headline: "Category",
-          trailingText: dogPurchase.category,
+          term: "Category",
+          value: dogPurchase.category,
         },
         {
-          headline: "Vendor",
-          trailingText: dogPurchase.vendor,
+          term: "Vendor",
+          value: dogPurchase.vendor,
         },
         {
-          headline: "Location",
-          trailingText: dogPurchase.location,
+          term: "Location",
+          value: dogPurchase.location,
         },
         {
-          headline: "Price",
-          trailingText:
+          term: "Price",
+          value:
             dogPurchase.price != null
               ? formatPrice(dogPurchase.price)
               : undefined,
         },
         {
-          headline: "Quantity",
-          trailingText:
+          term: "Quantity",
+          value:
             dogPurchase.quantity != null
               ? String(dogPurchase.quantity)
               : undefined,
         },
         {
-          headline: "Barcode",
-          trailingText: dogPurchase.barcode,
+          term: "Barcode",
+          value: dogPurchase.barcode,
         },
         {
-          headline: "Manufacturer Link",
-          trailingText: dogPurchase.retailerUrl,
+          term: "Manufacturer Link",
+          value: dogPurchase.retailerUrl,
         },
         {
-          headline: "Notes",
-          trailingText: dogPurchase.notes,
+          term: "Notes",
+          value: dogPurchase.notes,
         },
       ]
     : [];
@@ -239,19 +239,18 @@ export default function DogPurchaseModal({
       )}
 
       {mode === "view" && dogPurchase ? (
-        <List dividers>
-          {dogPurchaseListItems.map((dogPurchase) => {
-            if (dogPurchase.trailingText) {
+        <DescriptionList dividers>
+          {dogPurchaseListItems.map((dogPurchaseListItems) => {
+            if (dogPurchaseListItems.value) {
               return (
-                <List.Item
-                  headline={dogPurchase.headline}
-                  trailingText={dogPurchase.trailingText}
-                />
+                <DescriptionList.Item term={dogPurchaseListItems.term}>
+                  {dogPurchaseListItems.value}
+                </DescriptionList.Item>
               );
             }
             return null;
           })}
-        </List>
+        </DescriptionList>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <TextField

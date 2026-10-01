@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
   Button,
+  DescriptionList,
   Dialog,
-  List,
   Select,
   Switch,
   Text,
@@ -91,22 +91,22 @@ export default function DogEventModal({
         : "Add Event";
 
   const dogEventListItems: Array<{
-    headline: string;
-    trailingText?: string;
+    term: string;
+    value?: string;
   }> = dogEvent
     ? [
-        { headline: "Date Bought", trailingText: dogEvent.date },
-        { headline: "Type", trailingText: dogEvent.type },
+        { term: "Date Bought", value: dogEvent.date },
+        { term: "Type", value: dogEvent.type },
         {
-          headline: "Weight",
-          trailingText:
+          term: "Weight",
+          value:
             dogEvent.weightLbs != null
               ? `${dogEvent.weightLbs} lbs`
               : undefined,
         },
         {
-          headline: "Notes",
-          trailingText: dogEvent.notes,
+          term: "Notes",
+          value: dogEvent.notes,
         },
       ]
     : [];
@@ -184,19 +184,17 @@ export default function DogEventModal({
       )}
 
       {mode === "view" && dogEvent ? (
-        <List dividers>
+        <DescriptionList dividers>
           {dogEventListItems.map((dogEvent) => {
-            if (dogEvent.trailingText) {
+            if (dogEvent.value) {
               return (
-                <List.Item
-                  headline={dogEvent.headline}
-                  trailingText={dogEvent.trailingText}
-                />
+                <DescriptionList.Item term={dogEvent.term}>
+                  {dogEvent.value}
+                </DescriptionList.Item>
               );
             }
-            return null;
           })}
-        </List>
+        </DescriptionList>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid md:grid-cols-2 gap-3">
