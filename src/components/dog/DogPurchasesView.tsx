@@ -19,6 +19,8 @@ import ConfirmModal from "../ui/ConfirmModal";
 import ListStateContainer from "../ui/ListStateContainer";
 import CategoryBadge from "./CategoryBadge";
 import { PURCHASE_CATEGORY_COLORS } from "./categoryColors";
+import { useLocation, useNavigate } from "react-router-dom";
+import { formatShortDate } from "../../lib/formatDate";
 
 interface DogPurchasesViewProps {
   dogPurchases: DogPurchase[];
@@ -94,7 +96,7 @@ export default function DogPurchasesView({
   const addModal = useIsOpen();
   const editModal = useIsOpen();
   const confirmDeleteModal = useIsOpen();
-  const { isSmall } = useBreakpoints();
+  const { isMedium, isLarge } = useBreakpoints();
 
   const [activePurchase, setActivePurchase] = useState<DogPurchase | null>(
     null,
@@ -113,14 +115,29 @@ export default function DogPurchasesView({
   });
   const visibleRows = expanded ? rows : rows.slice(0, PAGE_SIZE);
   const stats = buildSpendStats(dogPurchases);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const showEvents = pathname.includes("/events");
 
   return (
     <>
-      <div className="flex flex-wrap gap-2 mb-6 items-center">
-        <SearchBar value={query} onChange={(e) => setQuery(e.target.value)} />
-        <div className="flex-1" />
-        <Button onClick={addModal.open}>+ Add Purchase</Button>
+      <div className="flex justify-between items-center mb-6">
+        <Button
+          variant="outlined"
+          onClick={() => navigate(showEvents ? "/dog" : "/dog/events")}
+        >
+          {showEvents ? "← Purchases" : "Events"}
+        </Button>
+        <Button onClick={addModal.open} icon="add">
+          {isLarge ? "Add" : "Add Purchase"}
+        </Button>
       </div>
+
+      <SearchBar
+        className="mb-6"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
 
       <ListStateContainer
         isLoading={loading}
@@ -164,7 +181,7 @@ export default function DogPurchasesView({
                 </Table.Head>
                 <Table.Head>Name</Table.Head>
                 <Table.Head>
-                  {isSmall ? "Vendor" : "Vendor / Location"}
+                  {isMedium ? "Vendor" : "Vendor / Location"}
                 </Table.Head>
                 <Table.Head
                   align="right"
@@ -187,7 +204,7 @@ export default function DogPurchasesView({
                   }}
                 >
                   <Table.Cell className="whitespace-nowrap">
-                    {purchase.date}
+                    {formatShortDate(purchase.date)}
                   </Table.Cell>
                   <Table.Cell>
                     <CategoryBadge
@@ -199,7 +216,7 @@ export default function DogPurchasesView({
                     {purchase.name}
                   </Table.Cell>
                   <Table.Cell className="truncate">
-                    {isSmall
+                    {isMedium
                       ? purchase.vendor
                       : [purchase.vendor, purchase.location]
                           .filter(Boolean)
@@ -228,7 +245,7 @@ export default function DogPurchasesView({
           <Heading as="h2" variant="title-large" className="mb-3">
             Cost Summary
           </Heading>
-          <div className="grid grid-cols-3 gap-2 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
             <StatCard
               label="Total Spent"
               value={formatPrice(stats.totalSpent)}
