@@ -156,7 +156,11 @@ interface PriceChecksListProps {
 function formatCheckedDate(date: string): string {
   const parsed = new Date(date);
   if (isNaN(parsed.getTime())) return "";
-  return parsed.toLocaleDateString();
+  return parsed.toLocaleDateString("en-us", {
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+  });
 }
 
 function PriceChecksList({
@@ -190,28 +194,21 @@ function PriceChecksList({
           <List dividers>
             {sorted.map((pc) => (
               <List.Item
-                headline={pc.retailer}
-                trailingText={`Checked ${formatCheckedDate(pc.date)}`}
-                supportingText={`${formatCurrency(pc.price)}`}
                 key={pc.id}
-              >
-                <div className="min-w-0">
-                  <Text variant="body-small" className="text-zinc-400"></Text>
-                </div>
-                <div className="text-right">
-                  <Text className="font-semibold shrink-0"></Text>
-                  {pc.url && (
+                headline={pc.retailer}
+                supportingText={`$${formatCurrency(pc.price)}`}
+                trailingText={`Checked ${formatCheckedDate(pc.date)}`}
+                trailing={
+                  pc.url && (
                     <Button
                       variant="text"
+                      icon="open_in_new"
                       href={pc.url}
                       target="_blank"
-                      className="underline"
-                    >
-                      Visit
-                    </Button>
-                  )}
-                </div>
-              </List.Item>
+                    />
+                  )
+                }
+              />
             ))}
           </List>
         </Card>
@@ -415,7 +412,6 @@ export default function ProductDetailView({
               <Button
                 variant="text"
                 href={`https://www.barcodelookup.com/${product.barcode}`}
-                // title={`Look up barcode ${product.barcode}`}
                 target="_blank"
                 className="underline"
               >
@@ -425,7 +421,6 @@ export default function ProductDetailView({
             <Button
               variant="text"
               href={buildAmazonSearchUrl(product)}
-              // title={`Search "${[product.brand, product.name].filter(Boolean).join(" ")}" on Amazon`}
               target="_blank"
               className="underline"
             >

@@ -43,7 +43,7 @@ function buildStats(
 
 export function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <Card variant="filled" className="p-4 flex flex-col gap-2">
+    <Card variant="filled" className="p-4 text-center flex flex-col gap-2">
       <Text variant="title-small" className="uppercase tracking-wide">
         {label}
       </Text>
@@ -121,7 +121,7 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
         </Heading>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
         <StatCard
           label="Total Spent"
           value={`$${formatCurrency(totalSpent)}`}
@@ -155,14 +155,32 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
           <Card variant="elevated" className="overflow-hidden mt-1">
             <List dividers>
               {stats.map((s) => {
-                const supportingText = `${s.product?.brand || s.product?.category} · $
-                          ${formatCurrency(s.price)} · ${s.daysOwned}d owned`;
                 return (
                   <List.Item
                     key={s.transaction.id}
-                    headline={s.product?.name ?? "Unknown product"}
-                    supportingText={supportingText}
-                    trailingText={`$${formatCurrency(s.costPerDay, 3)}/day - $${formatCurrency(s.costPerDay * 365)}/yr`}
+                    lines={3}
+                    headline={
+                      <Text variant="body-medium" className="truncate">
+                        {`${s.product?.name ?? ""}`}
+                      </Text>
+                    }
+                    supportingText={
+                      <div className="sm:flex sm:gap-2">
+                        <Text>{s.product?.brand ?? ""}</Text>
+                        <Text>${formatCurrency(s.price)}</Text>
+                        <Text>{s.daysOwned}d owned</Text>
+                      </div>
+                    }
+                    trailingText={
+                      <>
+                        <Text variant="label-small" align="right">
+                          ${`${formatCurrency(s.costPerDay, 3)}`} / day
+                        </Text>
+                        <Text variant="label-small" align="right">
+                          ${`${formatCurrency(s.costPerDay * 365)}`} / yr
+                        </Text>
+                      </>
+                    }
                   />
                 );
               })}
