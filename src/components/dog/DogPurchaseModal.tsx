@@ -17,6 +17,7 @@ import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface DogPurchaseModalProps {
   dogPurchase?: DogPurchase;
@@ -60,6 +61,7 @@ export default function DogPurchaseModal({
   modalControls,
 }: DogPurchaseModalProps) {
   const [mode, setMode] = useState<Mode>(dogPurchase ? "view" : "add");
+  const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<DogPurchaseInput>(
     dogPurchase
@@ -106,6 +108,64 @@ export default function DogPurchaseModal({
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     save();
+  }
+
+  function renderActions() {
+    if (mode === "view") {
+      return (
+        <>
+          {onDelete && (
+            <Button
+              variant={isSmall ? "text" : "filled"}
+              icon="delete"
+              onClick={onDelete}
+              className="text-(--color-error)! mr-auto"
+            >
+              Delete
+            </Button>
+          )}
+          <Button
+            variant="text"
+            className="hidden sm:flex-inline"
+            onClick={modalControls.close}
+          >
+            Close
+          </Button>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {onDelete && mode === "edit" && (
+          <Button
+            variant={isSmall ? "text" : "filled"}
+            onClick={onDelete}
+            icon="delete"
+            className="text-(--color-error)! mr-auto"
+          >
+            Delete
+          </Button>
+        )}
+        <Button
+          variant="text"
+          className="hidden sm:flex-inline"
+          onClick={() => {
+            if (dogPurchase) {
+              resetForm();
+              setMode("view");
+            } else {
+              modalControls.close();
+            }
+          }}
+        >
+          Cancel
+        </Button>
+        <Button variant="filled" onClick={save}>
+          {mode === "edit" ? "Save" : "Add Purchase"}
+        </Button>
+      </>
+    );
   }
 
   const headline =
@@ -171,54 +231,7 @@ export default function DogPurchaseModal({
       onClose={modalControls.close}
       headline={headline}
       className="max-h-screen overflow-y-auto"
-      actions={
-        mode === "view" ? (
-          <>
-            {onDelete && (
-              <Button
-                variant="filled"
-                icon="delete"
-                onClick={onDelete}
-                className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
-              >
-                Delete
-              </Button>
-            )}
-            <Button variant="text" onClick={modalControls.close}>
-              Close
-            </Button>
-          </>
-        ) : (
-          <>
-            {onDelete && mode === "edit" && (
-              <Button
-                variant="filled"
-                onClick={onDelete}
-                icon="delete"
-                className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
-              >
-                Delete
-              </Button>
-            )}
-            <Button
-              variant="text"
-              onClick={() => {
-                if (dogPurchase) {
-                  resetForm();
-                  setMode("view");
-                } else {
-                  modalControls.close();
-                }
-              }}
-            >
-              Cancel
-            </Button>
-            <Button variant="filled" onClick={save}>
-              {mode === "edit" ? "Save" : "Add Purchase"}
-            </Button>
-          </>
-        )
-      }
+      actions={renderActions()}
     >
       {dogPurchase && (
         <div className="flex justify-end items-center gap-2 mb-2">
