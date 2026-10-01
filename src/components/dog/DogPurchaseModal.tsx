@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
   Button,
+  DescriptionList,
   Dialog,
-  List,
   Select,
   Switch,
   Text,
@@ -17,6 +17,7 @@ import type {
   DogPurchase,
   DogPurchaseInput,
 } from "../../hooks/useDogPurchases";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface DogPurchaseModalProps {
   dogPurchase?: DogPurchase;
@@ -60,6 +61,7 @@ export default function DogPurchaseModal({
   modalControls,
 }: DogPurchaseModalProps) {
   const [mode, setMode] = useState<Mode>(dogPurchase ? "view" : "add");
+  const { isSmall } = useBreakpoints();
 
   const [form, setForm] = useState<DogPurchaseInput>(
     dogPurchase
@@ -108,6 +110,64 @@ export default function DogPurchaseModal({
     save();
   }
 
+  function renderActions() {
+    if (mode === "view") {
+      return (
+        <>
+          {onDelete && (
+            <Button
+              variant={isSmall ? "text" : "filled"}
+              icon="delete"
+              onClick={onDelete}
+              className="text-(--color-error)! mr-auto"
+            >
+              Delete
+            </Button>
+          )}
+          <Button
+            variant="text"
+            className="hidden sm:flex-inline"
+            onClick={modalControls.close}
+          >
+            Close
+          </Button>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {onDelete && mode === "edit" && (
+          <Button
+            variant={isSmall ? "text" : "filled"}
+            onClick={onDelete}
+            icon="delete"
+            className="text-(--color-error)! mr-auto"
+          >
+            Delete
+          </Button>
+        )}
+        <Button
+          variant="text"
+          className="hidden sm:flex-inline"
+          onClick={() => {
+            if (dogPurchase) {
+              resetForm();
+              setMode("view");
+            } else {
+              modalControls.close();
+            }
+          }}
+        >
+          Cancel
+        </Button>
+        <Button variant="filled" onClick={save}>
+          {mode === "edit" ? "Save" : "Add Purchase"}
+        </Button>
+      </>
+    );
+  }
+
   const headline =
     mode === "view" && dogPurchase
       ? dogPurchase.name
@@ -116,51 +176,51 @@ export default function DogPurchaseModal({
         : "Add Purchase";
 
   const dogPurchaseListItems: Array<{
-    headline: string;
-    trailingText?: string;
+    term: string;
+    value?: string;
   }> = dogPurchase
     ? [
         {
-          headline: "Date",
-          trailingText: dogPurchase.date,
+          term: "Date",
+          value: dogPurchase.date,
         },
         {
-          headline: "Category",
-          trailingText: dogPurchase.category,
+          term: "Category",
+          value: dogPurchase.category,
         },
         {
-          headline: "Vendor",
-          trailingText: dogPurchase.vendor,
+          term: "Vendor",
+          value: dogPurchase.vendor,
         },
         {
-          headline: "Location",
-          trailingText: dogPurchase.location,
+          term: "Location",
+          value: dogPurchase.location,
         },
         {
-          headline: "Price",
-          trailingText:
+          term: "Price",
+          value:
             dogPurchase.price != null
               ? formatPrice(dogPurchase.price)
               : undefined,
         },
         {
-          headline: "Quantity",
-          trailingText:
+          term: "Quantity",
+          value:
             dogPurchase.quantity != null
               ? String(dogPurchase.quantity)
               : undefined,
         },
         {
-          headline: "Barcode",
-          trailingText: dogPurchase.barcode,
+          term: "Barcode",
+          value: dogPurchase.barcode,
         },
         {
-          headline: "Manufacturer Link",
-          trailingText: dogPurchase.retailerUrl,
+          term: "Manufacturer Link",
+          value: dogPurchase.retailerUrl,
         },
         {
-          headline: "Notes",
-          trailingText: dogPurchase.notes,
+          term: "Notes",
+          value: dogPurchase.notes,
         },
       ]
     : [];
@@ -171,54 +231,7 @@ export default function DogPurchaseModal({
       onClose={modalControls.close}
       headline={headline}
       className="max-h-screen overflow-y-auto"
-      actions={
-        mode === "view" ? (
-          <>
-            {onDelete && (
-              <Button
-                variant="filled"
-                icon="delete"
-                onClick={onDelete}
-                className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
-              >
-                Delete
-              </Button>
-            )}
-            <Button variant="text" onClick={modalControls.close}>
-              Close
-            </Button>
-          </>
-        ) : (
-          <>
-            {onDelete && mode === "edit" && (
-              <Button
-                variant="filled"
-                onClick={onDelete}
-                icon="delete"
-                className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
-              >
-                Delete
-              </Button>
-            )}
-            <Button
-              variant="text"
-              onClick={() => {
-                if (dogPurchase) {
-                  resetForm();
-                  setMode("view");
-                } else {
-                  modalControls.close();
-                }
-              }}
-            >
-              Cancel
-            </Button>
-            <Button variant="filled" onClick={save}>
-              {mode === "edit" ? "Save" : "Add Purchase"}
-            </Button>
-          </>
-        )
-      }
+      actions={renderActions()}
     >
       {dogPurchase && (
         <div className="flex justify-end items-center gap-2 mb-2">
@@ -239,19 +252,18 @@ export default function DogPurchaseModal({
       )}
 
       {mode === "view" && dogPurchase ? (
-        <List dividers>
-          {dogPurchaseListItems.map((dogPurchase) => {
-            if (dogPurchase.trailingText) {
+        <DescriptionList dividers>
+          {dogPurchaseListItems.map((dogPurchaseListItems) => {
+            if (dogPurchaseListItems.value) {
               return (
-                <List.Item
-                  headline={dogPurchase.headline}
-                  trailingText={dogPurchase.trailingText}
-                />
+                <DescriptionList.Item term={dogPurchaseListItems.term}>
+                  {dogPurchaseListItems.value}
+                </DescriptionList.Item>
               );
             }
             return null;
           })}
-        </List>
+        </DescriptionList>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <TextField

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
   Button,
+  DescriptionList,
   Dialog,
-  List,
   Select,
   Switch,
   Text,
@@ -11,6 +11,7 @@ import {
 } from "@slauyama/ui";
 import { ALL_DOG_EVENT_TYPES, DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
+import { useBreakpoints } from "@slauyama/hooks";
 
 interface DogEventModalProps {
   dogEvent?: DogEvent;
@@ -43,6 +44,7 @@ export default function DogEventModal({
   onDelete,
   modalControls,
 }: DogEventModalProps) {
+  const { isSmall } = useBreakpoints();
   const [mode, setMode] = useState<Mode>(dogEvent ? "view" : "add");
 
   const [form, setForm] = useState<DogEventInput>(
@@ -91,22 +93,22 @@ export default function DogEventModal({
         : "Add Event";
 
   const dogEventListItems: Array<{
-    headline: string;
-    trailingText?: string;
+    term: string;
+    value?: string;
   }> = dogEvent
     ? [
-        { headline: "Date Bought", trailingText: dogEvent.date },
-        { headline: "Type", trailingText: dogEvent.type },
+        { term: "Date Bought", value: dogEvent.date },
+        { term: "Type", value: dogEvent.type },
         {
-          headline: "Weight",
-          trailingText:
+          term: "Weight",
+          value:
             dogEvent.weightLbs != null
               ? `${dogEvent.weightLbs} lbs`
               : undefined,
         },
         {
-          headline: "Notes",
-          trailingText: dogEvent.notes,
+          term: "Notes",
+          value: dogEvent.notes,
         },
       ]
     : [];
@@ -121,15 +123,19 @@ export default function DogEventModal({
           <>
             {onDelete && (
               <Button
-                variant="filled"
+                variant={isSmall ? "text" : "filled"}
                 icon="delete"
                 onClick={onDelete}
-                className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
+                className="text-(--color-error)! mr-auto"
               >
                 Delete
               </Button>
             )}
-            <Button variant="text" onClick={modalControls.close}>
+            <Button
+              variant="text"
+              className="hidden sm:flex-inline"
+              onClick={modalControls.close}
+            >
               Close
             </Button>
           </>
@@ -137,16 +143,17 @@ export default function DogEventModal({
           <>
             {onDelete && mode === "edit" && (
               <Button
-                variant="filled"
+                variant={isSmall ? "text" : "filled"}
                 icon="delete"
                 onClick={onDelete}
-                className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
+                className="text-(--color-error)! mr-auto"
               >
                 Delete
               </Button>
             )}
             <Button
               variant="text"
+              className="hidden sm:flex-inline"
               onClick={() => {
                 if (dogEvent) {
                   resetForm();
@@ -184,19 +191,17 @@ export default function DogEventModal({
       )}
 
       {mode === "view" && dogEvent ? (
-        <List dividers>
+        <DescriptionList dividers>
           {dogEventListItems.map((dogEvent) => {
-            if (dogEvent.trailingText) {
+            if (dogEvent.value) {
               return (
-                <List.Item
-                  headline={dogEvent.headline}
-                  trailingText={dogEvent.trailingText}
-                />
+                <DescriptionList.Item term={dogEvent.term}>
+                  {dogEvent.value}
+                </DescriptionList.Item>
               );
             }
-            return null;
           })}
-        </List>
+        </DescriptionList>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid md:grid-cols-2 gap-3">

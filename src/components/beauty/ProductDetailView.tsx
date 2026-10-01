@@ -163,6 +163,19 @@ function formatCheckedDate(date: string): string {
   });
 }
 
+function faviconUrl(url: string | undefined): string | undefined {
+  if (!url) {
+    return;
+  }
+
+  try {
+    const domain = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
+  } catch {
+    return;
+  }
+}
+
 function PriceChecksList({
   priceChecks,
   loading,
@@ -195,6 +208,7 @@ function PriceChecksList({
             {sorted.map((pc) => (
               <List.Item
                 key={pc.id}
+                avatar={faviconUrl(pc.url)}
                 headline={pc.retailer}
                 supportingText={`$${formatCurrency(pc.price)}`}
                 trailingText={`Checked ${formatCheckedDate(pc.date)}`}
