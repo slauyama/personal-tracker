@@ -11,7 +11,7 @@ import {
 } from "@slauyama/ui";
 import { ALL_DOG_EVENT_TYPES, DogEventType } from "../../constants";
 import type { DogEvent, DogEventInput } from "../../hooks/useDogEvents";
-import { useBreakpoints } from "@slauyama/hooks";
+import DeleteButton from "../ui/DeleteButton";
 
 interface DogEventModalProps {
   dogEvent?: DogEvent;
@@ -44,7 +44,6 @@ export default function DogEventModal({
   onDelete,
   modalControls,
 }: DogEventModalProps) {
-  const { isSmall } = useBreakpoints();
   const [mode, setMode] = useState<Mode>(dogEvent ? "view" : "add");
 
   const [form, setForm] = useState<DogEventInput>(
@@ -121,19 +120,10 @@ export default function DogEventModal({
       actions={
         mode === "view" ? (
           <>
-            {onDelete && (
-              <Button
-                variant={isSmall ? "text" : "filled"}
-                icon="delete"
-                onClick={onDelete}
-                className="text-(--color-error)! mr-auto"
-              >
-                Delete
-              </Button>
-            )}
+            {onDelete && <DeleteButton onClick={onDelete} />}
             <Button
               variant="text"
-              className="hidden sm:flex-inline"
+              className="hidden sm:inline-flex"
               onClick={modalControls.close}
             >
               Close
@@ -141,19 +131,10 @@ export default function DogEventModal({
           </>
         ) : (
           <>
-            {onDelete && mode === "edit" && (
-              <Button
-                variant={isSmall ? "text" : "filled"}
-                icon="delete"
-                onClick={onDelete}
-                className="text-(--color-error)! mr-auto"
-              >
-                Delete
-              </Button>
-            )}
+            {onDelete && mode === "edit" && <DeleteButton onClick={onDelete} />}
             <Button
               variant="text"
-              className="hidden sm:flex-inline"
+              className="hidden sm:inline-flex"
               onClick={() => {
                 if (dogEvent) {
                   resetForm();

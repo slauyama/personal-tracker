@@ -8,6 +8,7 @@ import {
 } from "@slauyama/ui";
 import { ALL_BRANDS, Brand, Category } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
+import DeleteButton from "../ui/DeleteButton";
 
 interface AddProductProps {
   categories: string[];
@@ -79,17 +80,12 @@ export default function AddProductModal({
       className="max-h-screen overflow-y-auto"
       actions={
         <>
-          {onDelete && (
-            <Button
-              variant="filled"
-              onClick={onDelete}
-              className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
-              icon="delete"
-            >
-              Delete
-            </Button>
-          )}
-          <Button variant="text" onClick={modalControls.close}>
+          {onDelete && <DeleteButton onClick={onDelete} />}
+          <Button
+            variant="text"
+            className="hidden sm:inline-flex"
+            onClick={modalControls.close}
+          >
             Cancel
           </Button>
           <Button variant="filled" onClick={save}>

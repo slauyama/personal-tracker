@@ -4,6 +4,7 @@ import type {
   Transaction,
   TransactionInput,
 } from "../../hooks/useTransactions";
+import DeleteButton from "../ui/DeleteButton";
 
 interface TransactionModalProps {
   productId: string;
@@ -76,17 +77,12 @@ export default function TransactionModal({
       headline={isEdit ? "Edit Purchase" : "Add Purchase"}
       actions={
         <>
-          {onDelete && (
-            <Button
-              variant="filled"
-              onClick={onDelete}
-              icon="delete"
-              className="bg-(--color-error)! text-(--color-on-error)! mr-auto"
-            >
-              Delete
-            </Button>
-          )}
-          <Button variant="text" onClick={modalControls.close}>
+          {onDelete && <DeleteButton onClick={onDelete} />}
+          <Button
+            variant="text"
+            className="hidden sm:inline-flex"
+            onClick={modalControls.close}
+          >
             Cancel
           </Button>
           <Button variant="filled" onClick={saveForm}>
