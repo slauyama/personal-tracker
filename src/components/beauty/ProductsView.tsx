@@ -38,7 +38,6 @@ type SortValue = `${SortField}-${SortDir}`;
 const SORT_OPTIONS: {
   value: SortValue;
   label: string;
-  icon?: SelectOption["icon"];
 }[] = [
   { value: "updatedAt-desc", label: "Date Updated (Newest)" },
   { value: "updatedAt-asc", label: "Date Updated (Oldest)" },
