@@ -10,6 +10,10 @@ import type {
 import { usePriceChecks, type PriceCheck } from "../../hooks/usePriceChecks";
 import { daysOwned, formatCurrency } from "../../lib/transactionStats";
 import {
+  navigateWithTransition,
+  productImageTransitionStyle,
+} from "../../lib/navTransition";
+import {
   Button,
   Card,
   CircularProgress,
@@ -43,7 +47,7 @@ function buildAmazonSearchUrl(product: Product): string {
   return `https://www.amazon.com/s?k=${encodeURIComponent(q)}`;
 }
 
-function ProductImage({ url }: { url: string }) {
+function ProductImage({ url, productId }: { url: string; productId: string }) {
   const [broken, setBroken] = useState(false);
 
   if (broken) {
@@ -61,7 +65,8 @@ function ProductImage({ url }: { url: string }) {
     <img
       src={url}
       alt="Product"
-      className="max-w-100 bg-white aspect-square object-cover rounded-xl"
+      className="product-image max-w-100 bg-white aspect-square object-cover rounded-xl"
+      style={productImageTransitionStyle(productId)}
       onError={() => setBroken(true)}
     />
   );
@@ -344,7 +349,7 @@ export default function ProductDetailView({
         <IconButton
           icon="arrow_back"
           label="Back"
-          onClick={() => navigate(-1)}
+          onClick={() => navigateWithTransition("container", () => navigate(-1))}
         />
         <div className="flex-1 min-w-0">
           <Heading
@@ -392,7 +397,9 @@ export default function ProductDetailView({
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-        {product.imageUrl && <ProductImage url={product.imageUrl} />}
+        {product.imageUrl && (
+          <ProductImage url={product.imageUrl} productId={product.id} />
+        )}
         <div className="flex grow flex-col gap-4">
           <dl className="flex-col gap-1">
             <Row label="Shade" value={product.shade} />

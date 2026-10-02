@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Product } from "../../hooks/useProducts";
 import { Card, Text } from "@slauyama/ui";
 import { motion } from "framer-motion";
+import { productImageTransitionStyle } from "../../lib/navTransition";
 
 interface ProductCardProps {
   product: Product;
@@ -51,7 +52,8 @@ export default function ProductCard({
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="bg-white w-full h-8/10 aspect-square object-cover"
+            className="product-image bg-white w-full h-8/10 aspect-square object-cover"
+            style={productImageTransitionStyle(product.id)}
             onError={() => setImgBroken(true)}
           />
         )}

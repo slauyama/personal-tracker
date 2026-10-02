@@ -4,6 +4,7 @@ import { ALL_CATEGORIES } from "../../constants";
 import type { Product, ProductInput } from "../../hooks/useProducts";
 import type { Transaction } from "../../hooks/useTransactions";
 import { effectiveUpdatedAt } from "../../lib/transactionStats";
+import { navigateWithTransition } from "../../lib/navTransition";
 import { Button, SearchBar, Select, Text, useIsOpen } from "@slauyama/ui";
 import AddProductModal from "./AddProductModal";
 import ListStateContainer from "../ui/ListStateContainer";
@@ -182,14 +183,20 @@ export default function ProductsView({
         }
       >
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 items-start">
-          <AnimatePresence>
+          {/* No entrance animation on mount: the page transition already
+              brings the list in, and cards animating underneath it look choppy. */}
+          <AnimatePresence initial={false}>
             {filtered.map((product, index, products) => (
               <ProductCard
                 key={product.id}
                 index={index}
                 totalProducts={products.length}
                 product={product}
-                onClick={() => navigate(`/beauty/products/${product.id}`)}
+                onClick={() =>
+                  navigateWithTransition("container", () =>
+                    navigate(`/beauty/products/${product.id}`),
+                  )
+                }
               />
             ))}
           </AnimatePresence>
