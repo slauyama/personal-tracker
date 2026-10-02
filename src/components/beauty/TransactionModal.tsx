@@ -80,7 +80,7 @@ export default function TransactionModal({
           {onDelete && <DeleteButton onClick={onDelete} />}
           <Button
             variant="text"
-            className="hidden sm:inline-flex"
+            className="hidden! sm:inline-flex!"
             onClick={modalControls.close}
           >
             Cancel

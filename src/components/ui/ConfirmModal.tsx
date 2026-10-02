@@ -23,7 +23,11 @@ export default function ConfirmModal({
       icon="warning"
       actions={
         <>
-          <Button variant="text" onClick={modalControls.close}>
+          <Button
+            variant="text"
+            className="hidden! sm:inline-flex!"
+            onClick={modalControls.close}
+          >
             Cancel
           </Button>
           <Button
