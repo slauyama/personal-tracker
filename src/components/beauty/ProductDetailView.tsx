@@ -293,19 +293,27 @@ export default function ProductDetailView({
     setCheckingPrices(true);
     setCheckPricesError(null);
     try {
-      const searchProductPrices = httpsCallable(
+      const searchProductPrices = httpsCallable<unknown, unknown[]>(
         functions,
         "searchProductPrices",
       );
-      await searchProductPrices({
+      const { data } = await searchProductPrices({
         productId: product.id,
         brand: product.brand,
         name: product.name,
         shade: product.shade,
         size: product.size,
       });
-    } catch {
-      setCheckPricesError("Couldn't check prices — try again later.");
+      if (data.length === 0) {
+        setCheckPricesError("No prices found for this product.");
+      }
+    } catch (error) {
+      console.error("searchProductPrices failed", error);
+      setCheckPricesError(
+        error instanceof Error
+          ? `Couldn't check prices: ${error.message}`
+          : "Couldn't check prices — try again later.",
+      );
     } finally {
       setCheckingPrices(false);
     }

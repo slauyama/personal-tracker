@@ -2,6 +2,7 @@ import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
+import { logger } from "firebase-functions";
 
 initializeApp();
 const db = getFirestore();
@@ -53,6 +54,10 @@ export const searchProductPrices = onCall(
 
     const shoppingRes = await fetch(shoppingUrl);
     if (!shoppingRes.ok) {
+      logger.error("SerpAPI shopping search failed", {
+        status: shoppingRes.status,
+        body: await shoppingRes.text(),
+      });
       throw new HttpsError("unavailable", "SerpAPI shopping search failed");
     }
     const shoppingData = await shoppingRes.json();
@@ -60,6 +65,12 @@ export const searchProductPrices = onCall(
     const topResult = shoppingData.shopping_results?.[0];
     const token = topResult?.immersive_product_page_token;
     if (!token) {
+      logger.warn("No immersive product token in shopping results", {
+        query,
+        serpapiError: shoppingData.error,
+        resultCount: shoppingData.shopping_results?.length ?? 0,
+        topResultKeys: topResult ? Object.keys(topResult) : [],
+      });
       return [];
     }
 
@@ -70,6 +81,10 @@ export const searchProductPrices = onCall(
 
     const immersiveRes = await fetch(immersiveUrl);
     if (!immersiveRes.ok) {
+      logger.error("SerpAPI immersive product lookup failed", {
+        status: immersiveRes.status,
+        body: await immersiveRes.text(),
+      });
       throw new HttpsError(
         "unavailable",
         "SerpAPI immersive product lookup failed",
@@ -88,6 +103,13 @@ export const searchProductPrices = onCall(
         };
       })
       .filter((r: PriceResult) => r.retailer && !Number.isNaN(r.price));
+
+    logger.info("Price check complete", {
+      query,
+      storeCount: sellers.length,
+      resultCount: results.length,
+      serpapiError: immersiveData.error,
+    });
 
     const date = new Date().toISOString();
     const batch = db.batch();
