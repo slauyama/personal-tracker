@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { TabDef, Tabs } from "@slauyama/ui";
+import { navigateWithTransition } from "../../lib/navTransition";
 
 interface RouteTabsProps {
   tabs: TabDef[];
@@ -16,6 +17,15 @@ export default function RouteTabs({ tabs, className }: RouteTabsProps) {
     )
     .sort((a, b) => b.value.length - a.value.length)[0];
 
+  function goTo(to: string) {
+    const from = tabs.findIndex((tab) => tab.value === active?.value);
+    const target = tabs.findIndex((tab) => tab.value === to);
+    navigateWithTransition(
+      target < from ? "slide-back" : "slide-forward",
+      () => navigate(to),
+    );
+  }
+
   return (
     <Tabs
       tabs={tabs.map((tab) => ({
@@ -24,8 +34,8 @@ export default function RouteTabs({ tabs, className }: RouteTabsProps) {
         label: tab.label,
       }))}
       value={active?.value}
-      onChange={(to) => navigate(to)}
-      className={className}
+      onChange={goTo}
+      className={`[view-transition-name:section-tabs] ${className ?? ""}`}
     />
   );
 }

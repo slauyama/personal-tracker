@@ -12,6 +12,157 @@
   }
 }
 
+/* ── Page transitions ───────────────────────────────────────────────────────
+   navigateWithTransition() (src/lib/navTransition.ts) sets
+   html[data-nav-transition] for the length of a View Transition:
+   - slide-forward/back: section tabs (Material shared axis X)
+   - container:      product card <-> detail; the image morphs between them
+   Navbar/rail switches are deliberately not animated: a fade-through looked
+   squished (at least in Firefox).
+   Named parts: app-header, app-nav-bar, page, section-tabs, product images. */
+:root {
+  --nav-out-duration: var(--motion-duration-short2);
+  --nav-in-duration: var(--motion-duration-short4);
+  --nav-total-duration: var(--motion-duration-medium2);
+  --nav-morph-duration: var(--motion-duration-medium3);
+  --nav-slide-distance: 30px;
+}
+
+@keyframes nav-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes nav-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes nav-slide-out-to-start {
+  to {
+    transform: translateX(calc(-1 * var(--nav-slide-distance)));
+  }
+}
+@keyframes nav-slide-out-to-end {
+  to {
+    transform: translateX(var(--nav-slide-distance));
+  }
+}
+@keyframes nav-slide-in-from-end {
+  from {
+    transform: translateX(var(--nav-slide-distance));
+  }
+}
+@keyframes nav-slide-in-from-start {
+  from {
+    transform: translateX(calc(-1 * var(--nav-slide-distance)));
+  }
+}
+
+/* App chrome never animates; it switches to the new state immediately. */
+::view-transition-old(root),
+::view-transition-old(app-header),
+::view-transition-old(app-nav-bar) {
+  display: none;
+}
+::view-transition-new(root),
+::view-transition-new(app-header),
+::view-transition-new(app-nav-bar) {
+  animation: none;
+}
+
+::view-transition-group(page) {
+  animation-duration: var(--nav-total-duration);
+}
+/* The group animates between the old and new page sizes. Draw the snapshots
+   at their natural size, pinned to the top, instead of stretching them to the
+   in-between box. */
+::view-transition-old(page),
+::view-transition-new(page),
+::view-transition-old(section-tabs),
+::view-transition-new(section-tabs) {
+  height: 100%;
+  object-fit: none;
+  object-position: top center;
+  overflow: clip;
+}
+
+/* Fade through for the page around a container morph. */
+:root[data-nav-transition="container"]::view-transition-old(page),
+:root[data-nav-transition="container"]::view-transition-old(section-tabs) {
+  animation: nav-fade-out var(--nav-out-duration)
+    var(--motion-easing-emphasized-accelerate) both;
+}
+:root[data-nav-transition="container"]::view-transition-new(page),
+:root[data-nav-transition="container"]::view-transition-new(section-tabs) {
+  animation: nav-fade-in var(--nav-in-duration)
+    var(--motion-easing-emphasized-decelerate) var(--nav-out-duration) both;
+}
+
+/* Shared axis X: section tabs. The tab bar stays put so its own indicator
+   animation plays; only the content below it slides. */
+:root[data-nav-transition="slide-forward"]::view-transition-old(page) {
+  animation:
+    nav-fade-out var(--nav-out-duration)
+      var(--motion-easing-emphasized-accelerate) both,
+    nav-slide-out-to-start var(--nav-total-duration)
+      var(--motion-easing-emphasized) both;
+}
+:root[data-nav-transition="slide-forward"]::view-transition-new(page) {
+  animation:
+    nav-fade-in var(--nav-in-duration)
+      var(--motion-easing-emphasized-decelerate) var(--nav-out-duration) both,
+    nav-slide-in-from-end var(--nav-total-duration)
+      var(--motion-easing-emphasized) both;
+}
+:root[data-nav-transition="slide-back"]::view-transition-old(page) {
+  animation:
+    nav-fade-out var(--nav-out-duration)
+      var(--motion-easing-emphasized-accelerate) both,
+    nav-slide-out-to-end var(--nav-total-duration)
+      var(--motion-easing-emphasized) both;
+}
+:root[data-nav-transition="slide-back"]::view-transition-new(page) {
+  animation:
+    nav-fade-in var(--nav-in-duration)
+      var(--motion-easing-emphasized-decelerate) var(--nav-out-duration) both,
+    nav-slide-in-from-start var(--nav-total-duration)
+      var(--motion-easing-emphasized) both;
+}
+:root:is(
+    [data-nav-transition="slide-forward"],
+    [data-nav-transition="slide-back"]
+  )::view-transition-old(section-tabs) {
+  display: none;
+}
+:root:is(
+    [data-nav-transition="slide-forward"],
+    [data-nav-transition="slide-back"]
+  )::view-transition-new(section-tabs) {
+  animation: none;
+}
+
+/* Container transform: product images are only named during a product
+   transition, so they slide with the page on tab switches. Each image's name
+   comes from --product-image-name, set inline per product. */
+:root[data-nav-transition="container"] .product-image {
+  view-transition-name: var(--product-image-name);
+  view-transition-class: product-image;
+}
+::view-transition-group(*.product-image) {
+  animation-duration: var(--nav-morph-duration);
+  animation-timing-function: var(--motion-easing-emphasized);
+}
+/* List images with no counterpart on the other page fade with the page. */
+::view-transition-old(*.product-image):only-child {
+  animation: nav-fade-out var(--nav-out-duration)
+    var(--motion-easing-emphasized-accelerate) both;
+}
+::view-transition-new(*.product-image):only-child {
+  animation: nav-fade-in var(--nav-in-duration)
+    var(--motion-easing-emphasized-decelerate) var(--nav-out-duration) both;
+}
+
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;

@@ -1,5 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useCommitNavTransition } from "../../lib/navTransition";
 import {
   Button,
   Heading,
@@ -35,10 +36,11 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const active = activeNavValue(pathname);
   const title = PAGE_TITLES[active] ?? "Personal Tracker";
+  useCommitNavTransition();
 
   return (
     <div className="min-h-screen flex flex-col bg-(--color-surface)">
-      <header className="flex items-center justify-between px-4 py-3 border-b border-(--color-outline-variant) sticky top-0 bg-(--color-surface) z-40">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-(--color-outline-variant) sticky top-0 bg-(--color-surface) z-40 [view-transition-name:app-header]">
         <Heading as="h1" variant="title-large">
           {title}
         </Heading>
@@ -71,12 +73,12 @@ export default function AppLayout() {
           />
         </div>
 
-        <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-6 pb-24 md:pb-6">
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-6 pb-24 md:pb-6 [view-transition-name:page]">
           <Outlet />
         </main>
       </div>
 
-      <div className="md:hidden fixed bottom-0 inset-x-0 z-100">
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-100 [view-transition-name:app-nav-bar]">
         <NavigationBar
           items={NAV_ITEMS}
           value={active}
