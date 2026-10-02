@@ -347,19 +347,48 @@ export default function ProductDetailView({
           onClick={() => navigate(-1)}
         />
         <div className="flex-1 min-w-0">
-          <Heading as="h2" variant="title-large" className="truncate">
+          <Heading
+            as="h2"
+            variant="title-large"
+            title={product.name}
+            className="truncate"
+          >
             {product.name}
           </Heading>
           {product.brand && (
             <Text className="text-zinc-400">{product.brand}</Text>
           )}
         </div>
-        <Button variant="text" onClick={handleShare} icon="share">
+        <Button
+          variant="text"
+          className="hidden! sm:inline-flex!"
+          onClick={handleShare}
+          icon="share"
+        >
           {copied ? "Copied!" : "Share"}
         </Button>
-        <Button variant="filled" onClick={editModal.open} icon="edit">
+        <IconButton
+          className="inline-flex sm:hidden"
+          variant="outlined"
+          icon="share"
+          label="Share"
+          onClick={handleShare}
+        />
+        <Button
+          variant="filled"
+          className="hidden! sm:inline-flex!"
+          onClick={editModal.open}
+          icon="edit"
+        >
           Edit
         </Button>
+        <IconButton
+          className="inline-flex sm:hidden"
+          variant="filled"
+          icon="edit"
+          label="Edit"
+          onClick={editModal.open}
+        />
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 md:gap-6">
