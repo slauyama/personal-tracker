@@ -3,6 +3,13 @@ import { useDogEvents } from "../hooks/useDogEvents";
 import { useDogPurchases } from "../hooks/useDogPurchases";
 import DogEventsView from "../components/dog/DogEventsView";
 import DogPurchasesView from "../components/dog/DogPurchasesView";
+import RouteTabs from "../components/ui/RouteTabs";
+import { TabDef } from "@slauyama/ui";
+
+const DOG_TABS: TabDef[] = [
+  { label: "Purchases", value: "/dog", icon: "pet_supplies" },
+  { label: "Events", value: "/dog/events", icon: "event" },
+];
 
 export default function DogPage() {
   const {
@@ -22,6 +29,7 @@ export default function DogPage() {
 
   return (
     <div>
+      <RouteTabs tabs={DOG_TABS} className="mb-6" />
       <Routes>
         <Route
           index

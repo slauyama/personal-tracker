@@ -115,32 +115,29 @@ export default function ProductsView({
 
   return (
     <>
-      <div className="flex flex-row-reverse justify-between items-center mb-6">
-        <Button
-          variant="text"
-          onClick={() => navigate("/beauty/stats")}
-          trailingIcon="arrow_forward"
-        >
-          Stats
-        </Button>
-        <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
-      </div>
+      <SearchBar
+        className="mb-6"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <div className="flex flex-col sm:flex-row sm:justify-between gap-4 items-center mb-6">
         <div className="flex gap-4 flex-wrap">
           <Select
             label="Categories"
+            className="w-full sm:w-fit"
             value={categoryFilter}
             onChange={(value) => setCategoryFilter(value)}
             options={CATEGORY_OPTIONS}
           />
           <Select
             label="Sort"
+            className="w-full sm:w-fit"
             value={sortValue}
             onChange={(value) => setSortValue(value as SortValue)}
             options={SORT_OPTIONS}
           />
         </div>
-        <div className="sm:flex sm:gap-4">
+        <div className="sm:flex sm:gap-4 w-full sm:w-fit">
           <div className="hidden  md:inline-flex">
             <Button variant="text" onClick={downloadJSON} icon="file_export">
               Export
@@ -148,11 +145,12 @@ export default function ProductsView({
           </div>
           <Button
             variant="filled"
+            className="w-full sm:w-fit"
             onClick={addProductModal.open}
             fullWidth={isSmall}
             icon="add"
           >
-            {isMedium ? "Add" : "Add Product"}
+            {isMedium && !isSmall ? "Add" : "Add Product"}
           </Button>
         </div>
       </div>

@@ -2,9 +2,8 @@ import { useMemo } from "react";
 import { Product } from "../../hooks/useProducts";
 import { Transaction } from "../../hooks/useTransactions";
 import { daysOwned, formatCurrency } from "../../lib/transactionStats";
-import { Button, Card, Heading, IconButton, List, Text } from "@slauyama/ui";
+import { Card, Heading, List, Text } from "@slauyama/ui";
 import Caption from "../ui/Caption";
-import { useNavigate } from "react-router-dom";
 
 interface StatsViewProps {
   products: Product[];
@@ -64,7 +63,6 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
     () => buildStats(transactions, productsById, today),
     [transactions, productsById, today],
   );
-  const navigate = useNavigate();
 
   const totalSpent = stats.reduce((sum, s) => sum + s.price, 0);
   const largestDaysOwned = stats.reduce(
@@ -81,21 +79,6 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
   if (products.length === 0) {
     return (
       <>
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <Text as="p" className="mt-0.5">
-              {/* {products.length} product{products.length !== 1 ? "s" : ""}{" "} */}
-              tracked
-            </Text>
-          </div>
-          <Button
-            variant="text"
-            onClick={() => navigate("/beauty")}
-            icon="chevron_right"
-          >
-            Products
-          </Button>
-        </div>
         <div className="text-center py-20">
           <Text as="p" className="text-5xl mb-3">
             💄
@@ -110,16 +93,9 @@ export default function StatsView({ products, transactions }: StatsViewProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center">
-        <IconButton
-          icon="arrow_back"
-          label="Back"
-          onClick={() => navigate(-1)}
-        />
-        <Heading as="h2" variant="title-large">
-          Spending Summary
-        </Heading>
-      </div>
+      <Heading as="h2" variant="title-large">
+        Spending Summary
+      </Heading>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
         <StatCard
