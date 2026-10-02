@@ -15,7 +15,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8">
-      <div className="flex flex-wrap gap-4 w-full max-w-lg">
+      <div className="flex flex-wrap gap-2 md:gap-4 w-full max-w-lg">
         {SECTIONS.map(({ to, label, icon }) => (
           <Button
             variant="elevated"
@@ -23,7 +23,7 @@ export default function HomePage() {
             onClick={() => navigate(to)}
             className="aspect-square h-28 sm:h-40 flex flex-col items-center justify-center rounded-2xl transition-all cursor-pointer group"
           >
-            <Icon name={icon} size={isSmall ? 28 : 40} />
+            <Icon name={icon} size={isSmall ? 26 : 40} />
             <Text variant="body-medium"> {label}</Text>
           </Button>
         ))}

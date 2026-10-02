@@ -19,7 +19,6 @@ import ConfirmModal from "../ui/ConfirmModal";
 import ListStateContainer from "../ui/ListStateContainer";
 import CategoryBadge from "./CategoryBadge";
 import { PURCHASE_CATEGORY_COLORS } from "./categoryColors";
-import { useLocation, useNavigate } from "react-router-dom";
 import { formatShortDate } from "../../lib/formatDate";
 
 interface DogPurchasesViewProps {
@@ -96,7 +95,7 @@ export default function DogPurchasesView({
   const addModal = useIsOpen();
   const editModal = useIsOpen();
   const confirmDeleteModal = useIsOpen();
-  const { isMedium, isLarge } = useBreakpoints();
+  const { isMedium } = useBreakpoints();
 
   const [activePurchase, setActivePurchase] = useState<DogPurchase | null>(
     null,
@@ -115,29 +114,19 @@ export default function DogPurchasesView({
   });
   const visibleRows = expanded ? rows : rows.slice(0, PAGE_SIZE);
   const stats = buildSpendStats(dogPurchases);
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const showEvents = pathname.includes("/events");
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <Button
-          variant="outlined"
-          onClick={() => navigate(showEvents ? "/dog" : "/dog/events")}
-        >
-          {showEvents ? "← Purchases" : "Events"}
-        </Button>
-        <Button onClick={addModal.open} icon="add">
-          {isLarge ? "Add" : "Add Purchase"}
+      <div className="flex flex-col sm:flex-row mb-6 gap-2 justify-between align-baseline items-center">
+        <SearchBar
+          className="shrink"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <Button onClick={addModal.open} className="w-full sm:w-fit" icon="add">
+          Add Purchase
         </Button>
       </div>
-
-      <SearchBar
-        className="mb-6"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
 
       <ListStateContainer
         isLoading={loading}

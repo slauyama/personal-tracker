@@ -5,6 +5,13 @@ import { ALL_CATEGORIES } from "../constants";
 import ProductsView from "../components/beauty/ProductsView";
 import ProductDetailView from "../components/beauty/ProductDetailView";
 import StatsView from "../components/beauty/StatsView";
+import RouteTabs from "../components/ui/RouteTabs";
+import { TabDef } from "@slauyama/ui";
+
+const BEAUTY_TABS: TabDef[] = [
+  { label: "Products", value: "/beauty", icon: "shopping_bag" },
+  { label: "Stats", value: "/beauty/stats", icon: "analytics" },
+];
 
 export default function BeautyPage() {
   const { products, loading, addProduct, findProductById } = useProducts();
@@ -18,6 +25,7 @@ export default function BeautyPage() {
 
   return (
     <div>
+      <RouteTabs tabs={BEAUTY_TABS} className="mb-6" />
       <Routes>
         <Route
           index
