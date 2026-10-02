@@ -123,7 +123,7 @@ export default function DogEventModal({
             {onDelete && <DeleteButton onClick={onDelete} />}
             <Button
               variant="text"
-              className="hidden sm:inline-flex"
+              className="hidden! sm:inline-flex!"
               onClick={modalControls.close}
             >
               Close
@@ -134,7 +134,7 @@ export default function DogEventModal({
             {onDelete && mode === "edit" && <DeleteButton onClick={onDelete} />}
             <Button
               variant="text"
-              className="hidden sm:inline-flex"
+              className="hidden! sm:inline-flex!"
               onClick={() => {
                 if (dogEvent) {
                   resetForm();
