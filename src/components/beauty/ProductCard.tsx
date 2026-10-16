@@ -17,22 +17,17 @@ export default function ProductCard({
   totalProducts,
   onClick,
 }: ProductCardProps) {
-  const [isAnimating, setIsAnimating] = useState(false);
   const [imgBroken, setImgBroken] = useState(false);
   const showImage = product.imageUrl && !imgBroken;
 
   return (
     <motion.div
       layout
-      onAnimationStart={() => setIsAnimating(true)}
-      onAnimationComplete={() => setIsAnimating(false)}
       initial={{ opacity: 0, scale: 0.98, y: -6 }}
-      animate={{
-        opacity: isAnimating ? 0.98 : 1,
-        scale: 1,
-        y: 0,
-        zIndex: isAnimating ? totalProducts - index + 1 : 1,
-      }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      // Earlier cards stack above later ones so they stay on top while
+      // sliding past each other during layout animations.
+      style={{ zIndex: totalProducts - index + 1 }}
       exit={{ opacity: 0, scale: 0.98, y: 6 }}
       transition={{
         layout: {

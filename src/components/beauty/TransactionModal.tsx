@@ -92,7 +92,7 @@ export default function TransactionModal({
       }
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4 md:gap-3">
+        <div className="grid md:grid-cols-2 mt-1 gap-4 md:gap-3">
           <TextField
             variant="outlined"
             label="Purchase Date"
