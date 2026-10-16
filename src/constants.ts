@@ -34,7 +34,7 @@ export const ALL_CATEGORIES = Object.values(Category);
 export enum DogEventType {
   Weight = "Weight",
   Medicine = "Medicine",
-  Hygiene = "Hygiene",
+  Bath = "Bath",
   Other = "Other",
 }
 

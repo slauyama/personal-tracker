@@ -21,6 +21,6 @@ export const PURCHASE_CATEGORY_COLORS: Record<DogPurchaseCategory, HexPair> = {
 export const EVENT_TYPE_COLORS: Record<DogEventType, HexPair> = {
   [DogEventType.Weight]: { light: "#2a78d6", dark: "#3987e5" },
   [DogEventType.Medicine]: { light: "#008300", dark: "#008300" },
-  [DogEventType.Hygiene]: { light: "#e87ba4", dark: "#d55181" },
+  [DogEventType.Bath]: { light: "#e87ba4", dark: "#d55181" },
   [DogEventType.Other]: { light: "#eda100", dark: "#c98500" },
 };
