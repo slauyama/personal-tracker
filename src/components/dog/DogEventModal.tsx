@@ -222,7 +222,7 @@ export default function DogEventModal({
           {form.type !== DogEventType.Weight && (
             <TextField
               variant="outlined"
-              label="Event"
+              label={form.type === DogEventType.Bath ? "Notes (optional)" : "Event"}
               textarea
               fullWidth
               value={form.notes}
