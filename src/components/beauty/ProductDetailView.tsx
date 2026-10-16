@@ -219,9 +219,10 @@ function PriceChecksList({
                 trailingText={`Checked ${formatCheckedDate(pc.date)}`}
                 trailing={
                   pc.url && (
-                    <Button
-                      variant="text"
+                    <IconButton
+                      variant="standard"
                       icon="open_in_new"
+                      label={pc.url}
                       href={pc.url}
                       target="_blank"
                     />
@@ -349,7 +350,9 @@ export default function ProductDetailView({
         <IconButton
           icon="arrow_back"
           label="Back"
-          onClick={() => navigateWithTransition("container", () => navigate(-1))}
+          onClick={() =>
+            navigateWithTransition("container", () => navigate(-1))
+          }
         />
         <div className="flex-1 min-w-0">
           <Heading
