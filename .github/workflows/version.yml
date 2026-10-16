@@ -1,0 +1,69 @@
+name: Bump version
+
+# Runs on every push to main (i.e. a merged PR): bumps package.json from the
+# merged PR's major/minor/patch label, then commits and tags the release.
+# Pushes made with GITHUB_TOKEN never trigger workflows, so the release commit
+# doesn't redeploy; the merge commit already did.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+concurrency:
+  group: version
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Determine bump type
+        id: bump
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT: ${{ inputs.bump }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "type=$INPUT" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          LABELS=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" --jq '[.[0].labels[]?.name]')
+          echo "Merged PR labels: $LABELS"
+          if echo "$LABELS" | grep -q '"major"'; then
+            echo "type=major" >> "$GITHUB_OUTPUT"
+          elif echo "$LABELS" | grep -q '"minor"'; then
+            echo "type=minor" >> "$GITHUB_OUTPUT"
+          elif echo "$LABELS" | grep -q '"patch"'; then
+            echo "type=patch" >> "$GITHUB_OUTPUT"
+          else
+            echo "type=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.bump.outputs.type != 'none'
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v7
+        if: steps.bump.outputs.type != 'none'
+        with:
+          node-version: latest
+
+      - name: Bump version, commit, tag, push
+        if: steps.bump.outputs.type != 'none'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          npm version ${{ steps.bump.outputs.type }}
+          git push origin main --follow-tags
