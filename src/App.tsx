@@ -18,7 +18,7 @@ export default function App() {
             <Route index element={<HomePage />} />
             <Route path="/beauty/*" element={<BeautyPage />} />
             <Route path="/dog/*" element={<DogPage />} />
-            <Route path="/car" element={<CarPage />} />
+            <Route path="/car/*"element={<CarPage />} />
           </Route>
         </Route>
       </Routes>
