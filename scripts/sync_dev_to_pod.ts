@@ -8,6 +8,9 @@ const COLLECTIONS = [
   "dogEvents",
   "dogPurchases",
   "priceChecks",
+  "carServices",
+  "carGas",
+  "carInsurance",
 ];
 
 async function main() {
