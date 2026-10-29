@@ -3,10 +3,15 @@ import type { HexPair } from "./categoryColors";
 
 interface CategoryBadgeProps {
   label: string;
-  color: HexPair;
+  color: HexPair | undefined;
 }
 
-export default function CategoryBadge({ label, color }: CategoryBadgeProps) {
+const FALLBACK_COLOR: HexPair = { light: "#e4e4e7", dark: "#3f3f46" }; // zinc-200 / zinc-700
+
+export default function CategoryBadge({
+  label,
+  color = FALLBACK_COLOR,
+}: CategoryBadgeProps) {
   return (
     <span
       style={{ "--dot-l": color.light, "--dot-d": color.dark } as CSSProperties}
