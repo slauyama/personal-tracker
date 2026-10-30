@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithCustomToken } from "firebase/auth";
 import { initializeFirestore } from "firebase/firestore";
 import { getFunctions } from "firebase/functions";
 
@@ -19,3 +19,14 @@ export const auth = getAuth(app);
 // blank — Firestore rejects that by default, so ignore rather than error.
 export const db = initializeFirestore(app, { ignoreUndefinedProperties: true });
 export const functions = getFunctions(app);
+
+declare global {
+  interface Window {
+    __e2eSignIn?: (token: string) => Promise<unknown>;
+  }
+}
+
+// Lets the Playwright smoke test (e2e/) sign in, since Google popup sign-in
+// can't be automated. Safe to ship: custom tokens can only be minted with the
+// project's service-account key.
+window.__e2eSignIn = (token) => signInWithCustomToken(auth, token);
