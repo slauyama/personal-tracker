@@ -114,7 +114,40 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+  # Visits every route on the live site as a signed-in user and fails on any
+  # console error.
+  smoke:
+    needs: [version, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.version.outputs.sha }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: latest
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: "@slauyama"
+      - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
+          BASE_URL: ${{ needs.deploy.outputs.page_url }}
+          E2E_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_PROD_SERVICE_ACCOUNT }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
